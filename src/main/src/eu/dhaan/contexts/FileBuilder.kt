@@ -1,15 +1,17 @@
 package eu.dhaan.contexts
 
+import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.KotlinFile
 import eu.dhaan.constructs.IAccessor
-import eu.dhaan.helpers.Single
-import eu.dhaan.helpers.VarArg
+import eu.dhaan.helpers.ClassWrapper
 import kotlin.reflect.KClass
 
 class FileBuilder(pack: String, name: String) {
 
-    infix fun <T : Any> String.of(clazz: KClass<T>) = this to Single(clazz)
-    infix fun <T : Any> String.vararg(clazz: KClass<T>) = this to VarArg(clazz)
+    infix fun <T : Any> String.of(clazz: KClass<T>) = this to ClassWrapper(clazz)
+    infix fun <T : Any> String.valOf(clazz: KClass<T>) = this to ClassWrapper(clazz, mutableListOf(KModifier.FINAL))
+    infix fun <T : Any> String.vararg(clazz: KClass<T>) = this to ClassWrapper(clazz, mutableListOf(KModifier.VARARG))
+    infix fun <T : Any> String.varargValOf(clazz: KClass<T>) = this to ClassWrapper(clazz, mutableListOf(KModifier.FINAL, KModifier.VARARG))
 
     private val builder = KotlinFile.builder(pack, name)
 

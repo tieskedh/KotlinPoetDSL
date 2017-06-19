@@ -1,12 +1,10 @@
 package eu.dhaan.contexts
 
 import com.squareup.kotlinpoet.FunSpec
-import com.squareup.kotlinpoet.KModifier
 import eu.dhaan.Parameter
 import eu.dhaan.constructs.Accessor
 import eu.dhaan.constructs.IAccessor
 import eu.dhaan.helpers.FuncBlockWrapper
-import eu.dhaan.helpers.VarArg
 
 
 class FuncBuilder(
@@ -19,11 +17,9 @@ class FuncBuilder(
 
     operator fun invoke(name: String, vararg params: Parameter, buildScript: CodeBlockBuilder.()->Unit) = build(name, buildScript){
         builder.apply {
-            params.forEach { (name,type)->if (type is VarArg<*>){
-                addParameter(name, type.clazz, KModifier.VARARG)
-            } else {
-                addParameter(name, type.clazz)
-            }}
+            params.forEach {
+                (name,type)->addParameter(name, type.clazz, *type.modifiers.toTypedArray())
+            }
         }
     }
 
