@@ -10,7 +10,7 @@ file("", "HelloWorld"){
   internal.clazz("Greeter", "name" valOf  String::class){
     open.func("greet") returns (Boolean::class){
       statement("println(%S)", "Hello, \$name")
-      statement("returns %L", true)
+      statement("return %L", true)
     }
   }
   
@@ -35,7 +35,7 @@ import kotlin.String
 internal class Greeter(val name: String) {
   open fun greet(): Boolean {
     println("Hello, $name")
-    returns true
+    return true
   }
 }
 
