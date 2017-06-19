@@ -12,7 +12,7 @@ file("", "HelloWorld") {
 
         open.func("greet") returns (Boolean::class){
             statement("println(%S)", "Hello, \$name")
-            statement("returns %L", true)
+            statement("return %L", true)
         }
 
     }
