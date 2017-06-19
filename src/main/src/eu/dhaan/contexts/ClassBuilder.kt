@@ -8,6 +8,7 @@ import eu.dhaan.Parameter
 import eu.dhaan.constructs.Accessor
 import eu.dhaan.constructs.IAccessor
 import eu.dhaan.helpers.ClassWrapper
+import javax.swing.text.html.HTML.Tag.P
 
 class ClassBuilder(
         private val accessor: IAccessor = Accessor(),

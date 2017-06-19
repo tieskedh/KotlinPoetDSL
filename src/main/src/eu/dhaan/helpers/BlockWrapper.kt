@@ -44,6 +44,7 @@ class FuncBlockWrapper internal constructor(
         private val builder: FunSpec.Builder
 ) : BlockWrapper<FunSpec, FunSpec.Builder>
 {
+    fun <T: Any> returns(clazz: KClass<T>) = builder.returns(clazz)
     override fun addCode(codeBlock: CodeBlock) = builder.addCode(codeBlock)
 
     override fun statement(first: String, vararg parts: Any) {
