@@ -13,6 +13,7 @@ file("", "HelloWorld"){
       statement("returns %L", true)
     }
   }
+  
   public.func("main", "args" vararg String::class) {
     If("args.size>0") {
       statement("%T(args[0]).greet()", ClassName("", "Greeter"))
