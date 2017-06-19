@@ -7,7 +7,8 @@ import com.squareup.kotlinpoet.TypeSpec
 import eu.dhaan.Parameter
 import eu.dhaan.constructs.Accessor
 import eu.dhaan.constructs.IAccessor
-import eu.dhaan.helpers.VarArg
+import eu.dhaan.helpers.ClassWrapper
+import javax.swing.text.html.HTML.Tag.P
 
 class ClassBuilder(
         private val accessor: IAccessor = Accessor(),
@@ -20,15 +21,21 @@ class ClassBuilder(
     val func get()= FuncBuilder{func->builder.addFun(func)}
     val prop get()= PropBuilder{prop->builder.addProperty(prop)}
 
-    fun primaryConstructor(vararg pair: Parameter){
+    fun primaryConstructor(vararg pair: Parameter) {
         val primBuilder = FunSpec.constructorBuilder()
         pair.forEach {
-            (name,type)->if (type is VarArg<*>){
-            primBuilder.addParameter(name, type.clazz, KModifier.VARARG)
-        } else {
-            primBuilder.addParameter(name, type.clazz)
-        }}
-        builder.primaryConstructor(primBuilder.build())
+            (name, type) ->run {
+                val modifiers = type.modifiers
+                if (modifiers.contains(KModifier.FINAL)) {
+                    modifiers.remove(KModifier.FINAL)
+                    prop.invoke(name to ClassWrapper(type.clazz, modifiers)){
+                        init(name)
+                    }
+                }
+                primBuilder.addParameter(name, type.clazz, *modifiers.toTypedArray())
+            }
+            builder.primaryConstructor(primBuilder.build())
+        }
     }
 
     operator fun invoke(name: String)= build(name){}

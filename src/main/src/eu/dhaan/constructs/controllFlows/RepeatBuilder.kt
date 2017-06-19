@@ -42,12 +42,11 @@ open class Repeat(private val builder: BlockWrapper<*, *>) : IRepeat {
     inner class Condition(private val statements: CodeBlockBuilder.() -> Unit) {
         fun forEver() {
             this@Repeat.repeat(condition = "true", parts = *arrayOf(), statements = statements)
-//            repeat(condition = "true",parts = null, statements = statements)
         }
 
         fun asLongAs(condition: String, vararg parts: Any){
             builder.beginControlFlow("do")
-            val codeBlock = CodeBlockBuilder(builder).let{
+            CodeBlockBuilder(builder).let{
                 statements(it)
                 it.build()
             }

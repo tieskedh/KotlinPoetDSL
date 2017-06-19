@@ -22,7 +22,7 @@ class IfClassStart(private val builder: BlockWrapper<*, *>) : IiFInterface {
 
     private fun buildFirst(statements: CodeBlockBuilder.() -> Unit, format: String, vararg parts: Any): IfClassEnd {
         builder.beginControlFlow(format, *parts)
-        val codeBlock = CodeBlockBuilder(builder).let {
+        CodeBlockBuilder(builder).let {
             statements(it)
             it.build()
         }
@@ -59,8 +59,7 @@ class IfClassStart(private val builder: BlockWrapper<*, *>) : IiFInterface {
         }
 
         private fun buildSecond(statements: CodeBlockBuilder.() -> Unit) {
-
-            val codeBlock = CodeBlockBuilder(builder).let {
+            CodeBlockBuilder(builder).let {
                 statements(it)
                 it.build()
             }
