@@ -3,6 +3,7 @@ package nl.devhaan.kotlinpoetdsl.classes
 
 import com.squareup.kotlinpoet.*
 import nl.devhaan.kotlinpoetdsl.*
+import nl.devhaan.kotlinpoetdsl.functions.FuncBuilder
 import nl.devhaan.kotlinpoetdsl.functions.FunctionAcceptor
 import nl.devhaan.kotlinpoetdsl.helpers.ParameterData
 import nl.devhaan.kotlinpoetdsl.properties.PropAcceptor
@@ -41,7 +42,6 @@ class ClassBuilder(
 
     fun primaryConstructor(vararg pair: Parameter) {
         val primBuilder = FunSpec.constructorBuilder()
-
         pair.forEach { (name, type) ->
             val modifiers = type.modifiers
             if (type.readOnly != ParameterData.UNDEFINED) {
@@ -54,10 +54,8 @@ class ClassBuilder(
         }
     }
 
-    operator fun invoke(name: String) = build(name)
-
     operator fun invoke(name: String, vararg pars: Parameter, init: ClassBuilder.() -> Unit = {}) = build(name) {
-        primaryConstructor(*pars)
+        if (pars.isNotEmpty()) primaryConstructor(*pars)
         init(this)
     }
 

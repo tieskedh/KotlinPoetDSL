@@ -58,6 +58,9 @@ class FuncBlockWrapper internal constructor(
 
     override fun build() = builder.build()
 
+    fun addParameters(parameters: Array<out Parameter>) {
+        parameters.forEach { addParameter(it) }
+    }
     fun addParameter(parameter: Parameter): FunSpec.Builder {
         val (name, data) = parameter
         val paramBuilder = ParameterSpec.builder(
@@ -70,7 +73,7 @@ class FuncBlockWrapper internal constructor(
         return builder.addParameter(paramBuilder.build())
     }
 
-    fun addParameter(name: String, clazz: KClass<*>, vararg mods : KModifier)
+    fun addParameter(name: String, clazz: TypeName, vararg mods : KModifier)
             = builder.addParameter(name, clazz, *mods)
 
 }

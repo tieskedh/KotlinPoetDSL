@@ -22,7 +22,6 @@ fun ClassAcceptor.clazz(typeSpec: TypeSpec) = accept(typeSpec.let {
     } else it
 })
 
-fun ClassAcceptor.clazz(name: String) = classBuilder()(name)
 fun ClassAcceptor.clazz(name: String, vararg pars: Parameter, init: ClassBuilder.() -> Unit = {}) =
         classBuilder()(name, *pars, init = init)
 

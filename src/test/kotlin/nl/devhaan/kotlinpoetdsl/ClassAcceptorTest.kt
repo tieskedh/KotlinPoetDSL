@@ -1,7 +1,6 @@
 package nl.devhaan.kotlinpoetdsl
 
 import com.squareup.kotlinpoet.FileSpec
-import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.TypeSpec
 import io.kotlintest.shouldBe
@@ -9,75 +8,62 @@ import io.kotlintest.specs.StringSpec
 import nl.devhaan.kotlinpoetdsl.classes.buildClass
 import nl.devhaan.kotlinpoetdsl.classes.clazz
 import nl.devhaan.kotlinpoetdsl.files.file
-import nl.devhaan.kotlinpoetdsl.functions.buildFun
-import nl.devhaan.kotlinpoetdsl.functions.func
-import nl.devhaan.kotlinpoetdsl.open
-import nl.devhaan.kotlinpoetdsl.protected
 
-class FunctionAcceptorTest : StringSpec({
 
-    val zeroFun = FunSpec.builder("func")
-            .addStatement("println(%S)", "hi")
-            .build()
+/**
+ * This class tests if the ClassAcceptor is implemented correctly.
+ * This is done by checking if:
+ *  - the builders itself implements the interface correctly,
+ *  - the accessors implements the interface correctly,
+ *  - The delegation works correct.
+ */
+class ClassAcceptorTest : StringSpec({
+    val zeroClass = TypeSpec.classBuilder("Clazz").build()
+    val oneClass = TypeSpec.classBuilder("Clazz").addModifiers(KModifier.OPEN).build()
+    val twoClass = TypeSpec.classBuilder("Clazz").addModifiers(KModifier.INTERNAL, KModifier.OPEN).build()
 
-    val oneFun = FunSpec.builder("func")
-            .addStatement("println(%S)", "hi")
-            .addModifiers(KModifier.OPEN)
-            .build()
-
-    val twoFun = FunSpec.builder("func")
-            .addStatement("println(%S)", "hi")
-            .addModifiers(KModifier.PROTECTED, KModifier.OPEN)
-            .build()
 
     "builder without modifier"{
-        buildFun {
-            func("func") {
-                statement("println(%S)", "hi")
-            }
-        } shouldBe zeroFun
+        buildClass{
+            clazz("Clazz")
+        } shouldBe zeroClass
     }
 
     "builder with modifier"{
-        buildFun(KModifier.OPEN) {
-            func("func") {
-                statement("println(%S)", "hi")
-            }
-        } shouldBe oneFun
+        buildClass(KModifier.OPEN) {
+            clazz("Clazz")
+        } shouldBe oneClass
     }
-
 
     "file without modifier"{
         file("", "HelloWorld") {
-            func("func") {
-                statement("println(%S)", "hi")
-            }
+            clazz("Clazz")
         } shouldBe FileSpec.builder("", "HelloWorld")
-                .addFunction(zeroFun)
+                .addType(zeroClass)
                 .build()
     }
 
     "file with initialized Modifier"{
         file("", "HelloWorld") {
-            func(oneFun)
+            clazz(oneClass)
         } shouldBe FileSpec.builder("", "HelloWorld")
-                .addFunction(oneFun)
+                .addType(oneClass)
                 .build()
     }
 
     "file add modifier"{
         file("", "HelloWorld") {
-            open.func(zeroFun)
+            open.clazz(zeroClass)
         } shouldBe FileSpec.builder("", "HelloWorld")
-                .addFunction(oneFun)
+                .addType(oneClass)
                 .build()
     }
 
     "file merge modifier"{
         file("", "HelloWorld") {
-            protected.func(oneFun)
+            internal.clazz(oneClass)
         } shouldBe FileSpec.builder("", "HelloWorld")
-                .addFunction(twoFun)
+                .addType(twoClass)
                 .build()
     }
 
@@ -85,42 +71,40 @@ class FunctionAcceptorTest : StringSpec({
     "class without modifier"{
         buildClass {
             clazz("HelloWorld") {
-                func("func") {
-                    statement("println(%S)", "hi")
-                }
+                clazz("Clazz")
             }
         } shouldBe TypeSpec.classBuilder("HelloWorld")
-                .addFunction(zeroFun)
+                .addType(zeroClass)
                 .build()
     }
 
     "class with initialized Modifier"{
         buildClass {
             clazz("HelloWorld") {
-                func(oneFun)
+                clazz(oneClass)
             }
         } shouldBe TypeSpec.classBuilder("HelloWorld")
-                .addFunction(oneFun)
+                .addType(oneClass)
                 .build()
     }
 
     "class add modifier"{
         buildClass {
             clazz("HelloWorld") {
-                open.func(zeroFun)
+                open.clazz(zeroClass)
             }
         } shouldBe TypeSpec.classBuilder("HelloWorld")
-                .addFunction(oneFun)
+                .addType(oneClass)
                 .build()
     }
 
     "class merge modifier"{
         buildClass {
             clazz("HelloWorld") {
-                protected.func(oneFun)
+                internal.clazz(oneClass)
             }
         } shouldBe TypeSpec.classBuilder("HelloWorld")
-                .addFunction(twoFun)
+                .addType(twoClass)
                 .build()
     }
 })
