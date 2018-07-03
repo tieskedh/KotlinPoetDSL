@@ -8,9 +8,9 @@ Example
 ```kotlin
 file("", "HelloWorld") {
 
-    internal.clazz("Greeter", "name" valOf String::class) {
+    internal.clazz("Greeter", "name".valOf<String>("\"UNKNOWN\"")) {
 
-        open.func("greet") returns (Boolean::class){
+        open.func("greet") returns Boolean::class{
             statement("println(%S)", "Hello, \$name")
             statement("return %L", true)
         }
@@ -36,7 +36,7 @@ maps to
 import kotlin.Boolean
 import kotlin.String
 
-internal class Greeter(val name: String) {
+internal class Greeter(val name: String = "UNKOWN") {
   open fun greet(): Boolean {
     println("Hello, $name")
     return true
