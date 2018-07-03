@@ -58,3 +58,4 @@ fabric.properties
 *.zip
 *.tar.gz
 *.rar
+!/.gradle/
