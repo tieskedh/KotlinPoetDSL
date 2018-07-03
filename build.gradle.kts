@@ -17,6 +17,7 @@ version = "1.0-SNAPSHOT"
 
 plugins{
     java
+    maven
 }
 
 apply {
