@@ -39,25 +39,20 @@ class ClassBuilder(
 
     private lateinit var builder: TypeSpec.Builder
 
-
-    fun primaryConstructor(vararg pair: Parameter) {
-        val primBuilder = FunSpec.constructorBuilder()
-        pair.forEach { (name, type) ->
-            val modifiers = type.modifiers
-            if (type.readOnly != ParameterData.UNDEFINED) {
-                prop(name to type.copy(defaultValue = CodeBlock.of(name)))
-            }
-            primBuilder.addParameter(ParameterSpec.builder(name, type.clazz, *modifiers.toTypedArray()).also {
-                type.defaultValue?.apply { it.defaultValue(this) }
-            }.build())
-            builder.primaryConstructor(primBuilder.build())
-        }
-    }
-
-    operator fun invoke(name: String, vararg pars: Parameter, init: ClassBuilder.() -> Unit = {}) = build(name) {
-        if (pars.isNotEmpty()) primaryConstructor(*pars)
+    operator fun invoke(name: String, vararg variables: Variable, init: ClassBuilder.() -> Unit = {}) = build(name){
+        if (variables.isNotEmpty()) primaryConstructor(variables)
         init(this)
     }
+
+    fun primaryConstructor(variables: Array<out Variable>) {
+        val primBuilder= FunSpec.constructorBuilder()
+        variables.forEach { variable ->
+            variable.mutable?.also { prop(variable.copy(initializer = CodeBlock.of(variable.name))) }
+            primBuilder.addParameter(variable.toParamSpec())
+        }
+        builder.primaryConstructor(primBuilder.build())
+    }
+
 
     private inline fun build(name: String, buildScript: ClassBuilder.() -> Unit = {}): TypeSpec {
         builder = TypeSpec.classBuilder(name).also { it.addModifiers(*accessor.modifiers) }

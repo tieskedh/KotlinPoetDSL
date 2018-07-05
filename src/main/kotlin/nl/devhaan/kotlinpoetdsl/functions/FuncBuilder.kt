@@ -3,8 +3,8 @@ package nl.devhaan.kotlinpoetdsl.functions
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.TypeName
 import nl.devhaan.kotlinpoetdsl.IAccessor
-import nl.devhaan.kotlinpoetdsl.Parameter
 import nl.devhaan.kotlinpoetdsl.PlainAccessor
+import nl.devhaan.kotlinpoetdsl.Variable
 import nl.devhaan.kotlinpoetdsl.codeblock.CodeBlockBuilder
 import nl.devhaan.kotlinpoetdsl.helpers.FuncBlockWrapper
 
@@ -19,10 +19,9 @@ class FuncBuilder(
         builder = it
     }
 
-
-    operator fun invoke(name: String, vararg params: Parameter) = apply {
+    operator fun invoke(name: String, vararg variables: Variable) = apply {
         builder = initBuilder(name).also {
-            it.addParameters(params)
+            it.addParameters(variables)
         }
     }
 
@@ -41,8 +40,8 @@ class FuncBuilder(
         return builder.build().also(callBack)
     }
 
-    operator fun invoke(name: String, vararg params: Parameter, buildScript: CodeBlockBuilder.() -> Unit) = build(name, buildScript) {
-        builder.addParameters(params)
+    operator fun invoke(name: String, vararg variables: Variable, buildScript: CodeBlockBuilder.() -> Unit) = build(name, buildScript) {
+        builder.addParameters(variables)
     }
 
     private fun build(name: String, codeBlockBuildScript: CodeBlockBuilder.() -> Unit, buildScript: FuncBuilder.() -> Unit = {}): FunSpec {

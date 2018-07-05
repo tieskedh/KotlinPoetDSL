@@ -4,15 +4,12 @@
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 
 # User-specific stuff
-.idea/**/workspace.xml
 .idea/
 
 # CMake
 cmake-build-debug/
 cmake-build-release/
 
-# Mongo Explorer plugin
-.idea/**/mongoSettings.xml
 
 # File-based project format
 *.iws
@@ -26,8 +23,6 @@ out/
 # JIRA plugin
 atlassian-ide-plugin.xml
 
-# Cursive Clojure plugin
-.idea/replstate.xml
 
 # Crashlytics plugin (for Android Studio and IntelliJ)
 com_crashlytics_export_strings.xml
@@ -35,8 +30,6 @@ crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 
-# Editor-based Rest Client
-.idea/httpRequests
 ### Java template
 # Compiled class file
 *.class
@@ -59,3 +52,4 @@ fabric.properties
 *.tar.gz
 *.rar
 !/gradle/wrapper/gradle-wrapper.jar
+/build/test-results/

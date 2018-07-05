@@ -69,6 +69,38 @@ class ClassInvocationTest : StringSpec({
         ).build()
     }
 
+    "class with paramSpec"{
+        val paramSpec = ParameterSpec
+                .builder("param", String::class)
+                .defaultValue("\"hi\"")
+                .build()
+
+        file("", "TestFile") {
+            clazz("Clazz", paramSpec)
+        } shouldBe FileSpec.builder("", "TestFile").addType(
+                TypeSpec.classBuilder("Clazz").primaryConstructor(
+                        FunSpec.constructorBuilder().addParameter(paramSpec).build()
+                ).build()
+        ).build()
+    }
+
+    "class with initialized propSpec"{
+        val propSpec = PropertySpec.builder("arg", String::class).initializer("\"hi\"").mutable(true).build()
+
+        file("", "TestFile") {
+            clazz("Clazz", propSpec)
+        } shouldBe FileSpec.builder("", "TestFile").addType(
+                TypeSpec.classBuilder("Clazz").primaryConstructor(
+                        FunSpec.constructorBuilder().addParameter(
+                                ParameterSpec.builder("arg", String::class).defaultValue("\"hi\"").build()
+                        ).build()
+                ).addProperty(
+                        PropertySpec.builder("arg", String::class).initializer("arg").mutable(true).build()
+                ).build()
+        ).build()
+    }
+
+
     "class with content"{
         file("", "TestFile") {
             clazz("Clazz") {

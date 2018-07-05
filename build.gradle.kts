@@ -28,13 +28,14 @@ apply {
 val kotlin_version: String by extra
 
 repositories {
+    maven { setUrl("https://oss.sonatype.org/content/repositories/snapshots/")}
     maven { setUrl("http://dl.bintray.com/kotlin/kotlin-eap") }
     mavenCentral()
 }
 
 dependencies {
     compile(kotlin("stdlib-jdk8", kotlin_version))
-    compile("com.squareup:kotlinpoet:0.7.0")
+    compile("com.squareup:kotlinpoet:0.8.0-SNAPSHOT")
     testCompile("io.kotlintest:kotlintest-runner-junit5:3.1.7")
 }
 

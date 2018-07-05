@@ -9,16 +9,17 @@ interface IiFInterface {
     fun If(format: String, vararg parts: Any, statements: CodeBlockBuilder.() -> Unit) : IfClassEnd
 }
 
+
 class IfClassStart(private val builder: BlockWrapper<*, *>) : IiFInterface {
 
     override fun ifp(format: String, vararg parts: Any, statements: CodeBlockBuilder.() -> Unit)
-            = buildFirst(statements, "if(($format)==true)", *parts)
+            = buildFirst(statements, "if (($format) == true)", *parts)
 
     override fun ifn(format: String, vararg parts: Any, statements: CodeBlockBuilder.() -> Unit) =
-            buildFirst(statements,"if(($format)==false)", *parts)
+            buildFirst(statements,"if (($format) == false)", *parts)
 
     override fun If(format: String, vararg parts: Any, statements: CodeBlockBuilder.() -> Unit)
-            = buildFirst(statements,"if($format)", *parts)
+            = buildFirst(statements,"if ($format)", *parts)
 
     private fun buildFirst(statements: CodeBlockBuilder.() -> Unit, format: String, vararg parts: Any): IfClassEnd {
         builder.beginControlFlow(format, *parts)
@@ -47,7 +48,7 @@ class IfClassStart(private val builder: BlockWrapper<*, *>) : IiFInterface {
         }
 
         private fun elseIf(shouldEqual: String, format: String, statements: CodeBlockBuilder.() -> Unit, vararg parts: Any): IfClassEnd {
-            builder.nextControlFlow("else if(($format)==$shouldEqual)", *parts)
+            builder.nextControlFlow("else if (($format) == $shouldEqual)", *parts)
             buildSecond(statements)
             return this
         }

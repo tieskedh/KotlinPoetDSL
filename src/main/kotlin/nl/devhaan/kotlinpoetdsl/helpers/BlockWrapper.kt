@@ -1,9 +1,7 @@
 package nl.devhaan.kotlinpoetdsl.helpers
 
 import com.squareup.kotlinpoet.*
-import nl.devhaan.kotlinpoetdsl.Parameter
-import kotlin.reflect.KClass
-
+import nl.devhaan.kotlinpoetdsl.Variable
 
 interface BlockWrapper<out RETURN, out SELF>{
     fun statement(first:String, vararg parts:Any)
@@ -39,7 +37,6 @@ class CodeBlockWrapper private constructor(
 class FuncBlockWrapper internal constructor(
         private val builder: FunSpec.Builder
 ) : BlockWrapper<FunSpec, FunSpec.Builder> {
-    fun <T: Any> returns(clazz: KClass<T>) = builder.returns(clazz)
     fun returns(clazz: TypeName) = builder.returns(clazz)
 
     override fun addCode(codeBlock: CodeBlock) = builder.addCode(codeBlock)
@@ -58,22 +55,7 @@ class FuncBlockWrapper internal constructor(
 
     override fun build() = builder.build()
 
-    fun addParameters(parameters: Array<out Parameter>) {
-        parameters.forEach { addParameter(it) }
+    fun addParameters(parameters: Array<out Variable>) {
+        builder.addParameters(parameters.map(Variable::toParamSpec))
     }
-    fun addParameter(parameter: Parameter): FunSpec.Builder {
-        val (name, data) = parameter
-        val paramBuilder = ParameterSpec.builder(
-                name = name,
-                type = data.clazz,
-                modifiers = *data.modifiers.toTypedArray()
-        )
-
-        data.defaultValue?.also { paramBuilder.defaultValue(it) }
-        return builder.addParameter(paramBuilder.build())
-    }
-
-    fun addParameter(name: String, clazz: TypeName, vararg mods : KModifier)
-            = builder.addParameter(name, clazz, *mods)
-
 }

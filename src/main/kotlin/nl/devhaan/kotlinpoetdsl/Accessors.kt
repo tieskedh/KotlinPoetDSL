@@ -54,7 +54,7 @@ inline val <R, T : AccessorContainer<R>> T.inline     get() = accessors(KModifie
 inline val <R, T : AccessorContainer<R>> T.operator   get() = accessors(KModifier.OPERATOR)
 
 
-class PlainAccessor : Accessor<PlainAccessor>()
+class PlainAccessor(accessors: MutableSet<KModifier> = mutableSetOf()) : Accessor<PlainAccessor>(accessors)
 abstract class Accessor<out T : Accessor<T>> internal constructor(private val accessors: MutableSet<KModifier> = mutableSetOf()): IAccessor<T> {
     override val abstract   get() = getValue(KModifier.ABSTRACT)
     override val const      get() = getValue(KModifier.CONST)
@@ -80,6 +80,7 @@ abstract class Accessor<out T : Accessor<T>> internal constructor(private val ac
 
     fun getValue(modifier: KModifier) : T {
         accessors += modifier
+        @Suppress("UNCHECKED_CAST")
         return this as T
     }
 
