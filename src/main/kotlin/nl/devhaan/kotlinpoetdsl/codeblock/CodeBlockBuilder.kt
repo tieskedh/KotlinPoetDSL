@@ -2,6 +2,7 @@ package nl.devhaan.kotlinpoetdsl.codeblock
 
 import nl.devhaan.kotlinpoetdsl.helpers.BlockWrapper
 
+@UseExperimental(Uncertain::class)
 class CodeBlockBuilder
     internal constructor(
         private val builder: BlockWrapper<*,*>

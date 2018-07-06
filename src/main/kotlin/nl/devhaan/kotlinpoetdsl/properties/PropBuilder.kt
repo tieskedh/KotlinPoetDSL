@@ -1,5 +1,6 @@
 package nl.devhaan.kotlinpoetdsl.properties
 
+import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.PropertySpec.Builder
 import nl.devhaan.kotlinpoetdsl.Variable
@@ -13,7 +14,11 @@ class PropBuilder(private val build: (PropertySpec)->Unit){
         buildScript(this)
     }.build().also(build)
 
-    fun init(name:String){
-        builder.initializer(name)
+    fun init(format: String, vararg args: Any?) = init(CodeBlock.of(format, args))
+
+    fun init(codeBlock: CodeBlock){
+        builder.initializer(codeBlock)
     }
 }
+
+fun PropertySpec.buildUpon(build: PropertySpec.Builder.()->Unit) = toBuilder().also(build).build()

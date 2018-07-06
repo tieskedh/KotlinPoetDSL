@@ -29,7 +29,7 @@ class ClassBuilder(
         builder.addType(clazz)
     }
 
-    override fun property(prop: PropertySpec) {
+    override fun accept(prop: PropertySpec) {
         builder.addProperty(prop)
     }
 

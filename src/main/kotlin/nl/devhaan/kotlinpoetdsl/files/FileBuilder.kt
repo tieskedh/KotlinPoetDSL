@@ -5,27 +5,33 @@ import nl.devhaan.kotlinpoetdsl.Accessor
 import nl.devhaan.kotlinpoetdsl.AccessorContainer
 import nl.devhaan.kotlinpoetdsl.classes.ClassAcceptor
 import nl.devhaan.kotlinpoetdsl.functions.FunctionAcceptor
+import nl.devhaan.kotlinpoetdsl.properties.PropAcceptor
 
 class FileAccessor(
         modifier: MutableSet<KModifier>,
         private val file: FileBuilder
 ) : Accessor<FileAccessor>(modifier),
+        ClassAcceptor by file,
         FunctionAcceptor by file,
-        ClassAcceptor by file
+        PropAcceptor by file
 
 
-class FileBuilder(val pack: String, name: String) : FunctionAcceptor, ClassAcceptor, AccessorContainer<FileAccessor> {
+class FileBuilder(val pack: String, name: String) : ClassAcceptor, FunctionAcceptor, PropAcceptor, AccessorContainer<FileAccessor> {
 
     private val builder = FileSpec.builder(pack, name)
 
     override fun accessors(vararg modifier: KModifier) = FileAccessor(modifier.toMutableSet(), this)
 
+    override fun accept(clazz: TypeSpec) {
+        builder.addType(clazz)
+    }
+
     override fun accept(func: FunSpec) {
         builder.addFunction(func)
     }
 
-    override fun accept(clazz: TypeSpec) {
-        builder.addType(clazz)
+    override fun accept(prop: PropertySpec) {
+        builder.addProperty(prop)
     }
 
     internal fun build(): FileSpec = builder.build()
