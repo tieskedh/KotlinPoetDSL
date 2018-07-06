@@ -2,6 +2,10 @@ package nl.devhaan.kotlinpoetdsl.codeblock
 
 import nl.devhaan.kotlinpoetdsl.helpers.BlockWrapper
 
+@Experimental(Experimental.Level.WARNING)
+annotation class Uncertain
+
+@Uncertain
 interface IRepeat {
     fun repeat(condition: String, vararg parts: Any, statements: CodeBlockBuilder.() -> Unit)
     fun doRepeat(statements: CodeBlockBuilder.() -> Unit): Repeat.Condition
@@ -11,6 +15,8 @@ interface IRepeat {
     fun repeat(amount: Int, statements: CodeBlockBuilder.() -> Unit) = repeat(1, amount, "_",1,statements)
 }
 
+
+@Uncertain
 open class Repeat(private val builder: BlockWrapper<*, *>) : IRepeat {
     override fun repeat(from: Int, to: Int, index: String, step: Int, statements: CodeBlockBuilder.()->Unit){
         if (step == 1) {

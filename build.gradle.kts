@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.config.AnalysisFlag.Flags.experimental
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
@@ -40,8 +41,12 @@ dependencies {
 }
 
 tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions {
+        jvmTarget = "1.8"
+        freeCompilerArgs = listOf("-Xuse-experimental=kotlin.Experimental")
+    }
 }
 tasks.withType<Test>{
     useJUnitPlatform()
 }
+

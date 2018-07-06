@@ -4,7 +4,6 @@ import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.asTypeName
-import nl.devhaan.kotlinpoetdsl.helpers.ParameterData
 import kotlin.reflect.KClass
 
 

@@ -3,9 +3,7 @@ package nl.devhaan.kotlinpoetdsl.classes
 
 import com.squareup.kotlinpoet.*
 import nl.devhaan.kotlinpoetdsl.*
-import nl.devhaan.kotlinpoetdsl.functions.FuncBuilder
 import nl.devhaan.kotlinpoetdsl.functions.FunctionAcceptor
-import nl.devhaan.kotlinpoetdsl.helpers.ParameterData
 import nl.devhaan.kotlinpoetdsl.properties.PropAcceptor
 import nl.devhaan.kotlinpoetdsl.properties.prop
 
