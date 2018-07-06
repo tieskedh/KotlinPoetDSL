@@ -14,7 +14,7 @@ open class Variable(
         val initializer: CodeBlock? = null
 ) {
     private var parameterSpec: ParameterSpec? = null
-    private var propertySpec : PropertySpec? = null
+    private var propertySpec: PropertySpec? = null
 
     constructor(parameterSpec: ParameterSpec,
                 modifier: IAccessor<*> = PlainAccessor(),
@@ -36,9 +36,7 @@ open class Variable(
 
     fun toPropertySpec() = propertySpec ?: PropertySpec.builder(name, typeName, *modifier.modifiers).also { builder ->
         initializer?.let { builder.initializer(it) }
-        mutable?.also {
-            println(it)
-            builder.mutable(it) }
+        mutable?.also { builder.mutable(it) }
     }.build().also { propertySpec = it }
 
     fun copy(

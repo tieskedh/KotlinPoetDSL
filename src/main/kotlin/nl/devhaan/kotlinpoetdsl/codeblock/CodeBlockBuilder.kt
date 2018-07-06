@@ -12,5 +12,7 @@ class CodeBlockBuilder
         builder.statement(first, *parts)
     }
 
-    fun build() = builder.build()
+    fun build() = let {
+        builder.build()
+    }
 }

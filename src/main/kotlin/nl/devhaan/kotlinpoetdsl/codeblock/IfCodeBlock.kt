@@ -2,6 +2,7 @@ package nl.devhaan.kotlinpoetdsl.codeblock
 
 import nl.devhaan.kotlinpoetdsl.codeblock.IfClassStart.IfClassEnd
 import nl.devhaan.kotlinpoetdsl.helpers.BlockWrapper
+import nl.devhaan.kotlinpoetdsl.helpers.UnFinishException
 
 interface IiFInterface {
     fun ifp(format: String, vararg parts: Any, statements: CodeBlockBuilder.() -> Unit) : IfClassEnd
@@ -10,8 +11,7 @@ interface IiFInterface {
 }
 
 
-class IfClassStart(private val builder: BlockWrapper<*, *>) : IiFInterface {
-
+class IfClassStart(private val builder: BlockWrapper<*, *>) : IiFInterface{
     override fun ifp(format: String, vararg parts: Any, statements: CodeBlockBuilder.() -> Unit)
             = buildFirst(statements, "if (($format) == true)", *parts)
 
@@ -22,27 +22,27 @@ class IfClassStart(private val builder: BlockWrapper<*, *>) : IiFInterface {
             = buildFirst(statements,"if ($format)", *parts)
 
     private fun buildFirst(statements: CodeBlockBuilder.() -> Unit, format: String, vararg parts: Any): IfClassEnd {
+        val exception = UnFinishException("ifStatement not finished")
+        builder.finishExceptionHandler.addUnFinishException(exception)
         builder.beginControlFlow(format, *parts)
-        CodeBlockBuilder(builder).let {
-            statements(it)
-            it.build()
-        }
-        return IfClassEnd()
+        statements(CodeBlockBuilder(builder))
+        return IfClassEnd(exception)
     }
 
-    inner class IfClassEnd {
+    inner class IfClassEnd(private val exception: UnFinishException) {
         fun end() {
+            builder.finishExceptionHandler.removeUnFinishException(exception)
             builder.endControlFlow()
         }
 
-        fun orElseP(format: String, vararg parts: Any, statements: CodeBlockBuilder.() -> Unit)
+        fun orElseIfp(format: String, vararg parts: Any, statements: CodeBlockBuilder.() -> Unit)
                 = elseIf("true", format, statements, *parts)
 
-        fun orElseN(format: String, vararg parts: Any, statements: CodeBlockBuilder.() -> Unit)
+        fun orElseIfn(format: String, vararg parts: Any, statements: CodeBlockBuilder.() -> Unit)
                 = elseIf("false", format, statements, *parts)
 
-        fun orElse(format: String, vararg parts: Any, statements: CodeBlockBuilder.() -> Unit): IfClassEnd {
-            builder.nextControlFlow("or else($format)", *parts)
+        fun orElseIf(format: String, vararg parts: Any, statements: CodeBlockBuilder.() -> Unit): IfClassEnd {
+            builder.nextControlFlow("else if ($format)", *parts)
             buildSecond(statements)
             return this
         }
@@ -56,14 +56,11 @@ class IfClassStart(private val builder: BlockWrapper<*, *>) : IiFInterface {
         infix fun orElse(statements: CodeBlockBuilder.() -> Unit) {
             builder.nextControlFlow("else")
             buildSecond(statements)
-            builder.endControlFlow()
+            end()
         }
 
         private fun buildSecond(statements: CodeBlockBuilder.() -> Unit) {
-            CodeBlockBuilder(builder).let {
-                statements(it)
-                it.build()
-            }
+            statements(CodeBlockBuilder(builder))
         }
     }
 }

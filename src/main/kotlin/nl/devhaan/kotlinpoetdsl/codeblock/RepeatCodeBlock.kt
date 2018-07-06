@@ -31,10 +31,7 @@ open class Repeat(private val builder: BlockWrapper<*, *>) : IRepeat {
     }
 
     private fun endCodeBlock(statements: CodeBlockBuilder.() -> Unit){
-        CodeBlockBuilder(builder).let {
-            statements(it)
-            it.build()
-        }
+        statements(CodeBlockBuilder(builder))
         builder.endControlFlow()
     }
     override fun doRepeat(statements: CodeBlockBuilder.() -> Unit) = Condition(statements)
@@ -45,10 +42,7 @@ open class Repeat(private val builder: BlockWrapper<*, *>) : IRepeat {
 
         fun asLongAs(condition: String, vararg parts: Any){
             builder.beginControlFlow("do")
-            CodeBlockBuilder(builder).let{
-                statements(it)
-                it.build()
-            }
+            statements(CodeBlockBuilder(builder))
             builder.endControlFlow()
             builder.statement("while($condition)", *parts)
         }
