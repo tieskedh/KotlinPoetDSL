@@ -1,8 +1,7 @@
 package nl.devhaan.kotlinpoetdsl.files
 
 import com.squareup.kotlinpoet.*
-import nl.devhaan.kotlinpoetdsl.Accessor
-import nl.devhaan.kotlinpoetdsl.AccessorContainer
+import nl.devhaan.kotlinpoetdsl.*
 import nl.devhaan.kotlinpoetdsl.classes.ClassAcceptor
 import nl.devhaan.kotlinpoetdsl.functions.FunctionAcceptor
 import nl.devhaan.kotlinpoetdsl.properties.PropAcceptor
@@ -16,7 +15,16 @@ class FileAccessor(
         PropAcceptor by file
 
 
-class FileBuilder(val pack: String, name: String) : ClassAcceptor, FunctionAcceptor, PropAcceptor, AccessorContainer<FileAccessor> {
+class FileBuilder(val pack: String, name: String) : ClassAcceptor, FunctionAcceptor, PropAcceptor, ProvideBuilderAcceptor, AccessorContainer<FileAccessor>, IBuilder {
+
+    private val builders = mutableListOf<IBuilder>()
+    override fun registerBuilder(builder: IBuilder) {
+        builders += builder
+    }
+
+    override fun finish() {
+        builders.forEach { it.finish() }
+    }
 
     private val builder = FileSpec.builder(pack, name)
 
@@ -34,7 +42,10 @@ class FileBuilder(val pack: String, name: String) : ClassAcceptor, FunctionAccep
         builder.addProperty(prop)
     }
 
-    internal fun build(): FileSpec = builder.build()
+    internal fun build(): FileSpec {
+        builders.forEach { it.finish() }
+        return builder.build()
+    }
 }
 /**
 * This function is called for generating the file.
@@ -43,5 +54,5 @@ class FileBuilder(val pack: String, name: String) : ClassAcceptor, FunctionAccep
 * @param init the initialization of the file
 * @return the file
 */
-fun file(pack: String, name: String, init: FileBuilder.()->Unit = {}): FileSpec
-        = FileBuilder(pack, name).also(init).build()
+fun file(pack: String, fileName: String, init: FileBuilder.()->Unit = {}): FileSpec
+        = FileBuilder(pack, fileName).also(init).build()

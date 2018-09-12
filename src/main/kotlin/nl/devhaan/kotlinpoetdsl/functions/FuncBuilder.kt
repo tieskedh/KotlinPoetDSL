@@ -2,6 +2,7 @@ package nl.devhaan.kotlinpoetdsl.functions
 
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.TypeName
+import nl.devhaan.kotlinpoetdsl.ProvideBuilderAcceptor
 import nl.devhaan.kotlinpoetdsl.IAccessor
 import nl.devhaan.kotlinpoetdsl.PlainAccessor
 import nl.devhaan.kotlinpoetdsl.Variable
@@ -11,7 +12,7 @@ import nl.devhaan.kotlinpoetdsl.helpers.FuncBlockWrapper
 class FuncBuilder(
         private val accessor: IAccessor<*> = PlainAccessor(),
         private val callBack: (FunSpec) -> Unit
-) {
+) : ProvideBuilderAcceptor{
     private lateinit var builder: FuncBlockWrapper
     private val codeBlockBuilder get() = CodeBlockBuilder(builder)
 

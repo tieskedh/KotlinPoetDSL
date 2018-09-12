@@ -9,9 +9,9 @@ import nl.devhaan.kotlinpoetdsl.toVariable
 import kotlin.reflect.KClass
 
 interface FunctionAcceptor {
-    operator fun <T : Any> KClass<T>.invoke(builder: CodeBlockBuilder.() -> Unit) = this.asTypeName() to builder
-    operator fun TypeName.invoke(builder: CodeBlockBuilder.() -> Unit) = this to builder
 
+    infix fun FuncBuilder.returns(name: TypeName) = buildReturn(name){}
+    infix fun <T : Any> FuncBuilder.returns(name: KClass<T>) = buildReturn(name.asTypeName()){}
     infix fun FuncBuilder.returns(typeNameReturn: Pair<TypeName, CodeBlockBuilder.() -> Unit>): FunSpec =
             buildReturn(typeNameReturn.first, typeNameReturn.second)
 

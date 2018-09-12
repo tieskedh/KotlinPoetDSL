@@ -8,6 +8,7 @@ import io.kotlintest.specs.StringSpec
 import nl.devhaan.kotlinpoetdsl.classes.buildClass
 import nl.devhaan.kotlinpoetdsl.classes.clazz
 import nl.devhaan.kotlinpoetdsl.files.file
+import nl.devhaan.kotlinpoetdsl.functions.func
 
 
 /**
@@ -23,21 +24,30 @@ class ClassAcceptorTest : StringSpec({
     val twoClass = TypeSpec.classBuilder("Clazz").addModifiers(KModifier.INTERNAL, KModifier.OPEN).build()
 
 
+    "abstract builder with abstract method"{
+        buildClass(KModifier.ABSTRACT){
+            clazz("Clazz"){
+                abstract.func("hi"){}
+            }
+        } shouldBe zeroClass
+    }
+
+
     "builder without modifier"{
         buildClass{
-            clazz("Clazz")
+            clazz("Clazz"){}
         } shouldBe zeroClass
     }
 
     "builder with modifier"{
         buildClass(KModifier.OPEN) {
-            clazz("Clazz")
+            clazz("Clazz"){}
         } shouldBe oneClass
     }
 
     "file without modifier"{
         file("", "HelloWorld") {
-            clazz("Clazz")
+            clazz("Clazz"){}
         } shouldBe FileSpec.builder("", "HelloWorld")
                 .addType(zeroClass)
                 .build()
@@ -71,7 +81,7 @@ class ClassAcceptorTest : StringSpec({
     "class without modifier"{
         buildClass {
             clazz("HelloWorld") {
-                clazz("Clazz")
+                clazz("Clazz"){}
             }
         } shouldBe TypeSpec.classBuilder("HelloWorld")
                 .addType(zeroClass)

@@ -52,7 +52,7 @@ class PropInvocationtest : StringSpec({
 
     "initialize prop"{
         file("", "HelloWorld"){
-            prop("prop" valOf String::class){
+            prop("prop" valOf Int::class){
                 init("1")
             }
         } shouldBe FileSpec.builder("", "HelloWorld")

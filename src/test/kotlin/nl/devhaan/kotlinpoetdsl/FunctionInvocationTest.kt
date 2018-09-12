@@ -128,4 +128,37 @@ class FunctionInvocationTest : StringSpec({
                                 .build()
                 ).build()
     }
+
+    "abstract function no return"{
+        buildClass{
+            clazz("TestClass"){
+                addModifiers(KModifier.ABSTRACT)
+                abstract.func("func", "toPrint" of String::class){}
+            }
+        } shouldBe TypeSpec.classBuilder("TestClass")
+                .addModifiers(KModifier.ABSTRACT)
+                .addFunction(
+                        FunSpec.builder("func")
+                                .addModifiers(KModifier.ABSTRACT)
+                                .addParameter("toPrint", String::class)
+                                .build()
+                ).build()
+    }
+    "abstract function with return"{
+        buildClass{
+            clazz("TestClass"){
+                addModifiers(KModifier.ABSTRACT)
+                abstract.func("func", "toPrint" of String::class) returns String::class
+            }
+        } shouldBe TypeSpec.classBuilder("TestClass")
+                .addModifiers(KModifier.ABSTRACT)
+                .addFunction(
+                        FunSpec.builder("func")
+                                .addModifiers(KModifier.ABSTRACT)
+                                .addParameter("toPrint", String::class)
+                                .returns(String::class)
+                                .build()
+                ).build()
+    }
+
 })
