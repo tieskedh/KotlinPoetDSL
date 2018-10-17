@@ -80,7 +80,7 @@ fun ClassAcceptor.clazz(name: String, property: PropertySpec, vararg properties:
         classBuilder()(name, property.toVariable(), *properties.map { it.toVariable() }.toTypedArray(), init = init)
 
 fun ClassAcceptor.clazz(name: String, param: ParameterSpec, vararg params: ParameterSpec, init: ClassBuilder.() -> Unit = {}) =
-        classBuilder()(name, param.toVariable(), *params.map { it.toVariable() }.toTypedArray(), init = init)
+        classBuilder() (name, param.toVariable(), *params.map { it.toVariable() }.toTypedArray(), init = init)
 
 
 

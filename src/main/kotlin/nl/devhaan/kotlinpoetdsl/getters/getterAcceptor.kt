@@ -16,8 +16,8 @@ private fun GetterAcceptor.getterBuilder() = GetterBuilder(
         callBack = ::acceptGetter
 )
 
-fun GetterAcceptor.getter(format: String, vararg values: Any?) = getterBuilder()(CodeBlock.of(format, *values))
+fun GetterAcceptor.getter(format: String, vararg values: Any?) = getterBuilder().addStatement(format, values)
 
-fun GetterAcceptor.getter(codeBlock: CodeBlock) = getterBuilder()(codeBlock)
+fun GetterAcceptor.getter(codeBlock: CodeBlock) = getterBuilder() (codeBlock)
 
 fun GetterAcceptor.getter(buildScript: CodeBlockBuilder.() -> Unit) = getterBuilder()(buildScript)

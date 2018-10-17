@@ -1,4 +1,4 @@
-package nl.devhaan.kotlinpoetdsl
+package nl.devhaan.kotlinpoetdsl.interf
 
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.KModifier
@@ -10,6 +10,8 @@ import nl.devhaan.kotlinpoetdsl.`interface`.interf
 import nl.devhaan.kotlinpoetdsl.classes.buildClass
 import nl.devhaan.kotlinpoetdsl.classes.clazz
 import nl.devhaan.kotlinpoetdsl.files.file
+import nl.devhaan.kotlinpoetdsl.open
+import nl.devhaan.kotlinpoetdsl.private
 
 class InterfaceAcceptorTest : StringSpec({
     val zeroInterface = TypeSpec.interfaceBuilder("Interf").build()

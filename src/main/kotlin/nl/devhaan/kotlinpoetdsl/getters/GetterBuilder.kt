@@ -27,4 +27,8 @@ class GetterBuilder(
             FunSpec.getterBuilder().addModifiers(*accessor.modifiers)
     )
 
+    fun addStatement(format: String, values: Array<out Any?>) = build {
+        statement(format, values)
+    }
+
 }

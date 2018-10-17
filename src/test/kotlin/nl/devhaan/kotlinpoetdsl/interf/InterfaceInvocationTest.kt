@@ -1,4 +1,4 @@
-package nl.devhaan.kotlinpoetdsl
+package nl.devhaan.kotlinpoetdsl.interf
 
 import com.squareup.kotlinpoet.*
 import io.kotlintest.shouldBe

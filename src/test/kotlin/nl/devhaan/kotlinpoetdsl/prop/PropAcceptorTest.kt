@@ -1,4 +1,4 @@
-package nl.devhaan.kotlinpoetdsl
+package nl.devhaan.kotlinpoetdsl.prop
 
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.KModifier
@@ -9,8 +9,11 @@ import io.kotlintest.specs.StringSpec
 import nl.devhaan.kotlinpoetdsl.classes.buildClass
 import nl.devhaan.kotlinpoetdsl.classes.clazz
 import nl.devhaan.kotlinpoetdsl.files.file
+import nl.devhaan.kotlinpoetdsl.final
 import nl.devhaan.kotlinpoetdsl.properties.buildProp
 import nl.devhaan.kotlinpoetdsl.properties.prop
+import nl.devhaan.kotlinpoetdsl.public
+import nl.devhaan.kotlinpoetdsl.valOf
 
 class PropAcceptorTest : StringSpec({
     val zeroProp = PropertySpec.builder("prop", String::class).build()
