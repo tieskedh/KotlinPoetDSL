@@ -62,5 +62,4 @@ class PropInvocationtest : StringSpec({
                                 .build()
                 ).build()
     }
-
 })

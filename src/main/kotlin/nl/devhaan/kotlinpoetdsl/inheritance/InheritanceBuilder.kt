@@ -4,6 +4,7 @@ import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.asTypeName
 import nl.devhaan.kotlinpoetdsl.EMPTY_CODEBLOCK
+import nl.devhaan.kotlinpoetdsl.`interface`.InterfaceBuilder
 import nl.devhaan.kotlinpoetdsl.classes.ClassBuilder
 import kotlin.reflect.KClass
 

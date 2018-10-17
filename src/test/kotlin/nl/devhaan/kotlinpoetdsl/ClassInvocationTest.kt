@@ -1,6 +1,7 @@
 package nl.devhaan.kotlinpoetdsl
 
 import com.squareup.kotlinpoet.*
+import io.kotlintest.properties.Gen.Companion.file
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 import nl.devhaan.kotlinpoetdsl.classes.clazz

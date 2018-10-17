@@ -2,6 +2,7 @@ package nl.devhaan.kotlinpoetdsl.files
 
 import com.squareup.kotlinpoet.*
 import nl.devhaan.kotlinpoetdsl.*
+import nl.devhaan.kotlinpoetdsl.`interface`.InterfaceAcceptor
 import nl.devhaan.kotlinpoetdsl.classes.ClassAcceptor
 import nl.devhaan.kotlinpoetdsl.functions.FunctionAcceptor
 import nl.devhaan.kotlinpoetdsl.properties.PropAcceptor
@@ -12,10 +13,14 @@ class FileAccessor(
 ) : Accessor<FileAccessor>(modifier),
         ClassAcceptor by file,
         FunctionAcceptor by file,
-        PropAcceptor by file
+        PropAcceptor by file,
+        InterfaceAcceptor by file{
+    override fun accept(type: TypeSpec) = file.accept(type)
+    override fun registerBuilder(builder: IBuilder) = file.registerBuilder(builder)
+}
 
 
-class FileBuilder(val pack: String, name: String) : ClassAcceptor, FunctionAcceptor, PropAcceptor, ProvideBuilderAcceptor, AccessorContainer<FileAccessor>, IBuilder {
+class FileBuilder(pack: String, name: String) : ClassAcceptor, FunctionAcceptor, PropAcceptor, ProvideBuilderAcceptor, AccessorContainer<FileAccessor>, IBuilder, InterfaceAcceptor {
 
     private val builders = mutableListOf<IBuilder>()
     override fun registerBuilder(builder: IBuilder) {
@@ -23,15 +28,15 @@ class FileBuilder(val pack: String, name: String) : ClassAcceptor, FunctionAccep
     }
 
     override fun finish() {
-        builders.forEach { it.finish() }
+        builders.forEach(IBuilder::finish)
     }
 
     private val builder = FileSpec.builder(pack, name)
 
     override fun accessors(vararg modifier: KModifier) = FileAccessor(modifier.toMutableSet(), this)
 
-    override fun accept(clazz: TypeSpec) {
-        builder.addType(clazz)
+    override fun accept(type: TypeSpec) {
+        builder.addType(type)
     }
 
     override fun accept(func: FunSpec) {
@@ -50,7 +55,7 @@ class FileBuilder(val pack: String, name: String) : ClassAcceptor, FunctionAccep
 /**
 * This function is called for generating the file.
 * @param pack the package
-* @param name the name of the file
+* @param fileName the name of the file
 * @param init the initialization of the file
 * @return the file
 */

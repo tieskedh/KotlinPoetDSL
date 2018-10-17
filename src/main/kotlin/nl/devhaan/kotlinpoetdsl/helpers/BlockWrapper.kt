@@ -88,4 +88,11 @@ class FuncBlockWrapper internal constructor(
     fun addParameters(parameters: Array<out Variable>) {
         builder.addParameters(parameters.map(Variable::toParamSpec))
     }
+    fun receiver(typeName: TypeName){
+        builder.receiver(typeName)
+    }
+
+    fun addModifiers(modifiers: Array<out KModifier>) {
+        builder.addModifiers(*modifiers)
+    }
 }

@@ -1,19 +1,26 @@
 package nl.devhaan.kotlinpoetdsl.functions
 
 import com.squareup.kotlinpoet.*
-import nl.devhaan.kotlinpoetdsl.IAccessor
-import nl.devhaan.kotlinpoetdsl.PlainAccessor
-import nl.devhaan.kotlinpoetdsl.Variable
+import nl.devhaan.kotlinpoetdsl.*
+import nl.devhaan.kotlinpoetdsl.ProvideBuilderAcceptor.ImplementationData
 import nl.devhaan.kotlinpoetdsl.codeblock.CodeBlockBuilder
-import nl.devhaan.kotlinpoetdsl.toVariable
 import kotlin.reflect.KClass
 
 interface FunctionAcceptor {
+    fun TypeName.func(name: String, vararg variables : Variable) = funcBuilder().startExtensionFunction(this, name, variables)
+    fun KClass<*>.func(name: String, vararg variable: Variable) =  asTypeName().func(name, *variable)
+    fun TypeName.func(name: String, vararg variables : Variable, buildScript: CodeBlockBuilder.() -> Unit) = funcBuilder().buildExtensionFunction(this, name, variables, buildScript = buildScript)
+    fun KClass<*>.func(name: String, vararg variable: Variable, buildScript: CodeBlockBuilder.() -> Unit) =  asTypeName().func(name, *variable, buildScript = buildScript)
+
+    fun Extension.func(name: String, vararg variables : Variable) = funcBuilder().startExtensionFunction(typeName, name, variables, modifiers)
+    fun Extension.func(name: String, vararg variables : Variable, buildScript: CodeBlockBuilder.() -> Unit) =
+            funcBuilder().buildExtensionFunction(this.typeName, name, variables, modifiers, buildScript)
+
 
     infix fun FuncBuilder.returns(name: TypeName) = buildReturn(name){}
     infix fun <T : Any> FuncBuilder.returns(name: KClass<T>) = buildReturn(name.asTypeName()){}
-    infix fun FuncBuilder.returns(typeNameReturn: Pair<TypeName, CodeBlockBuilder.() -> Unit>): FunSpec =
-            buildReturn(typeNameReturn.first, typeNameReturn.second)
+    infix fun FuncBuilder.returns(implementationData: ImplementationData<CodeBlockBuilder>): FunSpec =
+            buildReturn(implementationData.typeName, implementationData.buildScript)
 
     fun accept(func: FunSpec)
 }
@@ -30,18 +37,19 @@ fun FunctionAcceptor.func(funSpec: FunSpec) = accept(funSpec.let {
 })
 
 
+class Extension(val modifiers: Array<out KModifier>, val typeName: TypeName)
+fun FunctionAcceptor.extension(typeName: TypeName) = Extension(
+        modifiers = (this as? IAccessor<*>)?.modifiers.orEmpty(),
+        typeName = typeName
+)
+fun FunctionAcceptor.extension(clazz: KClass<*>) = extension(clazz.asTypeName())
+
+
+
 fun FunctionAcceptor.func(name: String, vararg variables: Variable) = funcBuilder()(name, *variables)
 fun FunctionAcceptor.func(name: String, vararg variables: Variable, buildScript: CodeBlockBuilder.() -> Unit) =
         funcBuilder()(name, *variables, buildScript = buildScript)
 
-fun FunctionAcceptor.func(name: String, param: ParameterSpec, vararg params: ParameterSpec) = funcBuilder()(name, param.toVariable(), *params.map{ it.toVariable() }.toTypedArray())
+fun FunctionAcceptor.func(name: String, param: ParameterSpec, vararg params: ParameterSpec) = funcBuilder() (name, param.toVariable(), *params.map{ it.toVariable() }.toTypedArray())
 fun FunctionAcceptor.func(name: String, parameter: ParameterSpec, vararg params: ParameterSpec, buildScript: CodeBlockBuilder.() -> Unit) =
         funcBuilder()(name, parameter.toVariable(), *params.map { it.toVariable() }.toTypedArray(), buildScript = buildScript)
-
-
-fun buildFun(vararg modifiers: KModifier, builder: FunctionAcceptor.() -> FunSpec) = object : FunctionAcceptor {
-    override fun accept(func: FunSpec) = Unit
-}.let(builder).run {
-    if (modifiers.isNotEmpty()) buildUpon { addModifiers(*modifiers) }
-    else this
-}

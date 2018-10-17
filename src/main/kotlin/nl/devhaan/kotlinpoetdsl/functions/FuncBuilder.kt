@@ -1,6 +1,7 @@
 package nl.devhaan.kotlinpoetdsl.functions
 
 import com.squareup.kotlinpoet.FunSpec
+import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.TypeName
 import nl.devhaan.kotlinpoetdsl.ProvideBuilderAcceptor
 import nl.devhaan.kotlinpoetdsl.IAccessor
@@ -55,6 +56,19 @@ class FuncBuilder(
         return builder.build().also(callBack)
     }
 
+    fun startExtensionFunction(receiver: TypeName, name: String, variables: Array<out Variable> = emptyArray(), modifiers: Array<out KModifier> = emptyArray()) = apply {
+        builder = initBuilder(name).also {
+            it.receiver(receiver)
+            it.addParameters(variables)
+            it.addModifiers(modifiers)
+        }
+    }
+
+    fun buildExtensionFunction(receiver: TypeName, name: String, variables: Array<out Variable> = emptyArray(), modifiers: Array<out KModifier> = emptyArray(), buildScript: CodeBlockBuilder.() -> Unit) = build(name, buildScript){
+        builder.addParameters(variables)
+        builder.receiver(receiver)
+        builder.addModifiers(modifiers)
+    }
 }
 
 fun FunSpec.buildUpon(build: FunSpec.Builder.() -> Unit) = toBuilder().also(build).build()

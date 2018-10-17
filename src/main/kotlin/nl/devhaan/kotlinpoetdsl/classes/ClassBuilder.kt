@@ -2,6 +2,7 @@ package nl.devhaan.kotlinpoetdsl.classes
 
 import com.squareup.kotlinpoet.*
 import nl.devhaan.kotlinpoetdsl.*
+import nl.devhaan.kotlinpoetdsl.`interface`.InterfaceAcceptor
 import nl.devhaan.kotlinpoetdsl.functions.FunctionAcceptor
 import nl.devhaan.kotlinpoetdsl.properties.PropAcceptor
 import nl.devhaan.kotlinpoetdsl.properties.prop
@@ -13,12 +14,18 @@ class ClassAccessor(
 ) : Accessor<ClassAccessor>(modifiers),
         FunctionAcceptor by clazz,
         ClassAcceptor by clazz,
-        PropAcceptor by clazz
+        PropAcceptor by clazz,
+        InterfaceAcceptor by clazz,
+        ProvideBuilderAcceptor by clazz
+{
+    override fun accept(type: TypeSpec) = clazz.accept(type)
+    override fun registerBuilder(builder: IBuilder) = clazz.registerBuilder(builder)
+}
 
 class ClassBuilder(
         private val accessor: IAccessor<*> = PlainAccessor(),
         private val adding: (TypeSpec) -> Unit
-) : FunctionAcceptor, AccessorContainer<ClassAccessor>, ClassAcceptor, PropAcceptor, ProvideBuilderAcceptor, IBuilder{
+) : FunctionAcceptor, AccessorContainer<ClassAccessor>, ClassAcceptor, PropAcceptor, ProvideBuilderAcceptor, IBuilder, InterfaceAcceptor {
 
     private val builders = mutableListOf<IBuilder>()
     override fun registerBuilder(builder: IBuilder) {
@@ -38,8 +45,8 @@ class ClassBuilder(
         builder.addFunction(func)
     }
 
-    override fun accept(clazz: TypeSpec) {
-        builder.addType(clazz)
+    override fun accept(type: TypeSpec) {
+        builder.addType(type)
     }
 
     override fun accept(prop: PropertySpec) {

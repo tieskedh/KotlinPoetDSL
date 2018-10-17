@@ -1,4 +1,4 @@
-package nl.devhaan.kotlinpoetdsl
+package nl.devhaan.kotlinpoetdsl.function
 
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
@@ -46,8 +46,8 @@ class FunctionAcceptorTest : StringSpec({
     }
 
     "builder with modifier"{
-        buildFun(KModifier.OPEN) {
-            func("func") {
+        buildFun {
+            open.func("func") {
                 statement("println(%S)", "hi")
             }
         } shouldBe oneFun
