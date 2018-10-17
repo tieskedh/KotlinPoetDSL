@@ -1,7 +1,7 @@
 # KotlinPoetDSL
 KotlinPoetDSL provides a dsl for KotlinPoet.
-On this moment, it's still in development, so is most of the code not evaluated jet.
-
+AT THIS MOMENT, IT'S STILL A PLAYGROUND!!!
+SO DON'T USE IN PRODUCTION.
 
 ## Quickstart
 Example
