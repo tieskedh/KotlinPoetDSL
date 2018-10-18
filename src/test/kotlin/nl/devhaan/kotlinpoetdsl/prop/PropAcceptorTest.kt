@@ -27,8 +27,8 @@ class PropAcceptorTest : StringSpec({
     }
 
     "builder with modifier"{
-        buildProp(KModifier.FINAL) {
-            prop("prop" valOf String::class)
+        buildProp {
+            final.prop("prop" valOf String::class)
         } shouldBe oneProp
     }
 

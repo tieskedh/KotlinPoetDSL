@@ -13,3 +13,4 @@ inline fun <reified T> typeNameFor(): ClassName {
     val typeName = T::class.asTypeName()
     return if (null is T) typeName.asNullable() else typeName.asNonNullable()
 }
+fun String.S() = "\"$this\""

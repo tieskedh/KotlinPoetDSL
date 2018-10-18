@@ -1,6 +1,5 @@
 package nl.devhaan.kotlinpoetdsl.properties
 
-import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.PropertySpec
 import nl.devhaan.kotlinpoetdsl.IAccessor
 import nl.devhaan.kotlinpoetdsl.PlainAccessor
@@ -22,11 +21,3 @@ fun PropAcceptor.prop(propSpec: PropertySpec) = accept(propSpec.let {
         }
     } else it
 })
-
-
-fun buildProp(vararg modifiers: KModifier, builder: PropAcceptor.() -> PropertySpec) = object : PropAcceptor {
-    override fun accept(prop: PropertySpec) = Unit
-}.let(builder).run{
-    if (modifiers.isNotEmpty()) buildUpon { addModifiers(*modifiers) }
-    else this
-}

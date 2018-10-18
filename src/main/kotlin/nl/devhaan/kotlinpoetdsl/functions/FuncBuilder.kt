@@ -3,10 +3,7 @@ package nl.devhaan.kotlinpoetdsl.functions
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.TypeName
-import nl.devhaan.kotlinpoetdsl.ProvideBuilderAcceptor
-import nl.devhaan.kotlinpoetdsl.IAccessor
-import nl.devhaan.kotlinpoetdsl.PlainAccessor
-import nl.devhaan.kotlinpoetdsl.Variable
+import nl.devhaan.kotlinpoetdsl.*
 import nl.devhaan.kotlinpoetdsl.codeblock.CodeBlockBuilder
 import nl.devhaan.kotlinpoetdsl.helpers.FuncBlockWrapper
 

@@ -7,8 +7,6 @@ import nl.devhaan.kotlinpoetdsl.`interface`.implements
 import nl.devhaan.kotlinpoetdsl.`interface`.interf
 import nl.devhaan.kotlinpoetdsl.files.file
 import nl.devhaan.kotlinpoetdsl.functions.func
-import org.reflections.util.ConfigurationBuilder.build
-import java.nio.file.Files
 
 class InterfaceInvocationTest : StringSpec({
     "plain interface"{
