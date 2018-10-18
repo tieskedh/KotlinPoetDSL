@@ -4,5 +4,4 @@ package nl.devhaan.kotlinpoetdsl
 annotation class Level
 
 @DslMarker
-@Level
 annotation class CodeBlockLevel

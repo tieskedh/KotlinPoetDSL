@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.config.AnalysisFlag.Flags.experimental
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
-    val kotlin_version: String by extra("1.3.0-rc-146")
+    val kotlin_version: String by extra("1.3.0-rc-190")
 
     repositories {
         maven { setUrl("http://dl.bintray.com/kotlin/kotlin-eap") }

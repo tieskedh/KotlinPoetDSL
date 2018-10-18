@@ -1,10 +1,12 @@
 package nl.devhaan.kotlinpoetdsl.codeblock
 
 import nl.devhaan.kotlinpoetdsl.CodeBlockLevel
+import nl.devhaan.kotlinpoetdsl.Level
 import nl.devhaan.kotlinpoetdsl.helpers.BlockWrapper
 
 @UseExperimental(Uncertain::class)
 @CodeBlockLevel
+@Level
 class CodeBlockBuilder
     internal constructor(
         private val builder: BlockWrapper<*,*>

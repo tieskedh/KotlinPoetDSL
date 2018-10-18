@@ -30,8 +30,6 @@ class SwitchStart(private val builder: BlockWrapper<*, *>) : ISwitch{
 fun LazyComponentAcceptor.switch(format: String = "", vararg parts: Any, switchBuilder: SwitchDSL.() -> Unit) = _switch(format, parts, switchBuilder = switchBuilder)
 
 
-
-
 @CodeBlockLevel
 class SwitchDSL(private val builder: BlockWrapper<*, *>) : LazyComponentAcceptor{
     private val cbb = CodeBlockBuilder(builder)
