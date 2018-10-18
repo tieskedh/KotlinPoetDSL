@@ -23,7 +23,7 @@ class IfClassStart(private val builder: BlockWrapper<*, *>) : IiFInterface{
 
     private fun buildFirst(statements: CodeBlockBuilder.() -> Unit, format: String, vararg parts: Any): IfClassEnd {
         val exception = UnFinishException("ifStatement not finished")
-        builder.finishExceptionHandler.addUnFinishException(exception)
+        builder.finishHandler.addUnFinishException(exception)
         builder.beginControlFlow(format, *parts)
         statements(CodeBlockBuilder(builder))
         return IfClassEnd(exception)
@@ -31,7 +31,7 @@ class IfClassStart(private val builder: BlockWrapper<*, *>) : IiFInterface{
 
     inner class IfClassEnd(private val exception: UnFinishException) {
         fun end() {
-            builder.finishExceptionHandler.removeUnFinishException(exception)
+            builder.finishHandler.removeUnFinishException(exception)
             builder.endControlFlow()
         }
 

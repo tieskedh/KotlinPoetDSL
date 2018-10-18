@@ -2,6 +2,7 @@ package nl.devhaan.kotlinpoetdsl
 
 import com.squareup.kotlinpoet.KModifier
 
+@Level
 interface AccessorContainer<out T : IAccessor<T>>{
     fun accessors(vararg modifier: KModifier) : T
 }

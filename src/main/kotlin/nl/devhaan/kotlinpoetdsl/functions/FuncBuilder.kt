@@ -36,11 +36,7 @@ class FuncBuilder(
         return builder.build().also(callBack)
     }
 
-    internal fun build(builder: FunSpec.Builder, codeBlockBuildScript: CodeBlockBuilder.() -> Unit): FunSpec {
-        this.builder = FuncBlockWrapper(builder)
-        codeBlockBuilder.also(codeBlockBuildScript).build()
-        return builder.build().also(callBack)
-    }
+
 
     operator fun invoke(name: String, vararg variables: Variable, buildScript: CodeBlockBuilder.() -> Unit) = build(name, buildScript) {
         builder.addParameters(variables)

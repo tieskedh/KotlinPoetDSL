@@ -7,7 +7,7 @@ class UnFinishException(message: String) : Exception(message)
 interface IFinishExceptionHandler{
     fun addUnFinishException(thrower: UnFinishException)
     fun removeUnFinishException(thrower: UnFinishException)
-    fun throwFinishExceptions()
+    fun finish()
 }
 class FinishExceptionHandler : IFinishExceptionHandler{
     private val finishExceptions = mutableListOf<UnFinishException>()
@@ -19,13 +19,13 @@ class FinishExceptionHandler : IFinishExceptionHandler{
         finishExceptions -= thrower
     }
 
-    override fun throwFinishExceptions() {
+    override fun finish() {
         finishExceptions.firstOrNull()?.let { throw it }
     }
 }
 
 interface BlockWrapper<out RETURN, out SELF> {
-    val finishExceptionHandler : FinishExceptionHandler
+    val finishHandler : FinishExceptionHandler
     fun statement(first:String, vararg parts:Any)
     fun beginControlFlow(controlFlow: String, vararg args: Any): SELF
     fun nextControlFlow(controlFlow: String, vararg args: Any) : SELF
@@ -37,7 +37,7 @@ interface BlockWrapper<out RETURN, out SELF> {
 class CodeBlockWrapper private constructor(
         private val builder: CodeBlock.Builder = CodeBlock.builder()
 ) : BlockWrapper<CodeBlock, CodeBlock.Builder>{
-    override val finishExceptionHandler = FinishExceptionHandler()
+    override val finishHandler = FinishExceptionHandler()
 
     override fun addCode(codeBlock: CodeBlock) = builder.add(codeBlock)
 
@@ -54,7 +54,7 @@ class CodeBlockWrapper private constructor(
         builder.addStatement(first, *parts)
     }
     override fun build(): CodeBlock {
-        finishExceptionHandler.throwFinishExceptions()
+        finishHandler.finish()
         return builder.build()
     }
 }
@@ -62,7 +62,7 @@ class CodeBlockWrapper private constructor(
 class FuncBlockWrapper internal constructor(
         private val builder: FunSpec.Builder
 ) : BlockWrapper<FunSpec, FunSpec.Builder> {
-    override val finishExceptionHandler = FinishExceptionHandler()
+    override val finishHandler = FinishExceptionHandler()
 
     fun returns(clazz: TypeName) = builder.returns(clazz)
 
@@ -81,7 +81,7 @@ class FuncBlockWrapper internal constructor(
     override fun endControlFlow() = builder.endControlFlow()
 
     override fun build(): FunSpec {
-        finishExceptionHandler.throwFinishExceptions()
+        finishHandler.finish()
         return builder.build()
     }
 

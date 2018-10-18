@@ -31,9 +31,8 @@ interface ClassAcceptor : IAcceptor {
     }
 
 
-    infix fun ClassBuilder.implements(implementDsl: ImplementationDSL.() -> Unit): ClassBuilder {
+    infix fun ClassBuilder.implements(implementDsl: ImplementationDSL.() -> Unit) = apply {
         ImplementationDSL(this).also(implementDsl)
-        return this
     }
 
     fun ClassBuilder.implements(implementDsl: ImplementationDSL.() -> Unit, builder: ClassBuilder.() -> Unit): TypeSpec = implements(implementDsl).build(builder)
@@ -50,10 +49,10 @@ interface ClassAcceptor : IAcceptor {
 
     infix fun ClassBuilder.extends(typeName: TypeName) = addExtend(typeName)
     infix fun ClassBuilder.extends(clazz: KClass<*>) = addExtend(clazz.asTypeName())
+    infix fun ClassBuilder.extends(extensionData: ClassAcceptor.BodylessExtensionData) = addExtend(extensionData.typeName, extensionData.codeBlock)
 
     infix fun ClassBuilder.extends(implData: ImplementationData<ClassBuilder>) = buildExtend(implData.typeName, buildScript = implData.buildScript)
     infix fun ClassBuilder.extends(extensionData: ExtensionData): TypeSpec = buildExtend(extensionData)
-    infix fun ClassBuilder.extends(extensionData: ClassAcceptor.BodylessExtensionData) = addExtend(extensionData.typeName, extensionData.codeBlock)
 }
 
 fun ClassAcceptor.classBuilder() = ClassBuilder(
@@ -70,17 +69,17 @@ fun ClassAcceptor.clazz(typeSpec: TypeSpec) = accept(typeSpec.let {
 })
 
 fun ClassAcceptor.clazz(name: String, vararg variables: Variable) =
-        classBuilder() (name, *variables)
+        classBuilder().initClazz(name, *variables)
 
 fun ClassAcceptor.clazz(name: String, vararg variables: Variable, init: ClassBuilder.() -> Unit): TypeSpec {
-    return classBuilder() (name, *variables, init = init)
+    return classBuilder().buildClazz(name, *variables, init = init)
 }
 
 fun ClassAcceptor.clazz(name: String, property: PropertySpec, vararg properties: PropertySpec, init: ClassBuilder.() -> Unit = {}) =
-        classBuilder()(name, property.toVariable(), *properties.map { it.toVariable() }.toTypedArray(), init = init)
+        classBuilder().buildClazz(name, property.toVariable(), *properties.map { it.toVariable() }.toTypedArray(), init = init)
 
 fun ClassAcceptor.clazz(name: String, param: ParameterSpec, vararg params: ParameterSpec, init: ClassBuilder.() -> Unit = {}) =
-        classBuilder() (name, param.toVariable(), *params.map { it.toVariable() }.toTypedArray(), init = init)
+        classBuilder().buildClazz(name, param.toVariable(), *params.map { it.toVariable() }.toTypedArray(), init = init)
 
 
 

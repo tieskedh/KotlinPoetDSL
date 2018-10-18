@@ -62,12 +62,12 @@ class ClassBuilder(
                 .also { builder = it }
     }
 
-    operator fun invoke(name: String, vararg variables: Variable) = apply {
+    fun initClazz(name: String, vararg variables: Variable) = apply {
         initBuilder(name)
         if (variables.isNotEmpty()) primaryConstructor(variables)
     }
 
-    operator fun invoke(name: String, vararg variables: Variable, init: ClassBuilder.() -> Unit = {}) = build(name) {
+    fun buildClazz(name: String, vararg variables: Variable, init: ClassBuilder.() -> Unit = {}) = build(name) {
         if (variables.isNotEmpty()) primaryConstructor(variables)
         init(this)
     }
