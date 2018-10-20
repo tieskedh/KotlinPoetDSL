@@ -15,9 +15,6 @@ interface IBuilder{
 }
 
 interface IAcceptor{
-    /**
-     *
-     */
     fun registerBuilder(builder: IBuilder)
     fun unregisterBuilder(builder: IBuilder)
 }

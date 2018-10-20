@@ -33,7 +33,7 @@ class ClassAcceptorTest : StringSpec({
     "abstract builder with abstract method"{
         buildClass{
             abstract.clazz("Clazz"){
-                abstract.func("hi"){}
+                abstract.func("hi")
             }
         } shouldBe TypeSpec.classBuilder("Clazz").addModifiers(KModifier.ABSTRACT)
                 .addFunction(

@@ -79,15 +79,15 @@ class ClassBuilder(
 
     fun initClazz(name: String, vararg variables: Variable) = apply {
         initBuilder(name)
-        if (variables.isNotEmpty()) primaryConstructor(variables)
+        if (variables.isNotEmpty()) primaryConstructor(*variables)
     }
 
     fun buildClazz(name: String, vararg variables: Variable, init: ClassBuilder.() -> Unit = {}) = build(name) {
-        if (variables.isNotEmpty()) primaryConstructor(variables)
+        if (variables.isNotEmpty()) primaryConstructor(*variables)
         init(this)
     }
 
-    fun primaryConstructor(variables: Array<out Variable>) {
+    fun primaryConstructor(vararg variables : Variable) {
         val primBuilder = FunSpec.constructorBuilder()
         variables.forEach { variable ->
             variable.mutable?.also { prop(variable.copy(initializer = CodeBlock.of(variable.name))) }

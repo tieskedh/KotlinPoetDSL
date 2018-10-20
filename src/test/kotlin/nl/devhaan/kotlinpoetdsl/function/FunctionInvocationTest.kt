@@ -11,6 +11,7 @@ import nl.devhaan.kotlinpoetdsl.classes.buildClass
 import nl.devhaan.kotlinpoetdsl.classes.clazz
 import nl.devhaan.kotlinpoetdsl.functions.extension
 import nl.devhaan.kotlinpoetdsl.functions.func
+import nl.devhaan.kotlinpoetdsl.functions.returns
 import nl.devhaan.kotlinpoetdsl.of
 import nl.devhaan.kotlinpoetdsl.private
 
@@ -169,7 +170,7 @@ class FunctionInvocationTest : StringSpec({
     "receiver-function no return no modifier"{
         buildClass {
             clazz("TestClazz") {
-                Int::class.func("func") {}
+                Int::class.func("func")
             }
         } shouldBe TypeSpec.classBuilder("TestClazz").addFunction(
                 FunSpec.builder("func").receiver(Int::class).build()
@@ -178,7 +179,7 @@ class FunctionInvocationTest : StringSpec({
     "receiver-function no return with modifier"{
         buildClass {
             clazz("TestClazz") {
-                private.extension(Int::class.asTypeName()).func("func") {}
+                private.extension(Int::class.asTypeName()).func("func")
             }
         } shouldBe TypeSpec.classBuilder("TestClazz").addFunction(
                 FunSpec.builder("func").receiver(Int::class).addModifiers(KModifier.PRIVATE).build()

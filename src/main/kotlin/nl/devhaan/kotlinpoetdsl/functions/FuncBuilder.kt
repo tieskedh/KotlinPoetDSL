@@ -10,7 +10,15 @@ import nl.devhaan.kotlinpoetdsl.helpers.FuncBlockWrapper
 class FuncBuilder(
         private val accessor: IAccessor<*> = PlainAccessor(),
         private val callBack: (FunSpec) -> Unit
-) : ProvideBuilderAcceptor{
+) : ProvideBuilderAcceptor, IBuilder {
+
+
+    override fun finish() {
+        build()
+    }
+
+    private fun build(): FunSpec = builder.build().also(callBack)
+
     private lateinit var builder: FuncBlockWrapper
     private val codeBlockBuilder get() = CodeBlockBuilder(builder)
 
@@ -18,7 +26,7 @@ class FuncBuilder(
         builder = it
     }
 
-    operator fun invoke(name: String, vararg variables: Variable) = apply {
+    fun initFunc(name: String, vararg variables: Variable) = apply {
         builder = initBuilder(name).also {
             it.addParameters(variables)
         }
@@ -34,8 +42,7 @@ class FuncBuilder(
     }
 
 
-
-    operator fun invoke(name: String, vararg variables: Variable, buildScript: CodeBlockBuilder.() -> Unit) = build(name, buildScript) {
+    fun buildReturn(name: String, vararg variables: Variable, buildScript: CodeBlockBuilder.() -> Unit) = build(name, buildScript) {
         builder.addParameters(variables)
     }
 
@@ -57,7 +64,7 @@ class FuncBuilder(
         }
     }
 
-    fun buildExtensionFunction(receiver: TypeName, name: String, variables: Array<out Variable> = emptyArray(), modifiers: Array<out KModifier> = emptyArray(), buildScript: CodeBlockBuilder.() -> Unit) = build(name, buildScript){
+    fun buildExtensionFunction(receiver: TypeName, name: String, variables: Array<out Variable> = emptyArray(), modifiers: Array<out KModifier> = emptyArray(), buildScript: CodeBlockBuilder.() -> Unit) = build(name, buildScript) {
         builder.addParameters(variables)
         builder.receiver(receiver)
         builder.addModifiers(modifiers)

@@ -128,7 +128,7 @@ class ClassInvocationTest : StringSpec({
     "class-extension without params with body"{
         file("", "TestFile") {
             clazz("Clazz") extends String::class{
-                func("test"){}
+                func("test")
             }
         } shouldBe FileSpec.builder("", "TestFile").addType(
                 TypeSpec.classBuilder("Clazz")
@@ -235,7 +235,7 @@ class ClassInvocationTest : StringSpec({
             clazz("Clazz", "prop" of String::class) extends StringBuffer::class("4") implements {
                 String::class(delVar("prop"))
             } withBody {
-                func("test"){}
+                func("test")
             }
         } shouldBe FileSpec.builder("", "TestFile").addType(
                 TypeSpec.classBuilder("Clazz")
