@@ -56,6 +56,11 @@ class InterfaceBuilder(
         adding(builder.build())
     }
 
+    fun build(): TypeSpec {
+        builders.forEach { it.finish() }
+        return builder.build().also(adding)
+    }
+
     private fun initBuilder(name: String): TypeSpec.Builder {
         return TypeSpec.interfaceBuilder(name).addModifiers(*accessor.modifiers).also { builder = it }
     }
@@ -63,7 +68,7 @@ class InterfaceBuilder(
     fun build(name: String, buildScript: InterfaceBuilder.()->Unit = {}): TypeSpec {
         initBuilder(name)
         buildScript(this)
-        return builder.build()
+        return build()
     }
 
     fun addImplement(typeName: TypeName) = apply {
@@ -76,12 +81,12 @@ class InterfaceBuilder(
 
     fun finishBuild(buildScript: InterfaceBuilder.()->Unit): TypeSpec {
         buildScript()
-        return builder.build()
+        return build()
     }
 
     fun finishBuild(implementationData: ImplementationData<InterfaceBuilder>) = implementationData.run {
         addImplement(typeName)
         buildScript(this@InterfaceBuilder)
-        builder.build()
+        this@InterfaceBuilder.build()
     }
 }
