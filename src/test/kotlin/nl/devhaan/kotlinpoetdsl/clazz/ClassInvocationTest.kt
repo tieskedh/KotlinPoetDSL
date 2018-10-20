@@ -3,13 +3,12 @@ package nl.devhaan.kotlinpoetdsl.clazz
 import com.squareup.kotlinpoet.*
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
-import nl.devhaan.kotlinpoetdsl.classes.clazz
+import nl.devhaan.kotlinpoetdsl.classes.*
 import nl.devhaan.kotlinpoetdsl.files.file
 import nl.devhaan.kotlinpoetdsl.functions.func
 import nl.devhaan.kotlinpoetdsl.of
 import nl.devhaan.kotlinpoetdsl.valOf
 import nl.devhaan.kotlinpoetdsl.varOf
-
 
 /**
  * This class checks if all the function-invocations work correctly.
@@ -18,7 +17,7 @@ import nl.devhaan.kotlinpoetdsl.varOf
 class ClassInvocationTest : StringSpec({
     "plain class"{
         file("", "TestFile") {
-            clazz("Clazz") {}
+            clazz("Clazz")
         } shouldBe FileSpec.builder("", "TestFile")
                 .addType(TypeSpec.classBuilder("Clazz").build())
                 .build()
@@ -26,7 +25,7 @@ class ClassInvocationTest : StringSpec({
 
     "class with parameter"{
         file("", "TestFile") {
-            clazz("Clazz", "arg" of String::class) {}
+            clazz("Clazz", "arg" of String::class)
         } shouldBe FileSpec.builder("", "TestFile").addType(
                 TypeSpec.classBuilder("Clazz").primaryConstructor(
                         FunSpec.constructorBuilder().addParameter("arg", String::class).build()
@@ -36,7 +35,7 @@ class ClassInvocationTest : StringSpec({
 
     "class with var-parameter"{
         file("", "TestFile") {
-            clazz("Clazz", "arg" varOf String::class) {}
+            clazz("Clazz", "arg" varOf String::class)
         } shouldBe FileSpec.builder("", "TestFile").addType(
                 TypeSpec.classBuilder("Clazz").primaryConstructor(
                         FunSpec.constructorBuilder().addParameter("arg", String::class).build()
@@ -48,7 +47,7 @@ class ClassInvocationTest : StringSpec({
 
     "class with val-parameter"{
         file("", "TestFile") {
-            clazz("Clazz", "arg" valOf String::class) {}
+            clazz("Clazz", "arg" valOf String::class)
         } shouldBe FileSpec.builder("", "TestFile").addType(
                 TypeSpec.classBuilder("Clazz").primaryConstructor(
                         FunSpec.constructorBuilder().addParameter("arg", String::class).build()
@@ -60,7 +59,7 @@ class ClassInvocationTest : StringSpec({
 
     "class with initialized var-parameter"{
         file("", "TestFile") {
-            clazz("Clazz", "arg".varOf<String>("\"hi\"")) {}
+            clazz("Clazz", "arg".varOf<String>("\"hi\""))
         } shouldBe FileSpec.builder("", "TestFile").addType(
                 TypeSpec.classBuilder("Clazz").primaryConstructor(
                         FunSpec.constructorBuilder().addParameter(
@@ -129,7 +128,7 @@ class ClassInvocationTest : StringSpec({
     "class-extension without params with body"{
         file("", "TestFile") {
             clazz("Clazz") extends String::class{
-                func("test") {}
+                func("test")
             }
         } shouldBe FileSpec.builder("", "TestFile").addType(
                 TypeSpec.classBuilder("Clazz")
@@ -233,9 +232,11 @@ class ClassInvocationTest : StringSpec({
 
     "class-implementation and extension with DSL"{
         file("", "TestFile"){
-            clazz("Clazz", "prop" of String::class) extends StringBuffer::class("4") implements({
+            clazz("Clazz", "prop" of String::class) extends StringBuffer::class("4") implements {
                 String::class(delVar("prop"))
-            })
+            } withBody {
+                func("test")
+            }
         } shouldBe FileSpec.builder("", "TestFile").addType(
                 TypeSpec.classBuilder("Clazz")
                         .primaryConstructor(
@@ -243,6 +244,7 @@ class ClassInvocationTest : StringSpec({
                         ).addSuperinterface(String::class, CodeBlock.of("prop"))
                         .superclass(StringBuffer::class)
                         .addSuperclassConstructorParameter("4")
+                        .addFunction(FunSpec.builder("test").build())
                         .build()
         ).build()
     }

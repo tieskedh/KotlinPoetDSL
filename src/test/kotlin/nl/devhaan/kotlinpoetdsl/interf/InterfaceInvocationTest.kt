@@ -19,7 +19,7 @@ class InterfaceInvocationTest : StringSpec({
     "interface with content"{
         file("", "TestFile"){
             interf("Interf"){
-                func("func"){}
+                func("func")
             }
         } shouldBe FileSpec.builder("", "TestFile").addType(
                 TypeSpec.interfaceBuilder("Interf").addFunction(
@@ -41,7 +41,7 @@ class InterfaceInvocationTest : StringSpec({
     "Interface-implementation with body"{
         file("", "TestFile"){
             interf("Interf") implements String::class{
-                func("func"){}
+                func("func")
             }
         } shouldBe FileSpec.builder("", "TestFile").addType(
                 TypeSpec.interfaceBuilder("Interf").addFunction(
@@ -62,7 +62,7 @@ class InterfaceInvocationTest : StringSpec({
     "interface-implementation with class-vararg with Body"{
         file("", "TestFile"){
             interf("Interf").implements(String::class, Int::class){
-                func("func"){}
+                func("func")
             }
         } shouldBe FileSpec.builder("", "TestFile").addType(
                 TypeSpec.interfaceBuilder("Interf").addSuperinterfaces(listOf(
@@ -85,7 +85,7 @@ class InterfaceInvocationTest : StringSpec({
     "interface-implementation with typeName-vararg with Body"{
         file("", "TestFile"){
             interf("Interf").implements(String::class.asTypeName(), Int::class.asTypeName()){
-                func("func"){}
+                func("func")
             }
         } shouldBe FileSpec.builder("", "TestFile").addType(
                 TypeSpec.interfaceBuilder("Interf").addSuperinterfaces(listOf(

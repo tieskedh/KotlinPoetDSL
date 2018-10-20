@@ -20,22 +20,37 @@ class ClassAccessor(
 {
     override fun accept(type: TypeSpec) = clazz.accept(type)
     override fun registerBuilder(builder: IBuilder) = clazz.registerBuilder(builder)
+    override fun unregisterBuilder(builder: IBuilder) = clazz.unregisterBuilder(builder)
 }
+
 
 class ClassBuilder(
         private val accessor: IAccessor<*> = PlainAccessor(),
         private val adding: (TypeSpec) -> Unit
-) : FunctionAcceptor, AccessorContainer<ClassAccessor>, ClassAcceptor, PropAcceptor, ProvideBuilderAcceptor, IBuilder, InterfaceAcceptor {
+) : FunctionAcceptor,
+        AccessorContainer<ClassAccessor>,
+        ClassAcceptor,
+        PropAcceptor,
+        ProvideBuilderAcceptor,
+        IBuilder,
+        InterfaceAcceptor
+{
 
-    private val builders = mutableListOf<IBuilder>()
+    private val builders = mutableSetOf<IBuilder>()
     override fun registerBuilder(builder: IBuilder) {
         builders += builder
     }
 
-    override fun finish() {
-        builders.forEach { it.finish() }
-        adding(builder.build())
+    override fun unregisterBuilder(builder: IBuilder) {
+        builders -= builder
     }
+
+    fun build() : TypeSpec {
+        builders.forEach { it.finish() }
+        return builder.build().also(adding)
+    }
+
+    override fun finish() { build() }
 
     fun addModifiers(vararg modifier: KModifier) {
         builder.addModifiers(*modifier)
@@ -64,15 +79,15 @@ class ClassBuilder(
 
     fun initClazz(name: String, vararg variables: Variable) = apply {
         initBuilder(name)
-        if (variables.isNotEmpty()) primaryConstructor(variables)
+        if (variables.isNotEmpty()) primaryConstructor(*variables)
     }
 
     fun buildClazz(name: String, vararg variables: Variable, init: ClassBuilder.() -> Unit = {}) = build(name) {
-        if (variables.isNotEmpty()) primaryConstructor(variables)
+        if (variables.isNotEmpty()) primaryConstructor(*variables)
         init(this)
     }
 
-    fun primaryConstructor(variables: Array<out Variable>) {
+    fun primaryConstructor(vararg variables : Variable) {
         val primBuilder = FunSpec.constructorBuilder()
         variables.forEach { variable ->
             variable.mutable?.also { prop(variable.copy(initializer = CodeBlock.of(variable.name))) }
@@ -85,7 +100,7 @@ class ClassBuilder(
     private inline fun build(name: String, buildScript: ClassBuilder.() -> Unit = {}): TypeSpec {
         initBuilder(name)
         buildScript(this)
-        return builder.build()
+        return build()
     }
 
     fun addImplement(typeName: TypeName, name: String) = apply {
@@ -98,19 +113,19 @@ class ClassBuilder(
     fun buildImplement(extensionData: ClassAcceptor.ExtensionData) = extensionData.run{ buildImplement(typeName, codeBlock, builder) }
     fun build(buildScript: ClassBuilder.() -> Unit): TypeSpec {
         buildScript(this)
-        return builder.build()
+        return build()
     }
 
     fun buildImplement(typeName: TypeName, codeBlock: CodeBlock = EMPTY_CODEBLOCK, buildScript: ClassBuilder.() -> Unit = {}): TypeSpec {
         builder.addSuperinterface(typeName,codeBlock)
         buildScript(this)
-        return builder.build()
+        return build()
     }
 
     fun buildImplement(delVar: ClassAcceptor.DelegationProperty): TypeSpec {
         builder.addSuperinterface(delVar.typeName!!, delVar.name)
         delVar.script(this)
-        return builder.build()
+        return build()
     }
 
     fun addExtend(typeName: TypeName, codeBlock: CodeBlock = EMPTY_CODEBLOCK) = apply {
@@ -121,7 +136,7 @@ class ClassBuilder(
     fun buildExtend(typeName: TypeName, codeBlock: CodeBlock = EMPTY_CODEBLOCK, buildScript: ClassBuilder.() -> Unit = {}): TypeSpec {
         addExtend(typeName, codeBlock)
         buildScript(this)
-        return builder.build()
+        return build()
     }
 }
 

@@ -17,6 +17,7 @@ class InterfaceAccessor(
         InterfaceAcceptor by interf{
     override fun accept(type: TypeSpec) = interf.accept(type)
     override fun registerBuilder(builder: IBuilder) = interf.registerBuilder(builder)
+    override fun unregisterBuilder(builder: IBuilder) = interf.unregisterBuilder(builder)
 }
 
 class InterfaceBuilder(
@@ -41,14 +42,23 @@ class InterfaceBuilder(
     override fun accessors(vararg modifier: KModifier) =
             InterfaceAccessor(modifier.toMutableSet(), this)
 
-    private val builders = mutableListOf<IBuilder>()
+    private val builders = mutableSetOf<IBuilder>()
     override fun registerBuilder(builder: IBuilder) {
         builders += builder
+    }
+
+    override fun unregisterBuilder(builder: IBuilder) {
+        builders -= builder
     }
 
     override fun finish(){
         builders.forEach { it.finish() }
         adding(builder.build())
+    }
+
+    fun build(): TypeSpec {
+        builders.forEach { it.finish() }
+        return builder.build().also(adding)
     }
 
     private fun initBuilder(name: String): TypeSpec.Builder {
@@ -58,7 +68,7 @@ class InterfaceBuilder(
     fun build(name: String, buildScript: InterfaceBuilder.()->Unit = {}): TypeSpec {
         initBuilder(name)
         buildScript(this)
-        return builder.build()
+        return build()
     }
 
     fun addImplement(typeName: TypeName) = apply {
@@ -71,12 +81,12 @@ class InterfaceBuilder(
 
     fun finishBuild(buildScript: InterfaceBuilder.()->Unit): TypeSpec {
         buildScript()
-        return builder.build()
+        return build()
     }
 
     fun finishBuild(implementationData: ImplementationData<InterfaceBuilder>) = implementationData.run {
         addImplement(typeName)
         buildScript(this@InterfaceBuilder)
-        builder.build()
+        this@InterfaceBuilder.build()
     }
 }

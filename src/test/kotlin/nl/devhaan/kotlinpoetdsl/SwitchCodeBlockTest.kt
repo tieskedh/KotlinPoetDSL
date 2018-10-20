@@ -5,6 +5,7 @@ import io.kotlintest.specs.StringSpec
 import nl.devhaan.kotlinpoetdsl.codeblock.switch
 import nl.devhaan.kotlinpoetdsl.functions.buildFun
 import nl.devhaan.kotlinpoetdsl.functions.func
+import nl.devhaan.kotlinpoetdsl.functions.returns
 
 /**
  * @Todo Switch is now "manually" implemented, update when KotlinPoet provide better support
