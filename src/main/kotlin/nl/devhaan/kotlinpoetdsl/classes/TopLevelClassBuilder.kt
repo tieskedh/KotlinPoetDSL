@@ -13,7 +13,7 @@ class TopLevelClassAccessor(
 
 class TopLevelClassBuilder : ClassAcceptor, AccessorContainer<TopLevelClassAccessor>{
     override fun accessors(vararg modifier: KModifier) = TopLevelClassAccessor(modifier.toMutableSet(), this)
-    private val builders = mutableListOf<IBuilder>()
+    private val builders = mutableSetOf<IBuilder>()
     private lateinit var clazz: TypeSpec
 
     fun build(): TypeSpec {
@@ -21,6 +21,9 @@ class TopLevelClassBuilder : ClassAcceptor, AccessorContainer<TopLevelClassAcces
         return clazz
     }
 
+    override fun unregisterBuilder(builder: IBuilder) {
+        builders -= builder
+    }
     override fun registerBuilder(builder: IBuilder) {
         builders += builder
     }

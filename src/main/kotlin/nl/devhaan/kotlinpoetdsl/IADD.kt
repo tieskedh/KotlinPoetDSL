@@ -1,8 +1,8 @@
 package nl.devhaan.kotlinpoetdsl/*
-* Due to the weird syntaxis, there are more than one returning functions.
-* Because these returning functions often are infix functions, the funtio
-
-this is for adding the files to the surrounding context. */
+* Due to the weird syntaxis, there are more than one building functions
+* These functions can be called after each other.
+* this is for adding the files to the surrounding context.
+*/
 
 interface IBuilder{
     /**
@@ -19,4 +19,5 @@ interface IAcceptor{
      *
      */
     fun registerBuilder(builder: IBuilder)
+    fun unregisterBuilder(builder: IBuilder)
 }

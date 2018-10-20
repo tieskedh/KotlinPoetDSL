@@ -17,14 +17,18 @@ class FileAccessor(
         InterfaceAcceptor by file{
     override fun accept(type: TypeSpec) = file.accept(type)
     override fun registerBuilder(builder: IBuilder) = file.registerBuilder(builder)
+    override fun unregisterBuilder(builder: IBuilder) = file.unregisterBuilder(builder)
 }
-
 
 class FileBuilder(pack: String, name: String) : ClassAcceptor, FunctionAcceptor, PropAcceptor, ProvideBuilderAcceptor, AccessorContainer<FileAccessor>, IBuilder, InterfaceAcceptor {
 
-    private val builders = mutableListOf<IBuilder>()
+    private val builders = mutableSetOf<IBuilder>()
     override fun registerBuilder(builder: IBuilder) {
         builders += builder
+    }
+
+    override fun unregisterBuilder(builder: IBuilder) {
+        builders -= builder
     }
 
     override fun finish() {

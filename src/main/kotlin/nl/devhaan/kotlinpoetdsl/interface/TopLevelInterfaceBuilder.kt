@@ -13,7 +13,7 @@ class TopLevelInterfaceAccessor(
 
 class TopLevelInterfaceBuilder : InterfaceAcceptor, AccessorContainer<TopLevelInterfaceAccessor> {
     override fun accessors(vararg modifier: KModifier) = TopLevelInterfaceAccessor(modifier.toMutableSet(), this)
-    private val builders = mutableListOf<IBuilder>()
+    private val builders = mutableSetOf<IBuilder>()
     private lateinit var interf: TypeSpec
 
     fun build(): TypeSpec {
@@ -21,6 +21,9 @@ class TopLevelInterfaceBuilder : InterfaceAcceptor, AccessorContainer<TopLevelIn
         return interf
     }
 
+    override fun unregisterBuilder(builder: IBuilder) {
+        builders -= builder
+    }
     override fun registerBuilder(builder: IBuilder) {
         builders += builder
     }

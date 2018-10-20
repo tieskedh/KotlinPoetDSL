@@ -17,6 +17,7 @@ class InterfaceAccessor(
         InterfaceAcceptor by interf{
     override fun accept(type: TypeSpec) = interf.accept(type)
     override fun registerBuilder(builder: IBuilder) = interf.registerBuilder(builder)
+    override fun unregisterBuilder(builder: IBuilder) = interf.unregisterBuilder(builder)
 }
 
 class InterfaceBuilder(
@@ -41,9 +42,13 @@ class InterfaceBuilder(
     override fun accessors(vararg modifier: KModifier) =
             InterfaceAccessor(modifier.toMutableSet(), this)
 
-    private val builders = mutableListOf<IBuilder>()
+    private val builders = mutableSetOf<IBuilder>()
     override fun registerBuilder(builder: IBuilder) {
         builders += builder
+    }
+
+    override fun unregisterBuilder(builder: IBuilder) {
+        builders -= builder
     }
 
     override fun finish(){
