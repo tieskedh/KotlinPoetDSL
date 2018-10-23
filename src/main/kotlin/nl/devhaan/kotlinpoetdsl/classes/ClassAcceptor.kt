@@ -96,7 +96,8 @@ private  fun ClassAcceptor.classBuilder() = ClassBuilder(
         accessor = this as? IAccessor<*> ?: PlainAccessor(),
         adding = ::accept
 )
-private fun ClassAcceptor.incompleteClassBuilder() = IncompleteClassBuilder(this, classBuilder().also(this::registerBuilder))
+private fun ClassAcceptor.incompleteClassBuilder() =
+        IncompleteClassBuilder(this, classBuilder().also(this::registerBuilder))
 
 fun ClassAcceptor.clazz(typeSpec: TypeSpec) = accept(typeSpec.let {
     if (this is IAccessor<*>) {

@@ -2,6 +2,7 @@ package nl.devhaan.kotlinpoetdsl.helpers
 
 import com.squareup.kotlinpoet.*
 import nl.devhaan.kotlinpoetdsl.Variable
+import nl.devhaan.kotlinpoetdsl.codeblock.CodeBlockBuilder
 
 class UnFinishException(message: String) : Exception(message)
 interface IFinishExceptionHandler{
@@ -34,7 +35,11 @@ interface BlockWrapper<out RETURN, out SELF> {
     fun build() : RETURN
 }
 
-class CodeBlockWrapper private constructor(
+fun buildCodeBlock(builder: CodeBlockBuilder.()->Unit): CodeBlock {
+    return CodeBlockBuilder(CodeBlockWrapper(CodeBlock.builder())).also(builder).build() as CodeBlock
+}
+
+class CodeBlockWrapper(
         private val builder: CodeBlock.Builder = CodeBlock.builder()
 ) : BlockWrapper<CodeBlock, CodeBlock.Builder>{
     override val finishHandler = FinishExceptionHandler()

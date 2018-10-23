@@ -2,13 +2,16 @@ package nl.devhaan.kotlinpoetdsl.clazz
 
 import com.squareup.kotlinpoet.*
 import io.kotlintest.shouldBe
+import io.kotlintest.shouldThrow
 import io.kotlintest.specs.StringSpec
+import nl.devhaan.kotlinpoetdsl.S
 import nl.devhaan.kotlinpoetdsl.classes.*
 import nl.devhaan.kotlinpoetdsl.files.file
 import nl.devhaan.kotlinpoetdsl.functions.func
 import nl.devhaan.kotlinpoetdsl.of
 import nl.devhaan.kotlinpoetdsl.valOf
 import nl.devhaan.kotlinpoetdsl.varOf
+import java.lang.IllegalArgumentException
 
 /**
  * This class checks if all the function-invocations work correctly.
@@ -247,5 +250,20 @@ class ClassInvocationTest : StringSpec({
                         .addFunction(FunSpec.builder("test").build())
                         .build()
         ).build()
+    }
+
+    "class called primaryConstructor twice"{
+        shouldThrow<IllegalArgumentException> {
+            file("", "TestFile"){
+                clazz("Clazz") extends String::class{
+                    primaryConstructor("prop" of String::class){
+                        statement("println(%S)", "hi".S())
+                    }
+                    primaryConstructor("prop" of Int::class){
+                        statement("println(%S)", "hoi".S())
+                    }
+                }
+            }
+        }.message shouldBe "primary constructor is already set"
     }
 })
