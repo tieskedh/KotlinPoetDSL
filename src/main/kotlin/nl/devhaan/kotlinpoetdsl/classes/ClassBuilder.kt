@@ -3,9 +3,10 @@ package nl.devhaan.kotlinpoetdsl.classes
 import com.squareup.kotlinpoet.*
 import nl.devhaan.kotlinpoetdsl.*
 import nl.devhaan.kotlinpoetdsl.`interface`.InterfaceAcceptor
+import nl.devhaan.kotlinpoetdsl.codeblock.CodeBlockBuilder
+import nl.devhaan.kotlinpoetdsl.constructorBuilder.*
 import nl.devhaan.kotlinpoetdsl.functions.FunctionAcceptor
 import nl.devhaan.kotlinpoetdsl.properties.PropAcceptor
-import nl.devhaan.kotlinpoetdsl.properties.prop
 
 
 class ClassAccessor(
@@ -16,8 +17,9 @@ class ClassAccessor(
         ClassAcceptor by clazz,
         PropAcceptor by clazz,
         InterfaceAcceptor by clazz,
-        ProvideBuilderAcceptor by clazz
-{
+        ProvideBuilderAcceptor by clazz,
+        ConstructorAcceptor by clazz {
+    override fun accept(func: FunSpec) = clazz.accept(func)
     override fun accept(type: TypeSpec) = clazz.accept(type)
     override fun registerBuilder(builder: IBuilder) = clazz.registerBuilder(builder)
     override fun unregisterBuilder(builder: IBuilder) = clazz.unregisterBuilder(builder)
@@ -25,7 +27,7 @@ class ClassAccessor(
 
 
 class ClassBuilder(
-        private val accessor: IAccessor<*> = PlainAccessor(),
+        private val accessor: IAccessor<*>,
         private val adding: (TypeSpec) -> Unit
 ) : FunctionAcceptor,
         AccessorContainer<ClassAccessor>,
@@ -33,8 +35,8 @@ class ClassBuilder(
         PropAcceptor,
         ProvideBuilderAcceptor,
         IBuilder,
-        InterfaceAcceptor
-{
+        InterfaceAcceptor,
+        ConstructorAcceptor {
 
     private val builders = mutableSetOf<IBuilder>()
     override fun registerBuilder(builder: IBuilder) {
@@ -45,15 +47,26 @@ class ClassBuilder(
         builders -= builder
     }
 
-    fun build() : TypeSpec {
+    fun build(): TypeSpec {
         builders.forEach { it.finish() }
         return builder.build().also(adding)
     }
 
-    override fun finish() { build() }
+    override fun finish() {
+        build()
+    }
 
     fun addModifiers(vararg modifier: KModifier) {
         builder.addModifiers(*modifier)
+    }
+
+    private var primaryConstructorSet = false
+    override fun accept(constructorSpec: ConstructorSpec) {
+        if (constructorSpec.isPrimary){
+            require(!primaryConstructorSet) { "primary constructor is already set" }
+            primaryConstructorSet = true
+        }
+        builder.addConstructor(constructorSpec)
     }
 
     override fun accept(func: FunSpec) {
@@ -87,13 +100,9 @@ class ClassBuilder(
         init(this)
     }
 
-    fun primaryConstructor(vararg variables : Variable) {
-        val primBuilder = FunSpec.constructorBuilder()
-        variables.forEach { variable ->
-            variable.mutable?.also { prop(variable.copy(initializer = CodeBlock.of(variable.name))) }
-            primBuilder.addParameter(variable.toParamSpec())
-        }
-        builder.primaryConstructor(primBuilder.build())
+
+    fun primaryConstructor(vararg variables: Variable, blockWrapper: CodeBlockBuilder.() -> Unit = {}) {
+        primary.constructor(*variables, init = blockWrapper)
     }
 
 
@@ -106,18 +115,19 @@ class ClassBuilder(
     fun addImplement(typeName: TypeName, name: String) = apply {
         builder.addSuperinterface(typeName, name)
     }
-    fun addImplement(typeName: TypeName, codeBlock: CodeBlock = EMPTY_CODEBLOCK) = apply{
+
+    fun addImplement(typeName: TypeName, codeBlock: CodeBlock = EMPTY_CODEBLOCK) = apply {
         builder.addSuperinterface(typeName, codeBlock)
     }
 
-    fun buildImplement(extensionData: ClassAcceptor.ExtensionData) = extensionData.run{ buildImplement(typeName, codeBlock, builder) }
+    fun buildImplement(extensionData: ClassAcceptor.ExtensionData) = extensionData.run { buildImplement(typeName, codeBlock, builder) }
     fun build(buildScript: ClassBuilder.() -> Unit): TypeSpec {
         buildScript(this)
         return build()
     }
 
     fun buildImplement(typeName: TypeName, codeBlock: CodeBlock = EMPTY_CODEBLOCK, buildScript: ClassBuilder.() -> Unit = {}): TypeSpec {
-        builder.addSuperinterface(typeName,codeBlock)
+        builder.addSuperinterface(typeName, codeBlock)
         buildScript(this)
         return build()
     }

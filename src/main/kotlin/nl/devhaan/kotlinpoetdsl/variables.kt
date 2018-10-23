@@ -10,8 +10,16 @@ import kotlin.reflect.KClass
 infix fun <T : Any> String.of(clazz: KClass<T>) = Variable(this, clazz.asTypeName())
 infix fun String.of(typeName: TypeName) = Variable(this, typeName)
 
-inline fun <reified T : Any> String.valOf(format: String? = null, vararg values: Any?) = this.valOf(T::class.asTypeName(), format, *values)
+inline fun <reified T> String.of(format: String? = null, vararg values: Any?) =
+        this.of(T::class.asTypeName(), format, *values)
+fun String.of(typeName: TypeName, format: String? = null, vararg values: Any?) = Variable(
+        name = this,
+        typeName = typeName,
+        initializer = format?.let { CodeBlock.of(format, *values) }
+)
 
+inline fun <reified T : Any> String.valOf(format: String? = null, vararg values: Any?) =
+        this.valOf(T::class.asTypeName(), format, *values)
 fun String.valOf(typeName: TypeName, format: String? = null, vararg values: Any?) = Variable(
         name = this,
         typeName = typeName,

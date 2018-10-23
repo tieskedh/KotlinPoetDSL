@@ -7,8 +7,7 @@ import nl.devhaan.kotlinpoetdsl.helpers.BlockWrapper
 @UseExperimental(Uncertain::class)
 @CodeBlockLevel
 @Level
-class CodeBlockBuilder
-    internal constructor(
+class CodeBlockBuilder(
         private val builder: BlockWrapper<*,*>
     ): IRepeat by Repeat(builder),
         IiFInterface by IfClassStart(builder),
