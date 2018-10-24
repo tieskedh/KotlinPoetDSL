@@ -1,4 +1,4 @@
-[![](https://jitpack.io/v/tieskedh/KotlinPoetDSL.svg)](https://jitpack.io/#tieskedh/KotlinPoetDSL)
+[![](https://jitpack.io/v/nl.devhaan/KotlinPoetDSL.svg)](https://jitpack.io/#nl.devhaan/KotlinPoetDSL)
 
 
 # KotlinPoetDSL
