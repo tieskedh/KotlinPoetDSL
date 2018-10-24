@@ -1,3 +1,6 @@
+[![](https://jitpack.io/v/tieskedh/KotlinPoetDSL.svg)](https://jitpack.io/#tieskedh/KotlinPoetDSL)
+
+
 # KotlinPoetDSL
 KotlinPoetDSL provides a dsl for KotlinPoet.
 
@@ -6,7 +9,27 @@ At this moment, it's still a playground!!!
 So, unless you're really adventurous, don't use in production! 
 
 ## Quickstart
-Example
+
+To get a Git project into your build:
+
+1. Add the JitPack repository to your build file
+
+```
+allprojects {
+	repositories {
+		...
+		maven { url 'https://jitpack.io' }
+	}
+}
+```
+2. Add the dependency
+```
+dependencies {
+        implementation 'com.github.tieskedh:KotlinPoetDSL:Tag'
+}
+```
+
+## Example
 ```kotlin
 file("", "HelloWorld") {
 
