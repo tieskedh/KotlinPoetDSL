@@ -25,7 +25,7 @@ allprojects {
 2. Add the dependency
 ```
 dependencies {
-        implementation 'com.github.tieskedh:KotlinPoetDSL:Tag'
+        implementation 'com.github.tieskedh:KotlinPoetDSL:0.1.0'
 }
 ```
 
