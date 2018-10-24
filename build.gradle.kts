@@ -73,13 +73,9 @@ tasks.withType<Test> {
     }
     addTestListener(object : TestListener {
         override fun beforeTest(p0: TestDescriptor?) = Unit
-        override fun afterSuite(desc: TestDescriptor, result: TestResult) {
-            printResults(desc, result)
-        }
-
         override fun beforeSuite(p0: TestDescriptor?) = Unit
-
-        override fun afterTest(desc: TestDescriptor, result: TestResult) {
+        override fun afterTest(desc: TestDescriptor, result: TestResult) = Unit
+        override fun afterSuite(desc: TestDescriptor, result: TestResult) {
             printResults(desc, result)
         }
     })
