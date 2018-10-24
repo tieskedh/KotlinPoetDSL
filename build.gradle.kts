@@ -1,5 +1,8 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.config.AnalysisFlag.Flags.experimental
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.awt.SystemColor.info
 
 buildscript {
     val kotlin_version: String by extra("1.3.0-rc-190")
@@ -16,7 +19,7 @@ buildscript {
 group = "nl.devhaan"
 version = "1.0-SNAPSHOT"
 
-plugins{
+plugins {
     java
     maven
 }
@@ -28,11 +31,11 @@ apply {
 
 val kotlin_version: String by extra
 
+
 repositories {
     maven { setUrl("http://dl.bintray.com/kotlin/kotlin-eap") }
     mavenCentral()
 }
-
 dependencies {
     compile(kotlin("stdlib-jdk8", kotlin_version))
     compile("com.squareup:kotlinpoet:1.0.0-RC1")
@@ -46,6 +49,62 @@ tasks.withType<KotlinCompile> {
     }
 }
 
-tasks.withType<Test>{
+tasks.withType<Test> {
+    testLogging {
+        // set options for log level LIFECYCLE
+        events = setOf(TestLogEvent.FAILED, TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.STANDARD_OUT)
+        exceptionFormat = TestExceptionFormat.FULL
+        showExceptions = true
+        showCauses = true
+        showStackTraces = true
+
+        // set options for log level DEBUG and INFO
+        debug {
+            events = setOf(TestLogEvent.STARTED,
+                    TestLogEvent.FAILED,
+                    TestLogEvent.PASSED,
+                    TestLogEvent.SKIPPED,
+                    TestLogEvent.STANDARD_ERROR,
+                    TestLogEvent.STANDARD_OUT)
+            exceptionFormat = TestExceptionFormat.FULL
+        }
+        info.events = debug.events
+        info.exceptionFormat = debug.exceptionFormat
+    }
+    addTestListener(object : TestListener {
+        override fun beforeTest(p0: TestDescriptor?) = Unit
+        override fun afterSuite(desc: TestDescriptor, result: TestResult) {
+            printResults(desc, result)
+        }
+
+        override fun beforeSuite(p0: TestDescriptor?) = Unit
+
+        override fun afterTest(desc: TestDescriptor, result: TestResult) {
+            printResults(desc, result)
+        }
+    })
     useJUnitPlatform()
+}
+
+fun printResults(desc: TestDescriptor, result: TestResult, repeatFirst: Boolean = false) {
+    if (desc.parent != null) {
+        val output = result.run {
+            "Results: $resultType (" +
+                    "$testCount tests, " +
+                    "$successfulTestCount successes, " +
+                    "$failedTestCount failures, " +
+                    "$skippedTestCount skipped" +
+                    ")"
+        }
+        val testResultLine = "|  $output  |"
+        val repeatLength = testResultLine.length
+        val seperationLine = "-".repeat(repeatLength)
+        if(repeatFirst){
+            println(seperationLine)
+            println(seperationLine)
+        }
+        println(seperationLine)
+        println(testResultLine)
+        println(seperationLine)
+    }
 }
