@@ -1,33 +1,106 @@
-[![](https://jitpack.io/v/nl.devhaan/KotlinPoetDSL.svg)](https://jitpack.io/#nl.devhaan/KotlinPoetDSL)
+---
+description: Welcome to the KotlinPoetDSL-guide.
+---
 
+# Welcome
 
-# KotlinPoetDSL
-KotlinPoetDSL provides a dsl for KotlinPoet.
+## The goal of KotlinPoetDSL
 
-At this moment, it's still a playground!!!
+The main goal of KotlinPoetDSL is to generate code, with code like the generated code.
 
-So, unless you're really adventurous, don't use in production! 
+The main way to do this is by providing dumb wrappers around KotlinPoet.   
+There are however some smart features that KotlinPoet doesn't have \(yet\), like constructorSpec, which adds val- or var-propperties straight away.
 
-## Quickstart
+The best way to demonstrate this is using an example.
 
-Toadd the library:
+### Code to generate.
 
-1. Add the JitPack repository to your build file
+Let's say we want to generate the follolwing code:
 
-```
-allprojects {
-	repositories {
-		...
-		maven { url 'https://jitpack.io' }
-	}
+```kotlin
+import kotlin.String
+
+class Greeter(val name: String = "You") {
+    inline fun greet() {
+        println("Hello, $name")
+    }
+}
+
+fun main(vararg args: String) {
+    Greeter(args[0]).greet()
 }
 ```
-2. Add the dependency
+
+### Using KotlinPoet
+
+In KotlinPoet we use the following code:
+
+```kotlin
+val greeterClass = ClassName("", "Greeter")
+    FileSpec.builder("", "HelloWorld")
+        .addType(TypeSpec.classBuilder("Greeter")
+            .primaryConstructor(FunSpec.constructorBuilder()
+                .addParameter(ParameterSpec.builder("name", String::class)
+                    .defaultValue("\"you\"")
+                    .build())
+                .build())
+            .addProperty(PropertySpec.builder("name", String::class)
+                .initializer("name")
+                .build())
+            .addFunction(FunSpec.builder("greet")
+                .addModifiers(KModifier.INLINE)
+                .addStatement("println(%S)", "Hello, \$name")
+                .build())
+            .build())
+        .addFunction(FunSpec.builder("main")
+            .addParameter("args", String::class, KModifier.VARARG)
+            .addStatement("%T(args[0]).greet()", greeterClass)
+            .build())
+        .build().writeTo(System.out)
 ```
-dependencies {
-        implementation 'nl.devhaan:KotlinPoetDSL:0.1.0'
+
+### Using KotlinPoetDSL
+
+The same code:
+
+```kotlin
+import kotlin.String
+
+class Greeter(val name: String = "You") {
+    inline fun greet() {
+        println("Hello, $name")
+    }
+}
+
+fun main(vararg args: String) {
+    Greeter(args[0]).greet()
 }
 ```
 
-# guide
-For the guide go to https://kotlinpoetdsl.devhaan.nl/
+Generated using KotlinPoetDSL will look like:
+
+```kotlin
+file("", "HelloWorld") {
+    val greeter = clazz("Greeter", "name".valOf<String>("You".S())) {
+        inline.func("greet") {
+            statement("println(%S)", "Hello, \$name")
+        }
+    }.packaged("")
+
+    func("main", "args" vararg String::class) {
+        statement("%T(args[0]).greet()", greeter)
+    }
+}.writeTo(System.out)
+```
+
+### Evaluation
+
+As you can see, KotlinPoet is very composable and is ideal for slowly building up everything.  
+When you write everything at once, it isn't very readible.
+
+On the other hand, KotlinPoetDSL is very readible when you write everything at once.  
+With DSL's it's on the other hand, not that friendly to compose together.
+
+This means that KotlinPoetDSL does not replace KotlinPoet, but makes it stronger on a different point.  
+Because KotlinPoetDSL makes use of KotlinPoet, and uses KotlinPoets type throughout the wrapper, you can easily use them together.
+
