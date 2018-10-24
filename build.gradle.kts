@@ -1,6 +1,8 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
+import org.gradle.api.tasks.testing.logging.TestLogEvent.*
 import org.jetbrains.kotlin.config.AnalysisFlag.Flags.experimental
+import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.awt.SystemColor.info
 
@@ -21,16 +23,24 @@ version = "1.0-SNAPSHOT"
 
 plugins {
     java
+    jacoco
     maven
+}
+
+
+tasks.withType<JacocoReport>{
+    reports{
+        xml.isEnabled = true
+        html.isEnabled = true
+    }
+    val check by tasks
+    check.dependsOn(this)
 }
 
 apply {
     plugin("kotlin")
 }
-
-
 val kotlin_version: String by extra
-
 
 repositories {
     maven { setUrl("http://dl.bintray.com/kotlin/kotlin-eap") }
@@ -52,7 +62,7 @@ tasks.withType<KotlinCompile> {
 tasks.withType<Test> {
     testLogging {
         // set options for log level LIFECYCLE
-        events = setOf(TestLogEvent.FAILED, TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.STANDARD_OUT)
+        events = setOf(FAILED, PASSED, SKIPPED, STANDARD_OUT)
         exceptionFormat = TestExceptionFormat.FULL
         showExceptions = true
         showCauses = true
@@ -60,16 +70,13 @@ tasks.withType<Test> {
 
         // set options for log level DEBUG and INFO
         debug {
-            events = setOf(TestLogEvent.STARTED,
-                    TestLogEvent.FAILED,
-                    TestLogEvent.PASSED,
-                    TestLogEvent.SKIPPED,
-                    TestLogEvent.STANDARD_ERROR,
-                    TestLogEvent.STANDARD_OUT)
+            events = setOf(STARTED, FAILED, PASSED, SKIPPED, STANDARD_ERROR, STANDARD_OUT)
             exceptionFormat = TestExceptionFormat.FULL
         }
-        info.events = debug.events
-        info.exceptionFormat = debug.exceptionFormat
+        info{
+            events = debug.events
+            exceptionFormat = debug.exceptionFormat
+        }
     }
     addTestListener(object : TestListener {
         override fun beforeTest(p0: TestDescriptor?) = Unit
@@ -82,7 +89,7 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
-fun printResults(desc: TestDescriptor, result: TestResult, repeatFirst: Boolean = false) {
+fun printResults(desc: TestDescriptor, result: TestResult) {
     if (desc.parent != null) {
         val output = result.run {
             "Results: $resultType (" +
@@ -95,10 +102,6 @@ fun printResults(desc: TestDescriptor, result: TestResult, repeatFirst: Boolean 
         val testResultLine = "|  $output  |"
         val repeatLength = testResultLine.length
         val seperationLine = "-".repeat(repeatLength)
-        if(repeatFirst){
-            println(seperationLine)
-            println(seperationLine)
-        }
         println(seperationLine)
         println(testResultLine)
         println(seperationLine)
