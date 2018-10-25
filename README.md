@@ -30,4 +30,4 @@ dependencies {
 ```
 
 # guide
-For the guide go to https://kotlinpoetdsl.devhaan.nl/
+For the guide go to https://tieskedh.gitbook.io/kotlinpoetdsl/
