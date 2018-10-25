@@ -11,7 +11,7 @@ interface IiFInterface {
 }
 
 
-class IfClassStart(private val builder: BlockWrapper<*, *>) : IiFInterface{
+class IfClassStart(private val builder: BlockWrapper<*, *, *>) : IiFInterface{
     override fun ifp(format: String, vararg parts: Any, statements: CodeBlockBuilder.() -> Unit)
             = buildFirst(statements, "if (($format) == true)", *parts)
 
@@ -25,7 +25,7 @@ class IfClassStart(private val builder: BlockWrapper<*, *>) : IiFInterface{
         val exception = UnFinishException("ifStatement not finished")
         builder.finishHandler.addUnFinishException(exception)
         builder.beginControlFlow(format, *parts)
-        statements(CodeBlockBuilder(builder))
+        builder.addCode(statements)
         return IfClassEnd(exception)
     }
 
@@ -47,7 +47,7 @@ class IfClassStart(private val builder: BlockWrapper<*, *>) : IiFInterface{
             return this
         }
 
-        private fun elseIf(shouldEqual: String, format: String, statements: CodeBlockBuilder.() -> Unit, vararg parts: Any): IfClassEnd {
+        private fun elseIf(shouldEqual: String, format: String, statements: CodeBlockBuilder.() -> Unit, vararg parts: Any) = apply {
             builder.nextControlFlow("else if (($format) == $shouldEqual)", *parts)
             buildSecond(statements)
             return this
@@ -60,7 +60,7 @@ class IfClassStart(private val builder: BlockWrapper<*, *>) : IiFInterface{
         }
 
         private fun buildSecond(statements: CodeBlockBuilder.() -> Unit) {
-            statements(CodeBlockBuilder(builder))
+            builder.addCode(statements)
         }
     }
 }

@@ -19,7 +19,7 @@ interface ISwitch {
     fun switch(format: String = "", vararg parts: Any, switchBuilder: SwitchDSL.()->Unit)
 }
 
-class SwitchStart(private val builder: BlockWrapper<*, *>) : ISwitch{
+class SwitchStart(private val builder: BlockWrapper<*, *, *>) : ISwitch{
     override fun switch(format: String, vararg parts: Any, switchBuilder: SwitchDSL.() -> Unit) {
         _switch(format, parts, switchBuilder = switchBuilder).wrapper(builder)
     }
@@ -31,7 +31,7 @@ fun LazyComponentAcceptor.switch(format: String = "", vararg parts: Any, switchB
 
 
 @CodeBlockLevel
-class SwitchDSL(private val builder: BlockWrapper<*, *>) : LazyComponentAcceptor{
+class SwitchDSL(private val builder: BlockWrapper<*, *, *>) : LazyComponentAcceptor{
     private val cbb = CodeBlockBuilder(builder)
 
     @JvmName("thenComponent")

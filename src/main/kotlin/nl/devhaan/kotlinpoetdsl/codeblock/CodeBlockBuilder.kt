@@ -4,11 +4,10 @@ import nl.devhaan.kotlinpoetdsl.CodeBlockLevel
 import nl.devhaan.kotlinpoetdsl.Level
 import nl.devhaan.kotlinpoetdsl.helpers.BlockWrapper
 
-@UseExperimental(Uncertain::class)
 @CodeBlockLevel
 @Level
-class CodeBlockBuilder(
-        private val builder: BlockWrapper<*,*>
+class CodeBlockBuilder (
+        private val builder: BlockWrapper<*, *, *>
     ): IRepeat by Repeat(builder),
         IiFInterface by IfClassStart(builder),
         ISwitch by SwitchStart(builder){
@@ -18,9 +17,5 @@ class CodeBlockBuilder(
 
     fun statement(first:String, vararg parts:Any){
         builder.statement(first, *parts)
-    }
-
-    fun build() = let {
-        builder.build()
     }
 }

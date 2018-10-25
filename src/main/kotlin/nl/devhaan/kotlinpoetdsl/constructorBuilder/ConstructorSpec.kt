@@ -78,13 +78,6 @@ class ConstructorSpec private constructor(
     )
 }
 
-fun TypeSpec.Builder.addConstructor(constructor: ConstructorSpec) = apply{
-    if (constructor.isPrimary) {
-        primaryConstructor(constructor.funSpec)
-        addProperties(constructor.properties)
-    } else addFunction(constructor.funSpec)
-}
-
 /** Warning: Only constructors are allowed */
 fun FunSpec.toConstructor() =
         ConstructorSpec.Builder( false, this.toFunctionConstructorBuilder()).build()
