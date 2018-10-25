@@ -4,10 +4,10 @@ import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.TypeSpec
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
+import nl.devhaan.kotlinpoetdsl.addConstructor
 import nl.devhaan.kotlinpoetdsl.classes.buildClass
 import nl.devhaan.kotlinpoetdsl.classes.clazz
 import nl.devhaan.kotlinpoetdsl.constructorBuilder.ConstructorSpec
-import nl.devhaan.kotlinpoetdsl.constructorBuilder.addConstructor
 import nl.devhaan.kotlinpoetdsl.constructorBuilder.buildConstructor
 import nl.devhaan.kotlinpoetdsl.constructorBuilder.constructor
 import nl.devhaan.kotlinpoetdsl.final

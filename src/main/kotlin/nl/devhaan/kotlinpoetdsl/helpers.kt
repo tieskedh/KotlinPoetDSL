@@ -16,3 +16,4 @@ fun String.S() = "\"$this\""
 
 fun TypeSpec.println() = println(this)
 fun FunSpec.println() = println(this)
+fun CodeBlock.println() = println(this)

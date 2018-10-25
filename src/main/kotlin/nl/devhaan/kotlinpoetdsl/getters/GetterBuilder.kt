@@ -12,23 +12,22 @@ class GetterBuilder(
         private val callBack: (FunSpec) -> Unit
 ) {
 
-    operator fun invoke(codeBlock: CodeBlock) = build {
-        addCode(codeBlock)
+    fun build(codeBlock: CodeBlock) = _build {
+        addCode(codeBlock).build()
+    }
+    fun build(format: String, vararg args: Any) = _build {
+        statement(format, *args).build()
     }
 
-    operator fun invoke(buildScript: CodeBlockBuilder.() -> Unit) = build {
-        CodeBlockBuilder(this).also(buildScript).build()
+    fun build(buildScript: CodeBlockBuilder.() -> Unit) = _build {
+        addCode(buildScript).build()
     }
 
-    private fun build(script: FuncBlockWrapper.() -> Unit) =
-            initBuilder().also(script).build().also(callBack)
+    private fun _build(script: FuncBlockWrapper.() -> FunSpec) =
+            initBuilder().let(script).also(callBack)
 
     private fun initBuilder() = FuncBlockWrapper(
             FunSpec.getterBuilder().addModifiers(*accessor.modifiers)
     )
-
-    fun addStatement(format: String, values: Array<out Any?>) = build {
-        statement(format, values)
-    }
 
 }

@@ -20,54 +20,53 @@ class FuncBuilder(
     private fun build(): FunSpec = builder.build().also(callBack)
 
     private lateinit var builder: FuncBlockWrapper
-    private val codeBlockBuilder get() = CodeBlockBuilder(builder)
 
     fun initBuilder(name: String) = FuncBlockWrapper(FunSpec.builder(name).addModifiers(*accessor.modifiers)).also {
         builder = it
     }
 
     fun initFunc(name: String, vararg variables: Variable) = apply {
-        builder = initBuilder(name).also {
-            it.addParameters(variables)
-        }
+        initBuilder(name).addParameters(variables)
     }
 
-    fun buildReturn(typeName: TypeName, buildScript: CodeBlockBuilder.() -> Unit): FunSpec {
-        builder.returns(typeName)
-        codeBlockBuilder.let {
-            buildScript(it)
-            return@let it.build()
-        }
-        return builder.build().also(callBack)
-    }
+    fun buildReturn(typeName: TypeName, buildScript: CodeBlockBuilder.() -> Unit) =
+            builder.returns(typeName).addCode(buildScript).build().also(callBack)
 
 
     fun buildReturn(name: String, vararg variables: Variable, buildScript: CodeBlockBuilder.() -> Unit) = build(name, buildScript) {
-        builder.addParameters(variables)
+        addParameters(variables)
     }
 
-    private fun build(name: String, codeBlockBuildScript: CodeBlockBuilder.() -> Unit, buildScript: FuncBuilder.() -> Unit = {}): FunSpec {
-        initBuilder(name)
-        codeBlockBuilder.let {
-            codeBlockBuildScript(it)
-            buildScript(this)
-            return@let it.build()
-        }
-        return builder.build().also(callBack)
-    }
+    private fun build(name: String, ReceivedBuildScript: CodeBlockBuilder.() -> Unit, internalBuildScript: FuncBlockWrapper.() -> Unit = {}) =
+            initBuilder(name)
+                    .also(internalBuildScript)
+                    .addCode(ReceivedBuildScript)
+                    .build()
+                    .also(callBack)
 
-    fun startExtensionFunction(receiver: TypeName, name: String, variables: Array<out Variable> = emptyArray(), modifiers: Array<out KModifier> = emptyArray()) = apply {
-        builder = initBuilder(name).also {
+    fun startExtensionFunction(
+            receiver: TypeName,
+            name: String,
+            variables: Array<out Variable> = emptyArray(),
+            modifiers: Array<out KModifier> = emptyArray()
+    ) = apply {
+        initBuilder(name).also {
             it.receiver(receiver)
             it.addParameters(variables)
             it.addModifiers(modifiers)
         }
     }
 
-    fun buildExtensionFunction(receiver: TypeName, name: String, variables: Array<out Variable> = emptyArray(), modifiers: Array<out KModifier> = emptyArray(), buildScript: CodeBlockBuilder.() -> Unit) = build(name, buildScript) {
-        builder.addParameters(variables)
-        builder.receiver(receiver)
-        builder.addModifiers(modifiers)
+    fun buildExtensionFunction(
+            receiver: TypeName,
+            name: String,
+            variables: Array<out Variable> = emptyArray(),
+            modifiers: Array<out KModifier> = emptyArray(),
+            buildScript: CodeBlockBuilder.() -> Unit
+    ) = build(name, buildScript) {
+        addParameters(variables)
+        receiver(receiver)
+        addModifiers(modifiers)
     }
 }
 

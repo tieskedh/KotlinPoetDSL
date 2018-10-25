@@ -6,6 +6,6 @@ import nl.devhaan.kotlinpoetdsl.helpers.BlockWrapper
 @CodeBlockLevel
 interface LazyComponentAcceptor
 
-class LazyComponent(val wrapper : (BlockWrapper<*, *>) -> Unit)
+class LazyComponent(val wrapper : (BlockWrapper<*, *, *>) -> Unit)
 
-fun buildLazyComponent(builder : (BlockWrapper<*, *>) ->Unit) = LazyComponent(builder)
+fun buildLazyComponent(builder : (BlockWrapper<*, *, *>) ->Unit) = LazyComponent(builder)
