@@ -5,3 +5,4 @@ V0.2.0
 
 # additions
 - added repeat(TIMES, ARG, BODY) to codeblock
+- added String.addCode, String.addMarginedCode and String.addIndentedCode()

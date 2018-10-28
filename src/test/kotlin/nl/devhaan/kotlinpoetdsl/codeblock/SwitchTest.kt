@@ -1,23 +1,24 @@
-package nl.devhaan.kotlinpoetdsl
+package nl.devhaan.kotlinpoetdsl.codeblock
 
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
-import nl.devhaan.kotlinpoetdsl.codeblock.switch
+import nl.devhaan.kotlinpoetdsl.S
 import nl.devhaan.kotlinpoetdsl.functions.createFun
 import nl.devhaan.kotlinpoetdsl.functions.func
 import nl.devhaan.kotlinpoetdsl.functions.returns
+import nl.devhaan.kotlinpoetdsl.of
 
 /**
  * @Todo Switch is now "manually" implemented, update when KotlinPoet provide better support
  */
-class SwitchCodeBlockTest : StringSpec({
+class SwitchTest : StringSpec({
     "switch with s_case"{
         createFun {
             func("switch") {
                 switch("val a = Random.nextInt(10)") {
                     "a < 5" then "println(\"little\")"
                     "a == 5" then {
-                        "println(%S)".argStatement("center")
+                        "println(%S)".statement("center")
                     }
                     "a > 5".then("println(%S)", "big")
                 }
