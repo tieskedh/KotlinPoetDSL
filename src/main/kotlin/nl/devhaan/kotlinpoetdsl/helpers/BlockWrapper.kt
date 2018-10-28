@@ -46,7 +46,7 @@ interface BlockWrapper<out RETURN, out SELF : BlockWrapper<RETURN, SELF, BUILDER
 fun FunSpec.Builder.wrapper() : BlockWrapper<FunSpec, FuncBlockWrapper, FunSpec.Builder> = FuncBlockWrapper(this)
 
 fun CodeBlock.Builder.wrapper() : BlockWrapper<CodeBlock, CodeBlockWrapper, CodeBlock.Builder> = CodeBlockWrapper(this)
-fun buildCodeBlock(builder: CodeBlockBuilder.() -> Unit): CodeBlock = CodeBlock.builder().wrapper().addCode(builder).build()
+fun createCodeBlock(builder: CodeBlockBuilder.() -> Unit): CodeBlock = CodeBlock.builder().wrapper().addCode(builder).build()
 
 class CodeBlockWrapper(
         private val builder: CodeBlock.Builder = CodeBlock.builder()

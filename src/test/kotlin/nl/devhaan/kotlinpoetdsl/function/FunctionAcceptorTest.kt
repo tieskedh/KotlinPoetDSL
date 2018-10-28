@@ -6,10 +6,10 @@ import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.TypeSpec
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
-import nl.devhaan.kotlinpoetdsl.classes.buildClass
+import nl.devhaan.kotlinpoetdsl.classes.createClass
 import nl.devhaan.kotlinpoetdsl.classes.clazz
 import nl.devhaan.kotlinpoetdsl.files.file
-import nl.devhaan.kotlinpoetdsl.functions.buildFun
+import nl.devhaan.kotlinpoetdsl.functions.createFun
 import nl.devhaan.kotlinpoetdsl.functions.func
 import nl.devhaan.kotlinpoetdsl.open
 import nl.devhaan.kotlinpoetdsl.protected
@@ -38,7 +38,7 @@ class FunctionAcceptorTest : StringSpec({
             .build()
 
     "builder without modifier"{
-        buildFun {
+        createFun {
             func("func") {
                 statement("println(%S)", "hi")
             }
@@ -46,7 +46,7 @@ class FunctionAcceptorTest : StringSpec({
     }
 
     "builder with modifier"{
-        buildFun {
+        createFun {
             open.func("func") {
                 statement("println(%S)", "hi")
             }
@@ -90,7 +90,7 @@ class FunctionAcceptorTest : StringSpec({
 
 
     "class without modifier"{
-        buildClass {
+        createClass {
             clazz("HelloWorld") {
                 func("func") {
                     statement("println(%S)", "hi")
@@ -102,7 +102,7 @@ class FunctionAcceptorTest : StringSpec({
     }
 
     "class with initialized Modifier"{
-        buildClass {
+        createClass {
             clazz("HelloWorld") {
                 func(oneFun)
             }
@@ -112,7 +112,7 @@ class FunctionAcceptorTest : StringSpec({
     }
 
     "class add modifier"{
-        buildClass {
+        createClass {
             clazz("HelloWorld") {
                 open.func(zeroFun)
             }
@@ -122,7 +122,7 @@ class FunctionAcceptorTest : StringSpec({
     }
 
     "class merge modifier"{
-        buildClass {
+        createClass {
             clazz("HelloWorld") {
                 protected.func(oneFun)
             }

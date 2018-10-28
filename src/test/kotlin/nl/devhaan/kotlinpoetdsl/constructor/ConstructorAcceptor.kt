@@ -5,10 +5,10 @@ import com.squareup.kotlinpoet.TypeSpec
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 import nl.devhaan.kotlinpoetdsl.addConstructor
-import nl.devhaan.kotlinpoetdsl.classes.buildClass
+import nl.devhaan.kotlinpoetdsl.classes.createClass
 import nl.devhaan.kotlinpoetdsl.classes.clazz
 import nl.devhaan.kotlinpoetdsl.constructorBuilder.ConstructorSpec
-import nl.devhaan.kotlinpoetdsl.constructorBuilder.buildConstructor
+import nl.devhaan.kotlinpoetdsl.constructorBuilder.createConstructor
 import nl.devhaan.kotlinpoetdsl.constructorBuilder.constructor
 import nl.devhaan.kotlinpoetdsl.final
 import nl.devhaan.kotlinpoetdsl.private
@@ -18,19 +18,19 @@ class ConstructorAcceptor : StringSpec({
     val oneConstr = ConstructorSpec.constructorBuilder(false).addModifiers(KModifier.PRIVATE).build()
     val twoConstr = ConstructorSpec.constructorBuilder(false).addModifiers(KModifier.FINAL, KModifier.PRIVATE).build()
     "builder without modifier"{
-        buildConstructor {
+        createConstructor {
             constructor{}
         } shouldBe zeroConstr
     }
 
     "builder with modifier"{
-        buildConstructor {
+        createConstructor {
             private.constructor{}
         } shouldBe oneConstr
     }
 
     "class without modifier"{
-        buildClass {
+        createClass {
             clazz("Clazz"){
                 constructor()
             }
@@ -40,7 +40,7 @@ class ConstructorAcceptor : StringSpec({
     }
 
     "class with initialized modifier"{
-        buildClass {
+        createClass {
             clazz("Clazz"){
                 constructor(oneConstr)
             }
@@ -50,7 +50,7 @@ class ConstructorAcceptor : StringSpec({
     }
 
     "class add modifier"{
-        buildClass {
+        createClass {
             clazz("Clazz"){
                 private.constructor(zeroConstr)
             }
@@ -60,7 +60,7 @@ class ConstructorAcceptor : StringSpec({
     }
 
     "class merge modifier"{
-        buildClass {
+        createClass {
             clazz("Clazz"){
                 final.constructor(oneConstr)
             }

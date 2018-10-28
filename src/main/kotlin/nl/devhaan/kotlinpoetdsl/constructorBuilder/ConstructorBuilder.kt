@@ -5,7 +5,7 @@ import nl.devhaan.kotlinpoetdsl.IAccessor
 import nl.devhaan.kotlinpoetdsl.IBuilder
 import nl.devhaan.kotlinpoetdsl.Variable
 import nl.devhaan.kotlinpoetdsl.codeblock.CodeBlockBuilder
-import nl.devhaan.kotlinpoetdsl.helpers.buildCodeBlock
+import nl.devhaan.kotlinpoetdsl.helpers.createCodeBlock
 
 class ConstructorBuilder(
         val accessor: IAccessor<*>,
@@ -21,7 +21,7 @@ class ConstructorBuilder(
     }
 
     fun build(script: CodeBlockBuilder.() -> Unit): ConstructorSpec {
-        builder.addCode(buildCodeBlock(script))
+        builder.addCode(createCodeBlock(script))
         return build()
     }
 

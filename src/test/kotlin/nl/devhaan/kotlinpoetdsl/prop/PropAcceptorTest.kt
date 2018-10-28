@@ -6,11 +6,11 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
-import nl.devhaan.kotlinpoetdsl.classes.buildClass
+import nl.devhaan.kotlinpoetdsl.classes.createClass
 import nl.devhaan.kotlinpoetdsl.classes.clazz
 import nl.devhaan.kotlinpoetdsl.files.file
 import nl.devhaan.kotlinpoetdsl.final
-import nl.devhaan.kotlinpoetdsl.properties.buildProp
+import nl.devhaan.kotlinpoetdsl.properties.createProp
 import nl.devhaan.kotlinpoetdsl.properties.prop
 import nl.devhaan.kotlinpoetdsl.public
 import nl.devhaan.kotlinpoetdsl.valOf
@@ -21,13 +21,13 @@ class PropAcceptorTest : StringSpec({
     val twoProp = PropertySpec.builder("prop", String::class, KModifier.PUBLIC, KModifier.FINAL).build()
 
     "builder without modifier"{
-        buildProp {
+        createProp {
             prop("prop" valOf String::class)
         } shouldBe zeroProp
     }
 
     "builder with modifier"{
-        buildProp {
+        createProp {
             final.prop("prop" valOf String::class)
         } shouldBe oneProp
     }
@@ -65,7 +65,7 @@ class PropAcceptorTest : StringSpec({
     }
 
     "class without modifier"{
-        buildClass {
+        createClass {
             clazz("HelloWorld") {
                 prop("prop" valOf String::class)
             }
@@ -75,7 +75,7 @@ class PropAcceptorTest : StringSpec({
     }
 
     "class with initialized modifier"{
-        buildClass {
+        createClass {
             clazz("HelloWorld") {
                 prop(oneProp)
             }
@@ -85,7 +85,7 @@ class PropAcceptorTest : StringSpec({
     }
 
     "class add modifier"{
-        buildClass {
+        createClass {
             clazz("HelloWorld") {
                 final.prop(zeroProp)
             }
@@ -95,7 +95,7 @@ class PropAcceptorTest : StringSpec({
     }
 
     "class merge modifier"{
-        buildClass {
+        createClass {
             clazz("HelloWorld") {
                 public.prop(oneProp)
             }

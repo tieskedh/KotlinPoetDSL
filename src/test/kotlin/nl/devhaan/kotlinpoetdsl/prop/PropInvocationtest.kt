@@ -5,7 +5,6 @@ import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.PropertySpec
 import io.kotlintest.shouldBe
-import io.kotlintest.shouldThrow
 import io.kotlintest.specs.StringSpec
 import nl.devhaan.kotlinpoetdsl.files.file
 import nl.devhaan.kotlinpoetdsl.getters.getter
@@ -23,7 +22,7 @@ class PropInvocationtest : StringSpec({
             prop("prop" varOf String::class)
         } shouldBe FileSpec.builder("", "HelloWorld")
                 .addProperty(
-                        PropertySpec.varBuilder("prop", String::class).build()
+                        PropertySpec.builder("prop", String::class).mutable().build()
                 ).build()
     }
 
@@ -41,7 +40,8 @@ class PropInvocationtest : StringSpec({
             prop("prop".varOf<Int>("1"))
         } shouldBe FileSpec.builder("", "HelloWorld")
                 .addProperty(
-                        PropertySpec.varBuilder("prop", Int::class)
+                        PropertySpec.builder("prop", Int::class)
+                                .mutable()
                                 .initializer("1")
                                 .build()
                 ).build()
@@ -117,7 +117,7 @@ class PropInvocationtest : StringSpec({
                 inline.getter("return 1")
             }
         } shouldBe FileSpec.builder("", "HelloWorld").addProperty(
-                PropertySpec.varBuilder("prop", Int::class).getter(
+                PropertySpec.builder("prop", Int::class).getter(
                         FunSpec.getterBuilder()
                                 .addStatement("return 1")
                                 .addModifiers(KModifier.INLINE)
@@ -127,7 +127,7 @@ class PropInvocationtest : StringSpec({
                                 .addParameter("value", String::class)
                                 .addModifiers(KModifier.INLINE)
                                 .build()
-                ).build()
+                ).mutable().build()
         ).build()
     }
 })

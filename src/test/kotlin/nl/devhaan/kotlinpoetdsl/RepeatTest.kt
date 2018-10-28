@@ -1,15 +1,13 @@
 package nl.devhaan.kotlinpoetdsl
 
 import com.squareup.kotlinpoet.CodeBlock
-import com.squareup.kotlinpoet.FunSpec
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
-import nl.devhaan.kotlinpoetdsl.helpers.FuncBlockWrapper
-import nl.devhaan.kotlinpoetdsl.helpers.buildCodeBlock
+import nl.devhaan.kotlinpoetdsl.helpers.createCodeBlock
 
 class RepeatTest : StringSpec({
     "foreach"{
-        buildCodeBlock {
+        createCodeBlock {
             statement("var total = 0")
             forEach("i in 0 until 10") {
                 statement("total += i")
@@ -24,7 +22,7 @@ class RepeatTest : StringSpec({
 
 
     "doRepeat asLongAs"{
-        buildCodeBlock {
+        createCodeBlock {
             statement("var total = 0")
             statement("var i = 0")
             doRepeat {
@@ -42,7 +40,7 @@ class RepeatTest : StringSpec({
     }
 
     "doRepeat forever"{
-        buildCodeBlock {
+        createCodeBlock {
             statement("var total = 0")
             statement("var i = 0")
             doRepeat {
@@ -60,7 +58,7 @@ class RepeatTest : StringSpec({
     }
 
     "repeatWhile"{
-        buildCodeBlock {
+        createCodeBlock {
             statement("var total = 0")
             statement("var i = 0")
             repeatWhile("i < 10"){

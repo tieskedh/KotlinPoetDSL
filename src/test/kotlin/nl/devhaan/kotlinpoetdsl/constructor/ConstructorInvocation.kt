@@ -4,7 +4,7 @@ import com.squareup.kotlinpoet.*
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 import nl.devhaan.kotlinpoetdsl.*
-import nl.devhaan.kotlinpoetdsl.classes.buildClass
+import nl.devhaan.kotlinpoetdsl.classes.createClass
 import nl.devhaan.kotlinpoetdsl.classes.clazz
 import nl.devhaan.kotlinpoetdsl.classes.extends
 import nl.devhaan.kotlinpoetdsl.constructorBuilder.constructor
@@ -15,7 +15,7 @@ import nl.devhaan.kotlinpoetdsl.files.file
 
 class ConstructorInvocation : StringSpec({
     "2nd constructor without body with parameter"{
-        buildClass {
+        createClass {
             clazz("Clazz") {
                 constructor("a".of<Int>("4"))
             }
@@ -26,7 +26,7 @@ class ConstructorInvocation : StringSpec({
         ).build()
     }
     "2nd constructor with body and parameter"{
-        buildClass {
+        createClass {
             clazz("Clazz") {
                 constructor("a".of<Int>("4")) {}
             }
@@ -38,7 +38,7 @@ class ConstructorInvocation : StringSpec({
     }
 
     "private 2nd constructor without body and parameters"{
-        buildClass {
+        createClass {
             clazz("Clazz") {
                 private.constructor()
             }
@@ -50,7 +50,7 @@ class ConstructorInvocation : StringSpec({
     }
 
     "2nd constructor with thizz without body"{
-        buildClass {
+        createClass {
             clazz("Clazz", "a" valOf String::class) {
                 constructor("a" of Int::class).thiz("a.toString()")
             }
@@ -67,7 +67,7 @@ class ConstructorInvocation : StringSpec({
     }
 
     "2nd constructor with thizz with body"{
-        buildClass {
+        createClass {
             clazz("Clazz", "a" valOf String::class) {
                 constructor("a" of Int::class).thiz("a.toString()") {
                     statement("println(1)")
@@ -87,7 +87,7 @@ class ConstructorInvocation : StringSpec({
     }
 
     "2nd constructor with zuper without body"{
-        buildClass {
+        createClass {
             clazz("Clazz") extends String::class{
                 constructor("arg" of String::class).zuper("arg")
             }
@@ -100,7 +100,7 @@ class ConstructorInvocation : StringSpec({
     }
 
     "2nd constructor with zuper with body"{
-        buildClass {
+        createClass {
             clazz("Clazz") extends String::class{
                 constructor("arg" valOf String::class).zuper("arg") {
                     "println(1)".statement()
@@ -118,7 +118,7 @@ class ConstructorInvocation : StringSpec({
 
 
     "1st constructor without body"{
-        buildClass {
+        createClass {
             clazz("Clazz") {
                 primary.constructor("a".of<Int>("4"))
             }
@@ -129,7 +129,7 @@ class ConstructorInvocation : StringSpec({
         ).build()
     }
     "1st constructor with body"{
-        buildClass {
+        createClass {
             clazz("Clazz") {
                 primary.constructor("a".of<Int>("4")) {}
             }
@@ -141,7 +141,7 @@ class ConstructorInvocation : StringSpec({
     }
 
     "private 1st constructor with accessor"{
-        buildClass {
+        createClass {
             clazz("Clazz") {
                 private.primary.constructor()
             }
@@ -153,7 +153,7 @@ class ConstructorInvocation : StringSpec({
     }
 
     "1st constructor with property"{
-        buildClass {
+        createClass {
             clazz("Clazz") {
                 primary.constructor("a" valOf Int::class)
             }

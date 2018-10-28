@@ -3,7 +3,7 @@ package nl.devhaan.kotlinpoetdsl
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 import nl.devhaan.kotlinpoetdsl.codeblock.switch
-import nl.devhaan.kotlinpoetdsl.functions.buildFun
+import nl.devhaan.kotlinpoetdsl.functions.createFun
 import nl.devhaan.kotlinpoetdsl.functions.func
 import nl.devhaan.kotlinpoetdsl.functions.returns
 
@@ -12,7 +12,7 @@ import nl.devhaan.kotlinpoetdsl.functions.returns
  */
 class SwitchCodeBlockTest : StringSpec({
     "switch with s_case"{
-        buildFun {
+        createFun {
             func("switch") {
                 switch("val a = Random.nextInt(10)") {
                     "a < 5" then "println(\"little\")"
@@ -41,7 +41,7 @@ class SwitchCodeBlockTest : StringSpec({
 
     "nested switch"{
 
-        buildFun {
+        createFun {
             Int::class.func("switch", "b" of Int::class, "shouldBe" of String::class) returns Boolean::class{
                 switch("shouldBe") {
                     "bigger".S() then switch{

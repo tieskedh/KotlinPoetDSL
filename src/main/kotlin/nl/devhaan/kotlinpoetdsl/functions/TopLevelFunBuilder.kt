@@ -36,5 +36,5 @@ class TopLevelFunBuilder : FunctionAcceptor, AccessorContainer<TopLevelFunAccess
     }
 }
 
-fun buildFun(builder: TopLevelFunBuilder.() -> FunSpec) =
+fun createFun(builder: TopLevelFunBuilder.() -> FunSpec) =
         TopLevelFunBuilder().also { builder(it) }.build()

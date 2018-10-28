@@ -33,4 +33,4 @@ class TopLevelInterfaceBuilder : InterfaceAcceptor, AccessorContainer<TopLevelIn
     }
 }
 
-fun buildInterface(builder: TopLevelInterfaceBuilder.()->TypeSpec) = TopLevelInterfaceBuilder().also { builder(it) }.build()
+fun createInterface(builder: TopLevelInterfaceBuilder.()->TypeSpec) = TopLevelInterfaceBuilder().also { builder(it) }.build()

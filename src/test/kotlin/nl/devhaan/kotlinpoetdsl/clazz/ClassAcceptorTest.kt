@@ -6,10 +6,10 @@ import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.TypeSpec
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
-import nl.devhaan.kotlinpoetdsl.`interface`.buildInterface
+import nl.devhaan.kotlinpoetdsl.`interface`.createInterface
 import nl.devhaan.kotlinpoetdsl.`interface`.interf
 import nl.devhaan.kotlinpoetdsl.abstract
-import nl.devhaan.kotlinpoetdsl.classes.buildClass
+import nl.devhaan.kotlinpoetdsl.classes.createClass
 import nl.devhaan.kotlinpoetdsl.classes.clazz
 import nl.devhaan.kotlinpoetdsl.files.file
 import nl.devhaan.kotlinpoetdsl.functions.func
@@ -31,7 +31,7 @@ class ClassAcceptorTest : StringSpec({
 
 
     "abstract builder with abstract method"{
-        buildClass{
+        createClass{
             abstract.clazz("Clazz"){
                 abstract.func("hi")
             }
@@ -42,13 +42,13 @@ class ClassAcceptorTest : StringSpec({
     }
 
     "builder without modifier"{
-        buildClass {
+        createClass {
             clazz("Clazz"){}
         } shouldBe zeroClass
     }
 
     "builder with modifier"{
-        buildClass {
+        createClass {
             open.clazz("Clazz"){}
         } shouldBe oneClass
     }
@@ -86,7 +86,7 @@ class ClassAcceptorTest : StringSpec({
     }
 
     "interface without modifier"{
-        buildInterface {
+        createInterface {
             interf("HelloWorld"){
                 clazz("Clazz"){}
             }
@@ -96,7 +96,7 @@ class ClassAcceptorTest : StringSpec({
     }
 
     "interface with initialized modifier"{
-        buildInterface {
+        createInterface {
             interf("HelloWorld"){
                 clazz(oneClass)
             }
@@ -106,7 +106,7 @@ class ClassAcceptorTest : StringSpec({
     }
 
     "interface add modifier"{
-        buildInterface {
+        createInterface {
             interf("HelloWorld"){
                 open.clazz(zeroClass)
             }
@@ -116,7 +116,7 @@ class ClassAcceptorTest : StringSpec({
     }
 
     "interface merge modifier"{
-        buildInterface {
+        createInterface {
             interf("HelloWorld"){
                 internal.clazz(oneClass)
             }
@@ -125,7 +125,7 @@ class ClassAcceptorTest : StringSpec({
                 .build()
     }
     "class without modifier"{
-        buildClass{
+        createClass{
             clazz("HelloWorld") {
                 clazz("Clazz"){}
             }
@@ -135,7 +135,7 @@ class ClassAcceptorTest : StringSpec({
     }
 
     "class with initialized Modifier"{
-        buildClass {
+        createClass {
             clazz("HelloWorld") {
                 clazz(oneClass)
             }
@@ -145,7 +145,7 @@ class ClassAcceptorTest : StringSpec({
     }
 
     "class add modifier"{
-        buildClass {
+        createClass {
             clazz("HelloWorld") {
                 open.clazz(zeroClass)
             }
@@ -155,7 +155,7 @@ class ClassAcceptorTest : StringSpec({
     }
 
     "class merge modifier"{
-        buildClass {
+        createClass {
             clazz("HelloWorld") {
                 internal.clazz(oneClass)
             }
