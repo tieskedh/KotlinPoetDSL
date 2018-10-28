@@ -1,4 +1,4 @@
-package nl.devhaan.kotlinpoetdsl
+package nl.devhaan.kotlinpoetdsl.codeblock
 
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.ParameterSpec
@@ -9,8 +9,9 @@ import io.kotlintest.specs.StringSpec
 import nl.devhaan.kotlinpoetdsl.functions.createFun
 import nl.devhaan.kotlinpoetdsl.functions.func
 import nl.devhaan.kotlinpoetdsl.helpers.UnFinishException
+import nl.devhaan.kotlinpoetdsl.of
 
-class IfCodeBlockTest : StringSpec({
+class IfTest : StringSpec({
     val nullableBool = ParameterSpec.builder("bool", String::class.asTypeName().asNullable()).build()
 
     "if end"{
