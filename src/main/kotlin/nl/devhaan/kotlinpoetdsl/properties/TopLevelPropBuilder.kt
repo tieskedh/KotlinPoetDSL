@@ -23,4 +23,4 @@ class TopLevelPropBuilder : PropAcceptor, AccessorContainer<TopLevelPropAccessor
     fun build() = propertySpec
 }
 
-fun buildProp(builder: TopLevelPropBuilder.()->PropertySpec) = TopLevelPropBuilder().also { builder(it) }.build()
+fun createProp(builder: TopLevelPropBuilder.()->PropertySpec) = TopLevelPropBuilder().also { builder(it) }.build()

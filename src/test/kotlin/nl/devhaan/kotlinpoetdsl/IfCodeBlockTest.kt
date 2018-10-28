@@ -6,7 +6,7 @@ import com.squareup.kotlinpoet.asTypeName
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.StringSpec
-import nl.devhaan.kotlinpoetdsl.functions.buildFun
+import nl.devhaan.kotlinpoetdsl.functions.createFun
 import nl.devhaan.kotlinpoetdsl.functions.func
 import nl.devhaan.kotlinpoetdsl.helpers.UnFinishException
 
@@ -14,7 +14,7 @@ class IfCodeBlockTest : StringSpec({
     val nullableBool = ParameterSpec.builder("bool", String::class.asTypeName().asNullable()).build()
 
     "if end"{
-        buildFun{
+        createFun{
             func("func", "bool" of Boolean::class) {
                 If("bool") {
                     statement("println(true)")
@@ -28,7 +28,7 @@ class IfCodeBlockTest : StringSpec({
                 .build()
     }
     "ifp end"{
-        buildFun {
+        createFun {
             func("func", nullableBool) {
                 ifp("bool") {
                     statement("println(true)")
@@ -42,7 +42,7 @@ class IfCodeBlockTest : StringSpec({
                 .build()
     }
     "ifn end"{
-        buildFun {
+        createFun {
             func("func", nullableBool) {
                 ifn("bool") {
                     statement("println(false)")
@@ -57,7 +57,7 @@ class IfCodeBlockTest : StringSpec({
     }
 
     "orElseIfp"{
-        buildFun {
+        createFun {
             func("func", nullableBool) {
                 ifn("bool") {
                     statement("println(false)")
@@ -76,7 +76,7 @@ class IfCodeBlockTest : StringSpec({
     }
 
     "orElseIfn"{
-        buildFun {
+        createFun {
             func("func", nullableBool) {
                 ifp("bool") {
                     statement("println(true)")
@@ -97,7 +97,7 @@ class IfCodeBlockTest : StringSpec({
     "orElseIf orElse"{
         val int = ("int" of Int::class).toParamSpec()
 
-        buildFun {
+        createFun {
             func("func", int) {
                 If("int == 1"){
                     statement("println(\"first\")")
@@ -121,7 +121,7 @@ class IfCodeBlockTest : StringSpec({
 
     "unfinished in IfStart"{
         shouldThrow<UnFinishException> {
-            buildFun {
+            createFun {
                 func("func", nullableBool) {
                     ifp("bool") {}
                 }
@@ -131,7 +131,7 @@ class IfCodeBlockTest : StringSpec({
 
     "unfinished in IfEnd"{
         shouldThrow<UnFinishException> {
-            buildFun {
+            createFun {
                 func("func", nullableBool) {
                     ifp("bool") {}.orElseIfn("bool"){}
                 }

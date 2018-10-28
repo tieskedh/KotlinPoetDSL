@@ -8,4 +8,4 @@ interface LazyComponentAcceptor
 
 class LazyComponent(val wrapper : (BlockWrapper<*, *, *>) -> Unit)
 
-fun buildLazyComponent(builder : (BlockWrapper<*, *, *>) ->Unit) = LazyComponent(builder)
+fun createLazyComponent(builder : (BlockWrapper<*, *, *>) ->Unit) = LazyComponent(builder)

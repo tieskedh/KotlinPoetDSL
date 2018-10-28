@@ -7,7 +7,7 @@ import com.squareup.kotlinpoet.asTypeName
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 import nl.devhaan.kotlinpoetdsl.abstract
-import nl.devhaan.kotlinpoetdsl.classes.buildClass
+import nl.devhaan.kotlinpoetdsl.classes.createClass
 import nl.devhaan.kotlinpoetdsl.classes.clazz
 import nl.devhaan.kotlinpoetdsl.functions.extension
 import nl.devhaan.kotlinpoetdsl.functions.func
@@ -22,7 +22,7 @@ import nl.devhaan.kotlinpoetdsl.private
 class FunctionInvocationTest : StringSpec({
 
     "plain function"{
-        buildClass {
+        createClass {
             clazz("TestClass") {
                 func("func") {
                     statement("println(\"works\")")
@@ -37,7 +37,7 @@ class FunctionInvocationTest : StringSpec({
     }
 
     "function with parameter"{
-        buildClass {
+        createClass {
             clazz("TestClass") {
                 func("func", "toPrint" of String::class) {
                     statement("println(toPrint)")
@@ -53,7 +53,7 @@ class FunctionInvocationTest : StringSpec({
     }
 
     "function with class-return"{
-        buildClass {
+        createClass {
             clazz("TestClass") {
                 func("func") returns String::class{
                     statement("return %S", "ret")
@@ -70,7 +70,7 @@ class FunctionInvocationTest : StringSpec({
 
     "function with typeName-return"{
         val string = String::class.asTypeName()
-        buildClass {
+        createClass {
             clazz("TestClass") {
                 func("func") returns string {
                     statement("return %S", "ret")
@@ -86,7 +86,7 @@ class FunctionInvocationTest : StringSpec({
     }
 
     "function with parameter and return"{
-        buildClass {
+        createClass {
             clazz("TestClass") {
                 func("func", "retVal" of String::class) returns String::class{
                     statement("return retVal")
@@ -103,7 +103,7 @@ class FunctionInvocationTest : StringSpec({
     }
 
     "private function with parameter and return"{
-        buildClass {
+        createClass {
             clazz("TestClass") {
                 private.func("func", "retVal" of String::class) returns String::class{
                     statement("return retVal")
@@ -121,7 +121,7 @@ class FunctionInvocationTest : StringSpec({
     }
 
     "private function with parameter"{
-        buildClass {
+        createClass {
             clazz("TestClass") {
                 private.func("func", "toPrint" of String::class) {
                     statement("println(toPrint)")
@@ -138,7 +138,7 @@ class FunctionInvocationTest : StringSpec({
     }
 
     "abstract function no return"{
-        buildClass {
+        createClass {
             abstract.clazz("TestClass") {
                 abstract.func("func", "toPrint" of String::class) {}
             }
@@ -152,7 +152,7 @@ class FunctionInvocationTest : StringSpec({
                 ).build()
     }
     "abstract function with return"{
-        buildClass {
+        createClass {
             abstract.clazz("TestClass") {
                 abstract.func("func", "toPrint" of String::class) returns String::class
             }
@@ -168,7 +168,7 @@ class FunctionInvocationTest : StringSpec({
     }
 
     "receiver-function no return no modifier"{
-        buildClass {
+        createClass {
             clazz("TestClazz") {
                 Int::class.func("func")
             }
@@ -177,7 +177,7 @@ class FunctionInvocationTest : StringSpec({
         ).build()
     }
     "receiver-function no return with modifier"{
-        buildClass {
+        createClass {
             clazz("TestClazz") {
                 private.extension(Int::class.asTypeName()).func("func")
             }
@@ -187,7 +187,7 @@ class FunctionInvocationTest : StringSpec({
     }
 
     "receiver-function with return no modifier"{
-        buildClass {
+        createClass {
             clazz("TestClazz"){
                 Int::class.func("func") returns Int::class
             }
@@ -197,7 +197,7 @@ class FunctionInvocationTest : StringSpec({
     }
 
     "receiver-function with return with modifier"{
-        buildClass {
+        createClass {
             clazz("TestClazz"){
                 private.extension(Int::class).func("func") returns Int::class
             }

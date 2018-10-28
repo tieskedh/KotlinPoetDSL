@@ -36,5 +36,5 @@ class TopLevelConstructorBuilder : ConstructorAcceptor, AccessorContainer<TopLev
     }
 }
 
-fun buildConstructor(builder: TopLevelConstructorBuilder.() -> ConstructorSpec) =
+fun createConstructor(builder: TopLevelConstructorBuilder.() -> ConstructorSpec) =
         TopLevelConstructorBuilder().also { builder(it) }.build()

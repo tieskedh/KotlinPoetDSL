@@ -3,7 +3,7 @@ package nl.devhaan.kotlinpoetdsl.codeblock
 import nl.devhaan.kotlinpoetdsl.CodeBlockLevel
 import nl.devhaan.kotlinpoetdsl.helpers.BlockWrapper
 
-private fun _switch(format: String, vararg parts: Any, switchBuilder: SwitchDSL.()->Unit) = buildLazyComponent{ builder->
+private fun _switch(format: String, vararg parts: Any, switchBuilder: SwitchDSL.()->Unit) = createLazyComponent{ builder->
     if (format == ""){
         builder.beginControlFlow("when")
     } else {

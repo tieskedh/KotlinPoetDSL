@@ -35,5 +35,5 @@ class TopLevelClassBuilder : ClassAcceptor, AccessorContainer<TopLevelClassAcces
 
 }
 
-fun buildClass(builder: TopLevelClassBuilder.() -> TypeSpec) =
+fun createClass(builder: TopLevelClassBuilder.() -> TypeSpec) =
         TopLevelClassBuilder().also { builder(it) }.build()

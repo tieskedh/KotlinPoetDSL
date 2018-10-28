@@ -1,10 +1,8 @@
 package nl.devhaan.kotlinpoetdsl
 
 import com.squareup.kotlinpoet.CodeBlock
-import com.squareup.kotlinpoet.FunSpec
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
-import nl.devhaan.kotlinpoetdsl.helpers.FuncBlockWrapper
 import nl.devhaan.kotlinpoetdsl.helpers.buildCodeBlock
 
 class RepeatTest : StringSpec({
