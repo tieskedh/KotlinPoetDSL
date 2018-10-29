@@ -2,13 +2,17 @@ package nl.devhaan.kotlinpoetdsl.codeblock
 
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
+import com.squareup.kotlinpoet.buildCodeBlock
+import io.kotlintest.fail
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 import nl.devhaan.kotlinpoetdsl.S
+import nl.devhaan.kotlinpoetdsl.endControlFlow
 import nl.devhaan.kotlinpoetdsl.files.file
 import nl.devhaan.kotlinpoetdsl.functions.createFun
 import nl.devhaan.kotlinpoetdsl.functions.func
 import nl.devhaan.kotlinpoetdsl.functions.returns
+import nl.devhaan.kotlinpoetdsl.helpers.createCodeBlock
 import nl.devhaan.kotlinpoetdsl.of
 
 /**
@@ -35,6 +39,20 @@ class SwitchTest : StringSpec({
                    |    }
                    |}
                    |""".trimMargin()
+    }
+
+    "switch with singleline multistatement case"{
+        createCodeBlock {
+            switch {
+                "3" then "println(1); println(1)"
+            }
+        } shouldBe buildCodeBlock {
+            beginControlFlow("when")
+            beginControlFlow("3 ->")
+            addStatement("println(1); println(1)")
+            endControlFlow()
+            endControlFlow()
+        }
     }
 
     "switch with multiline case"{
@@ -84,6 +102,20 @@ class SwitchTest : StringSpec({
                         .endControlFlow()
                         .build()
         ).build()
+    }
+
+    "pre- and post switch"{
+        createCodeBlock {
+            switch("1", prefix = "println(", postFix = ")") {
+                "0" then "1"
+                "1" then "0"
+            }
+        } shouldBe buildCodeBlock {
+            beginControlFlow("println(when(1) {")
+            addStatement("0 -> 1")
+            addStatement("1 -> 0")
+            endControlFlow(")")
+        }
     }
 
 
