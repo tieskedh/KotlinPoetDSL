@@ -41,7 +41,7 @@ class PropBuilder(
 
 
     fun buildProp(variable: Variable, buildScript: PropBuilder.() -> Unit): PropertySpec {
-        val modifiers = variable.modifier.modifiers+ accessor.modifiers
+        val modifiers = variable.modifiers + accessor.modifiers
         val updatedVal = if (KModifier.INLINE !in modifiers) variable else {
             initializer = variable.initializer
             variable.copy(initializer = null)
@@ -102,7 +102,7 @@ class PropBuilder(
         }
     }
 
-    private fun Variable.mustHaveBackingField() = mutable ?: false
+    private fun Variable.mustHaveBackingField() = propertyData?.mutable ?: false
 
     private fun Variable.throwIfNoBackingField() {
         val validGetter = getter?.isInlined() ?: false
