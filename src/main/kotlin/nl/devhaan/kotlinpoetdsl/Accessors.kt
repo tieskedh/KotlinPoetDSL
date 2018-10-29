@@ -55,6 +55,10 @@ inline val <R, T : AccessorContainer<R>> T.inline     get() = accessors(KModifie
 inline val <R, T : AccessorContainer<R>> T.operator   get() = accessors(KModifier.OPERATOR)
 
 
+fun Set<KModifier>.toAccessor()= PlainAccessor(toMutableSet())
+@JvmName("mutableToAccessor")
+fun MutableSet<KModifier>.toAccessor()= PlainAccessor(this)
+
 class PlainAccessor(accessors: MutableSet<KModifier> = mutableSetOf()) : Accessor<PlainAccessor>(accessors)
 abstract class Accessor<out T : Accessor<T>> internal constructor(private val accessors: MutableSet<KModifier> = mutableSetOf()): IAccessor<T> {
     override val abstract   get() = getValue(KModifier.ABSTRACT)

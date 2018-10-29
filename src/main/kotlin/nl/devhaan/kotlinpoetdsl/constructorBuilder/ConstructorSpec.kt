@@ -45,7 +45,7 @@ class ConstructorSpec private constructor(
         private inline fun withFun(script: FunSpec.Builder.() -> Unit) = apply { funSpec.script() }
         fun addParameter(variable: Variable) = apply {
             funSpec.addParameter(variable.toParamSpec())
-            if (variable.mutable != null) properties += variable.copy(initializer = CodeBlock.of(variable.name)).toPropertySpec()
+            if (variable.propertyData != null) properties += variable.copy(initializer = CodeBlock.of(variable.name)).toPropertySpec()
         }
 
         fun addParameters(vararg variable: Variable) = apply {
