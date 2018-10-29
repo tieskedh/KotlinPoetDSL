@@ -1,6 +1,7 @@
 package nl.devhaan.kotlinpoetdsl
 
 import com.squareup.kotlinpoet.*
+import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import nl.devhaan.kotlinpoetdsl.Variable.PropertyData
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
@@ -38,7 +39,7 @@ data class Variable(
             propertySpec.annotations,
             propertySpec.kdoc,
             PropertyData(propertySpec)
-    ){
+    ) {
         _propertySpec = propertySpec
     }
 
@@ -50,7 +51,7 @@ data class Variable(
             paramSpec.annotations,
             paramSpec.kdoc,
             propertyData
-    ){
+    ) {
         _paramSpec = paramSpec
     }
 
@@ -72,8 +73,14 @@ data class Variable(
         )
     }
 
-    private var _propertySpec by LazySettable{
-        PropertySpec.builder(name, typeName, *modifiers.toTypedArray()).also { builder ->
+    private var _propertySpec by LazySettable {
+
+        val (realTypeName, realModifiers) = if (KModifier.VARARG in modifiers) {
+            Array<Any>::class.asClassName().parameterizedBy(WildcardTypeName.subtypeOf(typeName)) to
+                    modifiers - KModifier.VARARG
+        } else typeName to modifiers
+
+        PropertySpec.builder(name, realTypeName, *realModifiers.toTypedArray()).also { builder ->
             builder.addAnnotations(annotiations)
             builder.addKdoc(kdoc)
             propertyData?.apply {
@@ -89,19 +96,22 @@ data class Variable(
 
     fun toPropertySpec() = _propertySpec
 
-    private var _paramSpec by LazySettable{
+    private var _paramSpec by LazySettable {
         ParameterSpec.builder(name, typeName, *modifiers.toTypedArray()).also { builder ->
             initializer?.let(builder::defaultValue)
             builder.addAnnotations(annotiations)
             builder.addKdoc(kdoc)
         }.build()
     }
+
     fun toParamSpec() = _paramSpec
 
     override fun toString(): String {
-        return if (propertyData == null)
-            toParamSpec().toString()
-        else toPropertySpec().toString().removeSuffix("\n")
+        return when {
+            propertyData == null -> toParamSpec().toString()
+            KModifier.VARARG in modifiers -> "vararg "+toPropertySpec().toString().replaceFirst("kotlin.Array<out $typeName>", "$typeName")
+            else -> toPropertySpec().toString()
+        }.removeSuffix("\n")
     }
 }
 

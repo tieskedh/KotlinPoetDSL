@@ -4,46 +4,57 @@ import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.asTypeName
+import com.sun.org.apache.bcel.internal.classfile.Code
 import nl.devhaan.kotlinpoetdsl.Variable.PropertyData
 import kotlin.reflect.KClass
 
-
+// ----------------------------------------- of ----------------------------------------------------------------------
+// ----------------- blank
 infix fun <T : Any> String.of(clazz: KClass<T>) = Variable(this, clazz.asTypeName())
 infix fun String.of(typeName: TypeName) = Variable(this, typeName)
-
-inline fun <reified T> String.of(format: String? = null, vararg values: Any?) =
-        this.of(T::class.asTypeName(), format, *values)
-fun String.of(typeName: TypeName, format: String? = null, vararg values: Any?) = Variable(
+// ----------------- codeblock
+fun String.of(typeName: TypeName, codeBlock: CodeBlock? = null) = Variable(
         name = this,
         typeName = typeName,
-        initializer = format?.let { CodeBlock.of(format, *values) }
+        initializer = codeBlock
 )
+inline fun <reified T> String.of(codeBlock: CodeBlock? = null) =
+        of(T::class.asTypeName(), codeBlock)
+// ---------------- format
+fun String.of(
+        typeName: TypeName,
+        format: String,
+        vararg values: Any?
+) = of(typeName, CodeBlock.of(format, *values))
+inline fun <reified T> String.of(format: String, vararg values: Any?) =
+        of(T::class.asTypeName(), CodeBlock.of(format, *values))
 
-inline fun <reified T : Any> String.valOf(format: String? = null, vararg values: Any?) =
-        this.valOf(T::class.asTypeName(), format, *values)
-fun String.valOf(typeName: TypeName, format: String? = null, vararg values: Any?) = Variable(
-        name = this,
-        typeName = typeName,
-        initializer = format?.let { CodeBlock.of(format, *values) },
-        propertyData = PropertyData(mutable = false)
-)
-
+// ------------------------------------- valOf -----------------------------------------------------------------------
+// ------------------ blank
 infix fun <T : Any> String.valOf(clazz: KClass<T>) = this valOf clazz.asTypeName()
 infix fun String.valOf(typeName: TypeName) = Variable(
         name = this,
         typeName = typeName,
         propertyData = PropertyData(mutable = false)
 )
-
-inline fun <reified T : Any> String.varOf(format: String? = null, vararg values: Any?) = varOf(T::class.asTypeName(), format, *values)
-fun String.varOf(typeName: TypeName, format: String? = null, vararg values: Any?) = Variable(
+// ------------------ code block
+inline fun <reified T : Any> String.valOf(codeBlock: CodeBlock? = null) = valOf(T::class.asTypeName(), codeBlock)
+fun String.valOf(typeName: TypeName, codeBlock: CodeBlock? = null) = Variable(
         name = this,
         typeName = typeName,
-        propertyData = PropertyData(mutable = true),
-        initializer = format?.let { CodeBlock.of(format, *values) }
+        propertyData = PropertyData(mutable = false),
+        initializer = codeBlock
 )
+// ------------------- format
+
+inline fun <reified T : Any> String.valOf(format: String, vararg values: Any?) =
+        this.valOf(T::class.asTypeName(), CodeBlock.of(format, *values))
+fun String.valOf(typeName: TypeName, format: String, vararg values: Any?) =
+        valOf(typeName, CodeBlock.of(format, *values))
 
 
+// ------------------------------------------------- varof -------------------------------------------------------------
+// ----------------------- blank
 infix fun <T : Any> String.varOf(clazz: KClass<T>) = varOf(clazz.asTypeName())
 infix fun String.varOf(typeName: TypeName) = Variable(
         name = this,
@@ -52,6 +63,25 @@ infix fun String.varOf(typeName: TypeName) = Variable(
 )
 
 
+// ------------------- codeBlock
+inline fun <reified T : Any> String.varOf(codeBlock: CodeBlock? = null) = varOf(T::class.asTypeName(), codeBlock)
+fun String.varOf(typeName: TypeName, codeBlock: CodeBlock? = null) = Variable(
+        name = this,
+        typeName = typeName,
+        propertyData = PropertyData(mutable = true),
+        initializer = codeBlock
+)
+
+// ------------------- format
+inline fun <reified T : Any> String.varOf(format: String, vararg values: Any?) =
+        varOf(T::class.asTypeName(), CodeBlock.of(format, *values))
+fun String.varOf(typeName: TypeName, format: String, vararg values: Any?) =
+        varOf(typeName, CodeBlock.of(format, *values))
+
+
+
+// ----------------------------------------------- vararg -------------------------------------------------------------
+// ----------------------------- blank
 infix fun <T : Any> String.vararg(clazz: KClass<T>) = vararg(clazz.asTypeName())
 infix fun String.vararg(typeName: TypeName) = Variable(
         name = this,
@@ -59,10 +89,84 @@ infix fun String.vararg(typeName: TypeName) = Variable(
         modifiers = mutableSetOf(KModifier.VARARG)
 )
 
+// ----------------------------- codeBlock
+inline fun <reified T : Any> String.vararg(codeBlock: CodeBlock? = null) = vararg(T::class.asTypeName(), codeBlock)
+fun String.vararg(typeName: TypeName, codeBlock: CodeBlock? = null) = Variable(
+        name = this,
+        typeName = typeName,
+        modifiers = mutableSetOf(KModifier.VARARG),
+        initializer = codeBlock
+)
+
+//---------------------------- format
+
 inline fun <reified T : Any> String.vararg(format: String? = null, vararg values: Any?) = vararg(T::class.asTypeName(), format, *values)
 fun String.vararg(typeName: TypeName, format: String? = null, vararg values: Any?) = Variable(
         name = this,
         typeName = typeName,
         modifiers = mutableSetOf(KModifier.VARARG),
+        initializer = format?.let { CodeBlock.of(it, *values) }
+)
+
+
+// ----------------------------------------------- varargVal -----------------------------------------------------------
+// ----------------------------- blank
+infix fun <T : Any> String.varargVal(clazz: KClass<T>) = varargVal(clazz.asTypeName())
+infix fun String.varargVal(typeName: TypeName) = Variable(
+        name = this,
+        typeName = typeName,
+        modifiers = mutableSetOf(KModifier.VARARG),
+        propertyData = PropertyData(mutable = false)
+)
+
+// ----------------------------- codeBlock
+inline fun <reified T : Any> String.varargVal(codeBlock: CodeBlock? = null) = varargVal(T::class.asTypeName(), codeBlock)
+fun String.varargVal(typeName: TypeName, codeBlock: CodeBlock? = null) = Variable(
+        name = this,
+        typeName = typeName,
+        modifiers = mutableSetOf(KModifier.VARARG),
+        propertyData = PropertyData(mutable = false),
+        initializer = codeBlock
+)
+
+//---------------------------- format
+
+inline fun <reified T : Any> String.varargVal(format: String? = null, vararg values: Any?) = varargVal(T::class.asTypeName(), format, *values)
+fun String.varargVal(typeName: TypeName, format: String? = null, vararg values: Any?) = Variable(
+        name = this,
+        typeName = typeName,
+        modifiers = mutableSetOf(KModifier.VARARG),
+        propertyData = PropertyData(mutable = false),
+        initializer = format?.let { CodeBlock.of(it, *values) }
+)
+
+// ----------------------------------------------- varargVar -----------------------------------------------------------
+// ----------------------------- blank
+infix fun <T : Any> String.varargVar(clazz: KClass<T>) = varargVar(clazz.asTypeName())
+infix fun String.varargVar(typeName: TypeName) = Variable(
+        name = this,
+        typeName = typeName,
+        modifiers = mutableSetOf(KModifier.VARARG),
+        propertyData = PropertyData(mutable = true)
+)
+
+// ----------------------------- codeBlock
+inline fun <reified T : Any> String.varargVar(codeBlock: CodeBlock? = null) = varargVar(T::class.asTypeName(), codeBlock)
+fun String.varargVar(typeName: TypeName, codeBlock: CodeBlock? = null) = Variable(
+        name = this,
+        typeName = typeName,
+        modifiers = mutableSetOf(KModifier.VARARG),
+        propertyData = PropertyData(mutable = true),
+        initializer = codeBlock
+)
+
+//---------------------------- format
+
+inline fun <reified T : Any> String.varargVar(format: String? = null, vararg values: Any?) = varargVar(T::class.asTypeName(), format, *values)
+fun String.varargVar(typeName: TypeName, format: String? = null, vararg values: Any?) = Variable(
+        name = this,
+        typeName = typeName,
+        modifiers = mutableSetOf(KModifier.VARARG),
+        propertyData = PropertyData(mutable = true),
         initializer = format?.let { CodeBlock.of(it, *values) }
 )
