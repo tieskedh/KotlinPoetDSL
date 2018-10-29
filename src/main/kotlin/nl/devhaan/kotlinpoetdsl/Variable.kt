@@ -97,6 +97,12 @@ data class Variable(
         }.build()
     }
     fun toParamSpec() = _paramSpec
+
+    override fun toString(): String {
+        return if (propertyData == null)
+            toParamSpec().toString()
+        else toPropertySpec().toString().removeSuffix("\n")
+    }
 }
 
 fun PropertySpec.toVariable() = Variable(this)
