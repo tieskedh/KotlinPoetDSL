@@ -71,7 +71,7 @@ class CodeBlockWrapper(
             withBuilder { nextControlFlow(controlFlow, *args) }
 
     override fun endControlFlow(format: String, vararg args: Any) =
-            withBuilder { endControlFlow(format, args) }
+            withBuilder { endControlFlow(format, *args) }
     override fun statement(first: String, vararg parts: Any) =
             withBuilder { addStatement(first, *parts) }
     override fun build(): CodeBlock {

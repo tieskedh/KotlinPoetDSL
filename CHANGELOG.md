@@ -1,8 +1,14 @@
 V0.2.0
 
 # braking changes
-- the "build" in functions now start with "create": KotlinPoet started using build
+- replaces "build" in functions now start with "create": KotlinPoet started using build
+- lazyComponent now needs a parameter which says if the component can be invoked as single statement (no ; is needed)
 
 # additions
 - added repeat(TIMES, ARG, BODY) to codeblock
 - added String.addCode, String.addMarginedCode and String.addIndentedCode()
+- switch has now pre- and postfix
+- switch-cases now accept more arguments
+
+# improvements
+- switch now emits brack
