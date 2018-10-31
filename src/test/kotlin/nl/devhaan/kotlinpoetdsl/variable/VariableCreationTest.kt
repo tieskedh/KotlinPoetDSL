@@ -1,14 +1,15 @@
-package nl.devhaan.kotlinpoetdsl
+package nl.devhaan.kotlinpoetdsl.variable
 
-import com.squareup.kotlinpoet.ClassName
-import com.squareup.kotlinpoet.CodeBlock
+import com.squareup.kotlinpoet.*
 import io.kotlintest.Matcher
 import io.kotlintest.Result
 import io.kotlintest.inspectors.forAll
+import io.kotlintest.shouldBe
 import io.kotlintest.shouldHave
 import io.kotlintest.specs.StringSpec
+import nl.devhaan.kotlinpoetdsl.*
 
-class VariableTest : StringSpec({
+class VariableCreationTest : StringSpec({
     val clazz = ClassName("kotlin", "String")
     "unititialized without propData"{
         listOf(
@@ -100,6 +101,8 @@ class VariableTest : StringSpec({
                 "a".varargVal(clazz, CodeBlock.of("arrayOf(%S)", "Hi"))
         ) allShouldHave stringValue("vararg val a: kotlin.String = arrayOf(\"Hi\")")
     }
+
+
     "uninitialized varargVar"{
         listOf(
                 "a" varargVar String::class,
@@ -116,6 +119,11 @@ class VariableTest : StringSpec({
                 "a".varargVar(clazz, "arrayOf(%S)", "Hi"),
                 "a".varargVar(clazz, CodeBlock.of("arrayOf(%S)", "Hi"))
         ) allShouldHave stringValue("vararg var a: kotlin.String = arrayOf(\"Hi\")")
+    }
+
+    "reified nullable"{
+        ("bool".of<String?>()).toParamSpec() shouldBe
+                ParameterSpec.builder("bool", String::class.asTypeName().asNullable()).build()
     }
 })
 

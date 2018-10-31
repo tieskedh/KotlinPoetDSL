@@ -75,12 +75,7 @@ data class Variable(
 
     private var _propertySpec by LazySettable {
 
-        val (realTypeName, realModifiers) = if (KModifier.VARARG in modifiers) {
-            Array<Any>::class.asClassName().parameterizedBy(WildcardTypeName.subtypeOf(typeName)) to
-                    modifiers - KModifier.VARARG
-        } else typeName to modifiers
-
-        PropertySpec.builder(name, realTypeName, *realModifiers.toTypedArray()).also { builder ->
+        PropertySpec.builder(name, typeName, *(modifiers - KModifier.VARARG).toTypedArray()).also { builder ->
             builder.addAnnotations(annotiations)
             builder.addKdoc(kdoc)
             propertyData?.apply {
