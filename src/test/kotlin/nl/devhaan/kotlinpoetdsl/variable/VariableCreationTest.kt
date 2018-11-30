@@ -1,13 +1,11 @@
 package nl.devhaan.kotlinpoetdsl.variable
 
 import com.squareup.kotlinpoet.*
-import io.kotlintest.Matcher
-import io.kotlintest.Result
+import io.kotlintest.*
 import io.kotlintest.inspectors.forAll
-import io.kotlintest.shouldBe
-import io.kotlintest.shouldHave
 import io.kotlintest.specs.StringSpec
 import nl.devhaan.kotlinpoetdsl.*
+import kotlin.random.Random
 
 class VariableCreationTest : StringSpec({
     val clazz = ClassName("kotlin", "String")
@@ -19,11 +17,19 @@ class VariableCreationTest : StringSpec({
         ) allShouldHave stringValue("a: kotlin.String")
     }
 
+    "delegated property"{
+        Variable(
+                "a",
+                String::class.asTypeName(),
+                initializer = CodeBlock.of("%T.nextInt().toString()", Random::class),
+                propertyData = Variable.PropertyData(delegate = true)
+        ).toString() shouldHave stringValue("val a: kotlin.String by kotlin.random.Random.nextInt().toString()")
+    }
+
     "initialized without propData"{
         listOf(
                 "a".of<String>(CodeBlock.of("%S", "Hi")),
                 "a".of<String>("%S", "Hi"),
-
 
                 "a".of(clazz, CodeBlock.of("%S", "Hi")),
                 "a".of(clazz, "%S", "Hi")

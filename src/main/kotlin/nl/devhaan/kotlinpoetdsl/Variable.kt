@@ -74,18 +74,20 @@ data class Variable(
     }
 
     private var _propertySpec by LazySettable {
-
         PropertySpec.builder(name, typeName, *(modifiers - KModifier.VARARG).toTypedArray()).also { builder ->
             builder.addAnnotations(annotiations)
             builder.addKdoc(kdoc)
+
+            val isDelegated= propertyData?.delegate ?: false
+            initializer?.let { if (isDelegated) builder.delegate(it) else builder.initializer(it) }
+
             propertyData?.apply {
-                initializer?.let { if (delegate) builder.delegate(it) else builder.initializer(it) }
                 receiverType?.let(builder::receiver)
                 getter?.let(builder::getter)
                 setter?.let(builder::setter)
                 builder.addTypeVariables(typeVariables)
                 builder.mutable(mutable)
-            } ?: initializer?.let(builder::initializer)
+            }
         }.build()
     }
 
@@ -101,13 +103,11 @@ data class Variable(
 
     fun toParamSpec() = _paramSpec
 
-    override fun toString(): String {
-        return when {
-            propertyData == null -> toParamSpec().toString()
-            KModifier.VARARG in modifiers -> "vararg "+toPropertySpec().toString().replaceFirst("kotlin.Array<out $typeName>", "$typeName")
-            else -> toPropertySpec().toString()
-        }.removeSuffix("\n")
-    }
+    override fun toString() = when {
+        propertyData == null -> toParamSpec().toString()
+        KModifier.VARARG in modifiers -> "vararg " + toPropertySpec().toString().replaceFirst("kotlin.Array<out $typeName>", "$typeName")
+        else -> toPropertySpec().toString()
+    }.removeSuffix("\n")
 }
 
 fun PropertySpec.toVariable() = Variable(this)

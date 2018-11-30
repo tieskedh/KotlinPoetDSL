@@ -55,7 +55,7 @@ fun String.valOf(typeName: TypeName, format: String, vararg values: Any?) =
 
 // ------------------------------------------------- varof -------------------------------------------------------------
 // ----------------------- blank
-infix fun <T : Any> String.varOf(clazz: KClass<T>) = varOf(clazz.asTypeName())
+infix fun String.varOf(clazz: KClass<*>) = varOf(clazz.asTypeName())
 infix fun String.varOf(typeName: TypeName) = Variable(
         name = this,
         typeName = typeName,
