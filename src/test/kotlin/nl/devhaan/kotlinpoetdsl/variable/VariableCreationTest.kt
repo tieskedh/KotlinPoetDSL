@@ -123,7 +123,7 @@ class VariableCreationTest : StringSpec({
 
     "reified nullable"{
         ("bool".of<String?>()).toParamSpec() shouldBe
-                ParameterSpec.builder("bool", String::class.asTypeName().asNullable()).build()
+                ParameterSpec.builder("bool", String::class.asTypeName().copy(nullable = true)).build()
     }
 })
 

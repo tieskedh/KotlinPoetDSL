@@ -7,12 +7,12 @@ import nl.devhaan.kotlinpoetdsl.constructorBuilder.ConstructorSpec
 
 fun FunSpec.Builder.endControlFlow(format: String = "", vararg args: Any) = when(format.isEmpty()){
     true -> endControlFlow()
-    false -> addCode("%<}$format\n", *args)
+    false -> addCode("⇤}$format\n", *args)
 }
 
 fun CodeBlock.Builder.endControlFlow(format: String = "", vararg args: Any?) = when(format.isEmpty()){
     true -> endControlFlow()
-    false -> add("%<}$format\n", *args)
+    false -> add("⇤}$format\n", *args)
 }
 
 fun TypeSpec.Builder.addConstructor(constructor: ConstructorSpec) = apply{

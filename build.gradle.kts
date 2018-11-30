@@ -48,7 +48,7 @@ repositories {
 }
 dependencies {
     compile(kotlin("stdlib-jdk8", kotlin_version))
-    compile("com.squareup:kotlinpoet:1.0.0-RC2")
+    compile("com.squareup:kotlinpoet:1.0.0-RC3")
     testCompile("io.kotlintest:kotlintest-runner-junit5:3.1.9")
 }
 

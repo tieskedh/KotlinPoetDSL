@@ -10,7 +10,7 @@ fun TypeSpec.packaged(pack: String, vararg outerClasses: String): ClassName {
 }
 inline fun <reified T> typeNameFor(): ClassName {
     val typeName = T::class.asTypeName()
-    return if (null is T) typeName.asNullable() else typeName.asNonNull()
+    return if (null is T) typeName.copy(nullable = true) else typeName.copy(nullable = false)
 }
 fun String.S() = "\"$this\""
 
