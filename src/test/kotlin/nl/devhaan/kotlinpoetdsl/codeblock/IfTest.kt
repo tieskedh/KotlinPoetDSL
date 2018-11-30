@@ -12,7 +12,7 @@ import nl.devhaan.kotlinpoetdsl.helpers.UnFinishException
 import nl.devhaan.kotlinpoetdsl.of
 
 class IfTest : StringSpec({
-    val nullableBool = ParameterSpec.builder("bool", String::class.asTypeName().asNullable()).build()
+    val nullableBool = ParameterSpec.builder("bool", String::class.asTypeName().copy(nullable = false)).build()
 
     "if end"{
         createFun{

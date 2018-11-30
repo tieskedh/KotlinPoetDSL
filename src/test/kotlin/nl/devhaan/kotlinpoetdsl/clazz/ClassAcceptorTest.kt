@@ -9,8 +9,8 @@ import io.kotlintest.specs.StringSpec
 import nl.devhaan.kotlinpoetdsl.`interface`.createInterface
 import nl.devhaan.kotlinpoetdsl.`interface`.interf
 import nl.devhaan.kotlinpoetdsl.abstract
-import nl.devhaan.kotlinpoetdsl.classes.createClass
 import nl.devhaan.kotlinpoetdsl.classes.clazz
+import nl.devhaan.kotlinpoetdsl.classes.createClass
 import nl.devhaan.kotlinpoetdsl.files.file
 import nl.devhaan.kotlinpoetdsl.functions.func
 import nl.devhaan.kotlinpoetdsl.internal
@@ -28,7 +28,6 @@ class ClassAcceptorTest : StringSpec({
     val zeroClass = TypeSpec.classBuilder("Clazz").build()
     val oneClass = TypeSpec.classBuilder("Clazz").addModifiers(KModifier.OPEN).build()
     val twoClass = TypeSpec.classBuilder("Clazz").addModifiers(KModifier.INTERNAL, KModifier.OPEN).build()
-
 
     "abstract builder with abstract method"{
         createClass{

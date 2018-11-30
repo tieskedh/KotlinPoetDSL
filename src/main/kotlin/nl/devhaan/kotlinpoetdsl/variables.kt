@@ -19,7 +19,7 @@ fun String.of(typeName: TypeName, codeBlock: CodeBlock? = null) = Variable(
         initializer = codeBlock
 )
 inline fun <reified T> String.of(codeBlock: CodeBlock? = null) =
-        of(T::class.asTypeName(), codeBlock)
+        of(typeNameFor<T>(), codeBlock)
 // ---------------- format
 fun String.of(
         typeName: TypeName,
@@ -27,7 +27,7 @@ fun String.of(
         vararg values: Any?
 ) = of(typeName, CodeBlock.of(format, *values))
 inline fun <reified T> String.of(format: String, vararg values: Any?) =
-        of(T::class.asTypeName(), CodeBlock.of(format, *values))
+        of(typeNameFor<T>(), CodeBlock.of(format, *values))
 
 // ------------------------------------- valOf -----------------------------------------------------------------------
 // ------------------ blank
@@ -38,7 +38,7 @@ infix fun String.valOf(typeName: TypeName) = Variable(
         propertyData = PropertyData(mutable = false)
 )
 // ------------------ code block
-inline fun <reified T : Any> String.valOf(codeBlock: CodeBlock? = null) = valOf(T::class.asTypeName(), codeBlock)
+inline fun <reified T : Any> String.valOf(codeBlock: CodeBlock? = null) = valOf(typeNameFor<T>(), codeBlock)
 fun String.valOf(typeName: TypeName, codeBlock: CodeBlock? = null) = Variable(
         name = this,
         typeName = typeName,
@@ -48,14 +48,14 @@ fun String.valOf(typeName: TypeName, codeBlock: CodeBlock? = null) = Variable(
 // ------------------- format
 
 inline fun <reified T : Any> String.valOf(format: String, vararg values: Any?) =
-        this.valOf(T::class.asTypeName(), CodeBlock.of(format, *values))
+        this.valOf(typeNameFor<T>(), CodeBlock.of(format, *values))
 fun String.valOf(typeName: TypeName, format: String, vararg values: Any?) =
         valOf(typeName, CodeBlock.of(format, *values))
 
 
 // ------------------------------------------------- varof -------------------------------------------------------------
 // ----------------------- blank
-infix fun <T : Any> String.varOf(clazz: KClass<T>) = varOf(clazz.asTypeName())
+infix fun String.varOf(clazz: KClass<*>) = varOf(clazz.asTypeName())
 infix fun String.varOf(typeName: TypeName) = Variable(
         name = this,
         typeName = typeName,
@@ -64,7 +64,7 @@ infix fun String.varOf(typeName: TypeName) = Variable(
 
 
 // ------------------- codeBlock
-inline fun <reified T : Any> String.varOf(codeBlock: CodeBlock? = null) = varOf(T::class.asTypeName(), codeBlock)
+inline fun <reified T : Any> String.varOf(codeBlock: CodeBlock? = null) = varOf(typeNameFor<T>(), codeBlock)
 fun String.varOf(typeName: TypeName, codeBlock: CodeBlock? = null) = Variable(
         name = this,
         typeName = typeName,
@@ -74,7 +74,7 @@ fun String.varOf(typeName: TypeName, codeBlock: CodeBlock? = null) = Variable(
 
 // ------------------- format
 inline fun <reified T : Any> String.varOf(format: String, vararg values: Any?) =
-        varOf(T::class.asTypeName(), CodeBlock.of(format, *values))
+        varOf(typeNameFor<T>(), CodeBlock.of(format, *values))
 fun String.varOf(typeName: TypeName, format: String, vararg values: Any?) =
         varOf(typeName, CodeBlock.of(format, *values))
 
@@ -90,7 +90,7 @@ infix fun String.vararg(typeName: TypeName) = Variable(
 )
 
 // ----------------------------- codeBlock
-inline fun <reified T : Any> String.vararg(codeBlock: CodeBlock? = null) = vararg(T::class.asTypeName(), codeBlock)
+inline fun <reified T : Any> String.vararg(codeBlock: CodeBlock? = null) = vararg(typeNameFor<T>(), codeBlock)
 fun String.vararg(typeName: TypeName, codeBlock: CodeBlock? = null) = Variable(
         name = this,
         typeName = typeName,
@@ -100,7 +100,7 @@ fun String.vararg(typeName: TypeName, codeBlock: CodeBlock? = null) = Variable(
 
 //---------------------------- format
 
-inline fun <reified T : Any> String.vararg(format: String? = null, vararg values: Any?) = vararg(T::class.asTypeName(), format, *values)
+inline fun <reified T : Any> String.vararg(format: String? = null, vararg values: Any?) = vararg(typeNameFor<T>(), format, *values)
 fun String.vararg(typeName: TypeName, format: String? = null, vararg values: Any?) = Variable(
         name = this,
         typeName = typeName,
@@ -120,7 +120,7 @@ infix fun String.varargVal(typeName: TypeName) = Variable(
 )
 
 // ----------------------------- codeBlock
-inline fun <reified T : Any> String.varargVal(codeBlock: CodeBlock? = null) = varargVal(T::class.asTypeName(), codeBlock)
+inline fun <reified T : Any> String.varargVal(codeBlock: CodeBlock? = null) = varargVal(typeNameFor<T>(), codeBlock)
 fun String.varargVal(typeName: TypeName, codeBlock: CodeBlock? = null) = Variable(
         name = this,
         typeName = typeName,
@@ -131,7 +131,7 @@ fun String.varargVal(typeName: TypeName, codeBlock: CodeBlock? = null) = Variabl
 
 //---------------------------- format
 
-inline fun <reified T : Any> String.varargVal(format: String? = null, vararg values: Any?) = varargVal(T::class.asTypeName(), format, *values)
+inline fun <reified T : Any> String.varargVal(format: String? = null, vararg values: Any?) = varargVal(typeNameFor<T>(), format, *values)
 fun String.varargVal(typeName: TypeName, format: String? = null, vararg values: Any?) = Variable(
         name = this,
         typeName = typeName,
@@ -151,7 +151,7 @@ infix fun String.varargVar(typeName: TypeName) = Variable(
 )
 
 // ----------------------------- codeBlock
-inline fun <reified T : Any> String.varargVar(codeBlock: CodeBlock? = null) = varargVar(T::class.asTypeName(), codeBlock)
+inline fun <reified T : Any> String.varargVar(codeBlock: CodeBlock? = null) = varargVar(typeNameFor<T>(), codeBlock)
 fun String.varargVar(typeName: TypeName, codeBlock: CodeBlock? = null) = Variable(
         name = this,
         typeName = typeName,
@@ -162,7 +162,7 @@ fun String.varargVar(typeName: TypeName, codeBlock: CodeBlock? = null) = Variabl
 
 //---------------------------- format
 
-inline fun <reified T : Any> String.varargVar(format: String? = null, vararg values: Any?) = varargVar(T::class.asTypeName(), format, *values)
+inline fun <reified T : Any> String.varargVar(format: String? = null, vararg values: Any?) = varargVar(typeNameFor<T>(), format, *values)
 fun String.varargVar(typeName: TypeName, format: String? = null, vararg values: Any?) = Variable(
         name = this,
         typeName = typeName,

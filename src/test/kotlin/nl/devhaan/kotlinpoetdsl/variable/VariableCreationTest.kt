@@ -1,14 +1,13 @@
-package nl.devhaan.kotlinpoetdsl
+package nl.devhaan.kotlinpoetdsl.variable
 
-import com.squareup.kotlinpoet.ClassName
-import com.squareup.kotlinpoet.CodeBlock
-import io.kotlintest.Matcher
-import io.kotlintest.Result
+import com.squareup.kotlinpoet.*
+import io.kotlintest.*
 import io.kotlintest.inspectors.forAll
-import io.kotlintest.shouldHave
 import io.kotlintest.specs.StringSpec
+import nl.devhaan.kotlinpoetdsl.*
+import kotlin.random.Random
 
-class VariableTest : StringSpec({
+class VariableCreationTest : StringSpec({
     val clazz = ClassName("kotlin", "String")
     "unititialized without propData"{
         listOf(
@@ -18,11 +17,19 @@ class VariableTest : StringSpec({
         ) allShouldHave stringValue("a: kotlin.String")
     }
 
+    "delegated property"{
+        Variable(
+                "a",
+                String::class.asTypeName(),
+                initializer = CodeBlock.of("%T.nextInt().toString()", Random::class),
+                propertyData = Variable.PropertyData(delegate = true)
+        ).toString() shouldHave stringValue("val a: kotlin.String by kotlin.random.Random.nextInt().toString()")
+    }
+
     "initialized without propData"{
         listOf(
                 "a".of<String>(CodeBlock.of("%S", "Hi")),
                 "a".of<String>("%S", "Hi"),
-
 
                 "a".of(clazz, CodeBlock.of("%S", "Hi")),
                 "a".of(clazz, "%S", "Hi")
@@ -100,6 +107,8 @@ class VariableTest : StringSpec({
                 "a".varargVal(clazz, CodeBlock.of("arrayOf(%S)", "Hi"))
         ) allShouldHave stringValue("vararg val a: kotlin.String = arrayOf(\"Hi\")")
     }
+
+
     "uninitialized varargVar"{
         listOf(
                 "a" varargVar String::class,
@@ -116,6 +125,11 @@ class VariableTest : StringSpec({
                 "a".varargVar(clazz, "arrayOf(%S)", "Hi"),
                 "a".varargVar(clazz, CodeBlock.of("arrayOf(%S)", "Hi"))
         ) allShouldHave stringValue("vararg var a: kotlin.String = arrayOf(\"Hi\")")
+    }
+
+    "reified nullable"{
+        ("bool".of<String?>()).toParamSpec() shouldBe
+                ParameterSpec.builder("bool", String::class.asTypeName().copy(nullable = true)).build()
     }
 })
 
