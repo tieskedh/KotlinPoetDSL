@@ -5,6 +5,7 @@ import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.TypeName
 import nl.devhaan.kotlinpoetdsl.Variable
+import nl.devhaan.kotlinpoetdsl.addParameters
 import nl.devhaan.kotlinpoetdsl.codeblock.CodeBlockBuilder
 import nl.devhaan.kotlinpoetdsl.endControlFlow
 
@@ -108,7 +109,7 @@ class FuncBlockWrapper internal constructor(
     }
 
     fun addParameters(parameters: Array<out Variable>) {
-        builder.addParameters(parameters.map(Variable::toParamSpec))
+        builder.addParameters(*parameters)
     }
 
     fun receiver(typeName: TypeName) {

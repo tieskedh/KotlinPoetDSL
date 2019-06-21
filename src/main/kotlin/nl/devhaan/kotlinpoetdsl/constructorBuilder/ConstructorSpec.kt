@@ -1,6 +1,9 @@
 package nl.devhaan.kotlinpoetdsl.constructorBuilder
 
-import com.squareup.kotlinpoet.*
+import com.squareup.kotlinpoet.CodeBlock
+import com.squareup.kotlinpoet.FunSpec
+import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.PropertySpec
 import nl.devhaan.kotlinpoetdsl.Variable
 
 /**
@@ -80,17 +83,17 @@ class ConstructorSpec private constructor(
 
 /** Warning: Only constructors are allowed */
 fun FunSpec.toConstructor() =
-        ConstructorSpec.Builder( false, this.toFunctionConstructorBuilder()).build()
+        ConstructorSpec.Builder(false, this.toFunctionConstructorBuilder()).build()
 
 /** Warning: Only constructors are allowed */
 fun FunSpec.toPrimaryConstructor(vararg properties: PropertySpec) =
         ConstructorSpec.Builder(true, this.toFunctionConstructorBuilder(), properties.toMutableList()).build()
 
 private fun FunSpec.toFunctionConstructorBuilder(): FunSpec.Builder {
-    require(this.isConstructor){"Only constructors can be converted to ConstructorSpec"}
+    require(this.isConstructor) { "Only constructors can be converted to ConstructorSpec" }
     return toBuilder()
 }
 
 
-fun ConstructorSpec.buildUpon(script: ConstructorSpec.Builder.()->Unit) =
+fun ConstructorSpec.buildUpon(script: ConstructorSpec.Builder.() -> Unit) =
         toBuilder().also(script).build()
