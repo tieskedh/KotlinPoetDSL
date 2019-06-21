@@ -10,9 +10,18 @@ fun FunSpec.Builder.endControlFlow(format: String = "", vararg args: Any) = when
     false -> addCode("⇤}$format\n", *args)
 }
 
+fun FunSpec.Builder.addParameters(vararg variable: Variable) = apply{
+    addParameters(variable.map { it.toParamSpec() })
+}
+
 fun CodeBlock.Builder.endControlFlow(format: String = "", vararg args: Any?) = when(format.isEmpty()){
     true -> endControlFlow()
     false -> add("⇤}$format\n", *args)
+}
+
+/** not tested!!! */
+fun TypeSpec.Builder.addProperty(vararg variables: Variable) = apply {
+    addProperties(variables.map { it.toPropertySpec() })
 }
 
 fun TypeSpec.Builder.addConstructor(constructor: ConstructorSpec) = apply{
