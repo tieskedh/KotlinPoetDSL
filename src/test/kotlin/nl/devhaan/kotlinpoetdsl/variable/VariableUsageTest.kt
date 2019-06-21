@@ -3,11 +3,11 @@ package nl.devhaan.kotlinpoetdsl.variable
 import com.squareup.kotlinpoet.*
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
+import nl.devhaan.kotlinpoetdsl.*
 import nl.devhaan.kotlinpoetdsl.classes.clazz
 import nl.devhaan.kotlinpoetdsl.classes.createClass
-import nl.devhaan.kotlinpoetdsl.vararg
-import nl.devhaan.kotlinpoetdsl.varargVal
-import nl.devhaan.kotlinpoetdsl.varargVar
+import nl.devhaan.kotlinpoetdsl.functions.createFun
+import nl.devhaan.kotlinpoetdsl.functions.func
 
 class VariableUsageTest: StringSpec({
     "vararg clazz"{
@@ -57,4 +57,14 @@ class VariableUsageTest: StringSpec({
     }
 
 
+    "vararg fun"{
+        createFun {
+            func("func", "a".vararg<String>("arrayOf(\"hi\")")){}
+        } shouldBe FunSpec.builder("func")
+                .addParameter(
+                        ParameterSpec.builder("a", String::class, KModifier.VARARG)
+                        .defaultValue("arrayOf(\"hi\")")
+                        .build()
+                ).build()
+    }
 })
