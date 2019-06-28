@@ -119,7 +119,6 @@ class ConstructorInvocation : StringSpec({
                 .addParameter("a".valOf<Int>("1"))
                 .build()
                 .toSecondary()
-                .build()
         createClass {
             clazz("Clazz"){
                 constructor(constructor)

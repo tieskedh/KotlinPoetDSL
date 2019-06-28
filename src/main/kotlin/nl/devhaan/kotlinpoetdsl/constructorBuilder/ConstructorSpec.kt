@@ -16,6 +16,12 @@ class ConstructorSpec private constructor(
         val activeProperties: List<PropertySpec>
 ) {
 
+    init {
+        if (isPrimary) require(funSpec.delegateConstructor == null) {
+            "primary constructor cannot call ${funSpec.delegateConstructor}"
+        }
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is ConstructorSpec) return false
@@ -44,6 +50,11 @@ class ConstructorSpec private constructor(
             private val funSpec: FunSpec.Builder = FunSpec.constructorBuilder(),
             val properties: MutableList<PropertySpec> = mutableListOf()
     ) {
+        init {
+            if (isPrimary) require(funSpec.build().delegateConstructor == null){
+                "primary constructor cannot call another constructor"
+            }
+        }
 
         private inline fun withFun(script: FunSpec.Builder.() -> Unit) = apply { funSpec.script() }
         fun addParameter(variable: Variable) = apply {
@@ -56,8 +67,19 @@ class ConstructorSpec private constructor(
         }
 
         fun addCode(codeBlock: CodeBlock) = withFun { addCode(codeBlock) }
-        fun callThisConstructor(vararg args: String) = withFun { callThisConstructor(*args) }
-        fun callSuperConstructor(vararg args: String) = withFun { callSuperConstructor(*args) }
+        fun callThisConstructor(vararg args: String) = withFun {
+            require(!isPrimary) {
+                "primary constructor cannot call this"
+            }
+            callThisConstructor(*args)
+        }
+
+        fun callSuperConstructor(vararg args: String) = withFun {
+            require(!isPrimary) {
+                "primary constructor cannot call super"
+            }
+            callSuperConstructor(*args)
+        }
 
         fun build() = ConstructorSpec(
                 funSpec.build(),
@@ -72,13 +94,18 @@ class ConstructorSpec private constructor(
             false,
             funSpec.toBuilder(),
             allProperties.toMutableList()
-    )
-
-    fun toPrimary() = Builder(
-            true,
-            funSpec.toBuilder(),
-            allProperties.toMutableList()
     ).build()
+
+    fun toPrimary(): ConstructorSpec {
+        require(funSpec.delegateConstructor == null) {
+            "The constructor can't delegate if it is the primary constructor"
+        }
+        return Builder(
+                true,
+                funSpec.toBuilder(),
+                allProperties.toMutableList()
+        ).build()
+    }
 
     fun toBuilder() = Builder(
             isPrimary,
