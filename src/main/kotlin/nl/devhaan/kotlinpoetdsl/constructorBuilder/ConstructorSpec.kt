@@ -51,7 +51,7 @@ class ConstructorSpec private constructor(
             val properties: MutableList<PropertySpec> = mutableListOf()
     ) {
         init {
-            if (isPrimary) require(funSpec.build().delegateConstructor == null){
+            if (isPrimary) require(funSpec.build().delegateConstructor == null) {
                 "primary constructor cannot call another constructor"
             }
         }
@@ -121,6 +121,12 @@ fun FunSpec.toConstructor() =
 /** Warning: Only constructors are allowed */
 fun FunSpec.toPrimaryConstructor(vararg properties: PropertySpec) =
         ConstructorSpec.Builder(true, this.toFunctionConstructorBuilder(), properties.toMutableList()).build()
+
+fun FunSpec.toPrimaryConstructor(vararg variables: Variable) = ConstructorSpec.Builder(
+        true,
+        this.toFunctionConstructorBuilder(),
+        variables.map { it.toPropertySpec() }.toMutableList()
+)
 
 private fun FunSpec.toFunctionConstructorBuilder(): FunSpec.Builder {
     require(this.isConstructor) { "Only constructors can be converted to ConstructorSpec" }
