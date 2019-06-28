@@ -68,6 +68,12 @@ class ConstructorSpec private constructor(
         fun addModifiers(vararg modifiers: KModifier) = withFun { addModifiers(*modifiers) }
     }
 
+    fun toSecondary() = Builder(
+            false,
+            funSpec.toBuilder(),
+            allProperties.toMutableList()
+    )
+
     fun toPrimary() = Builder(
             true,
             funSpec.toBuilder(),
