@@ -12,8 +12,8 @@ import nl.devhaan.kotlinpoetdsl.Variable
 class ConstructorSpec private constructor(
         val funSpec: FunSpec,
         val isPrimary: Boolean,
-        private val _properties: List<PropertySpec>,
-        val properties: List<PropertySpec>
+        private val allProperties: List<PropertySpec>,
+        val activeProperties: List<PropertySpec>
 ) {
 
     override fun equals(other: Any?): Boolean {
@@ -21,18 +21,18 @@ class ConstructorSpec private constructor(
         if (other !is ConstructorSpec) return false
         return other.isPrimary == isPrimary &&
                 other.funSpec == funSpec &&
-                other._properties == _properties
+                other.allProperties == allProperties
     }
 
     override fun hashCode(): Int {
         var hash = 7
         hash = 31 * hash + if (isPrimary) 1 else 0
         hash = 31 * hash + funSpec.hashCode()
-        hash = 31 * hash + _properties.hashCode()
+        hash = 31 * hash + allProperties.hashCode()
         return hash
     }
 
-    override fun toString() = "ConstructorSpec($funSpec with properties: $properties)"
+    override fun toString() = "ConstructorSpec($funSpec with properties: $activeProperties)"
 
     companion object {
         fun primaryConstructorBuilder() = Builder(true)
@@ -71,13 +71,13 @@ class ConstructorSpec private constructor(
     fun toPrimary() = Builder(
             true,
             funSpec.toBuilder(),
-            _properties.toMutableList()
+            allProperties.toMutableList()
     ).build()
 
     fun toBuilder() = Builder(
             isPrimary,
             funSpec.toBuilder(),
-            _properties.toMutableList()
+            allProperties.toMutableList()
     )
 }
 

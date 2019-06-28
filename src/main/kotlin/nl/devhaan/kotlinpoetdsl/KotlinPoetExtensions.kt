@@ -27,6 +27,6 @@ fun TypeSpec.Builder.addProperty(vararg variables: Variable) = apply {
 fun TypeSpec.Builder.addConstructor(constructor: ConstructorSpec) = apply{
     if (constructor.isPrimary) {
         primaryConstructor(constructor.funSpec)
-        addProperties(constructor.properties)
+        addProperties(constructor.activeProperties)
     } else addFunction(constructor.funSpec)
 }
