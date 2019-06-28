@@ -166,6 +166,26 @@ class IfTest : StringSpec({
                     statement("""println(2)""")
                 }.end()
             }
-        }.println()
+        }.toString() shouldBe
+                """|when(1) {
+                   |    1 -> if (1==1) {
+                   |        println(1)
+                   |    }
+                   |    2 -> if ((null) == true) {
+                   |        println("won't print, it's not positive")
+                   |    } else if ((null) == false) {
+                   |        println("won't print, it's not negative")
+                   |    } else if ((null) == true) {
+                   |        println("well this is stupid code")
+                   |    } else {
+                   |        println("finally, smth to print")
+                   |    }
+                   |    3 -> if ((null) == false) {
+                   |        println("won't print, it's not positive")
+                   |    } else if (true) {
+                   |        println(2)
+                   |    }
+                   |}
+                   |""".trimMargin()
     }
 })
