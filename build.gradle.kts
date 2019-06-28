@@ -1,13 +1,9 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.gradle.api.tasks.testing.logging.TestLogEvent.*
-import org.jetbrains.kotlin.config.AnalysisFlag.Flags.experimental
-import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import java.awt.SystemColor.info
 
 buildscript {
-    val kotlin_version: String by extra("1.3.0-rc-190")
+    val kotlin_version: String by extra("1.3.40")
 
     repositories {
         maven { setUrl("http://dl.bintray.com/kotlin/kotlin-eap") }

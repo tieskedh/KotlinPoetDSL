@@ -5,7 +5,13 @@ import nl.devhaan.kotlinpoetdsl.CodeBlockLevel
 import nl.devhaan.kotlinpoetdsl.helpers.BlockWrapper
 import nl.devhaan.kotlinpoetdsl.helpers.createCodeBlock
 
-private fun _switch(format: String, vararg parts: Any, prefix: CodeBlock, postFix: CodeBlock, switchBuilder: SwitchDSL.() -> Unit) = createLazyComponent(true) { builder ->
+private fun _switch(
+        format: String,
+        vararg parts: Any,
+        prefix: CodeBlock,
+        postFix: CodeBlock,
+        switchBuilder: SwitchDSL.() -> Unit
+) = createLazyComponent(true) { builder ->
     if (format == "") {
         builder.beginControlFlow("%Lwhen", prefix)
     } else {
@@ -23,7 +29,13 @@ interface ISwitch {
             prefix: String = "",
             postFix: String = "",
             switchBuilder: SwitchDSL.() -> Unit
-    ) = switch(format, *parts, prefix = CodeBlock.of(prefix), postFix = CodeBlock.of(postFix), switchBuilder = switchBuilder)
+    ) = switch(
+            format,
+            *parts,
+            prefix = CodeBlock.of(prefix),
+            postFix = CodeBlock.of(postFix),
+            switchBuilder = switchBuilder
+    )
 
     fun switch(
             format: String,
@@ -35,7 +47,13 @@ interface ISwitch {
 }
 
 class SwitchStart(private val builder: BlockWrapper<*, *, *>) : ISwitch {
-    override fun switch(format: String, vararg parts: Any, prefix: CodeBlock, postFix: CodeBlock, switchBuilder: SwitchDSL.() -> Unit) {
+    override fun switch(
+            format: String,
+            vararg parts: Any,
+            prefix: CodeBlock,
+            postFix: CodeBlock,
+            switchBuilder: SwitchDSL.() -> Unit
+    ) {
         _switch(format, *parts, prefix = prefix, postFix = postFix, switchBuilder = switchBuilder).wrapper(builder)
     }
 }
@@ -48,7 +66,13 @@ fun LazyComponentAcceptor.switch(
         prefix: String = "",
         postFix: String = "",
         switchBuilder: SwitchDSL.() -> Unit
-) = switch(format, parts, switchBuilder = switchBuilder, postFix = CodeBlock.of(postFix), prefix = CodeBlock.of(prefix))
+) = switch(
+        format,
+        parts,
+        switchBuilder = switchBuilder,
+        postFix = CodeBlock.of(postFix),
+        prefix = CodeBlock.of(prefix)
+)
 
 @Suppress("unused")
 fun LazyComponentAcceptor.switch(
@@ -57,7 +81,13 @@ fun LazyComponentAcceptor.switch(
         prefix: CodeBlock,
         postFix: CodeBlock,
         switchBuilder: SwitchDSL.() -> Unit
-) = _switch(format, *parts, prefix = prefix, postFix = postFix, switchBuilder = switchBuilder)
+) = _switch(
+        format,
+        *parts,
+        prefix = prefix,
+        postFix = postFix,
+        switchBuilder = switchBuilder
+)
 
 @CodeBlockLevel
 class SwitchDSL(private val builder: BlockWrapper<*, *, *>) : LazyComponentAcceptor {

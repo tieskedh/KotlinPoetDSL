@@ -6,6 +6,7 @@ import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 import nl.devhaan.kotlinpoetdsl.endControlFlow
 import nl.devhaan.kotlinpoetdsl.helpers.createCodeBlock
+import nl.devhaan.kotlinpoetdsl.println
 
 class RepeatTest : StringSpec({
     "foreach"{
@@ -37,7 +38,7 @@ class RepeatTest : StringSpec({
                 .beginControlFlow("do")
                 .addStatement("total += i")
                 .addStatement("i++")
-                .endControlFlow("while (i < 10)")
+                .endControlFlow(" while (i < 10)")
                 .build()
     }
 
@@ -45,6 +46,7 @@ class RepeatTest : StringSpec({
         createCodeBlock {
             statement("var total = 0")
             statement("var i = 0")
+
             doRepeat {
                 statement("total += i")
                 statement("i++")
@@ -55,7 +57,7 @@ class RepeatTest : StringSpec({
                 .beginControlFlow("do")
                 .addStatement("total += i")
                 .addStatement("i++")
-                .endControlFlow("while (true)")
+                .endControlFlow(" while (true)")
                 .build()
     }
 
@@ -99,5 +101,43 @@ class RepeatTest : StringSpec({
             addStatement("println(it)")
             endControlFlow()
         }
+    }
+
+    "lazy repeat"{
+        createCodeBlock {
+            statement("var i = 1")
+            switch("i") {
+                "0" then forEach("i in 0 until 10"){
+                    statement("println(i)")
+                }
+                "1" then repeatWhile("i < 20"){
+                    statement("println(i)")
+                    statement("i++")
+                }
+                "2" then doRepeat {
+                    statement("println(2)")
+                }.forEver()
+                Else(repeat(3){
+                    statement("println(3)")
+                })
+            }
+        }.toString() shouldBe
+                """|var i = 1
+                   |when(i) {
+                   |    0 -> for (i in 0 until 10) {
+                   |        println(i)
+                   |    }
+                   |    1 -> while (i < 20) {
+                   |        println(i)
+                   |        i++
+                   |    }
+                   |    2 -> do {
+                   |        println(2)
+                   |    } while (true)
+                   |    else -> repeat(3) {
+                   |        println(3)
+                   |    }
+                   |}
+                   |""".trimMargin()
     }
 })
