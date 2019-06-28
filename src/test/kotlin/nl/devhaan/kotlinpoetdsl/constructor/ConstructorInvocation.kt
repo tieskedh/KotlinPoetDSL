@@ -7,11 +7,9 @@ import nl.devhaan.kotlinpoetdsl.*
 import nl.devhaan.kotlinpoetdsl.classes.createClass
 import nl.devhaan.kotlinpoetdsl.classes.clazz
 import nl.devhaan.kotlinpoetdsl.classes.extends
-import nl.devhaan.kotlinpoetdsl.constructorBuilder.constructor
-import nl.devhaan.kotlinpoetdsl.constructorBuilder.primary
-import nl.devhaan.kotlinpoetdsl.constructorBuilder.thiz
-import nl.devhaan.kotlinpoetdsl.constructorBuilder.zuper
+import nl.devhaan.kotlinpoetdsl.constructorBuilder.*
 import nl.devhaan.kotlinpoetdsl.files.file
+import java.sql.Types
 
 class ConstructorInvocation : StringSpec({
     "2nd constructor without body with parameter"{
@@ -48,6 +46,7 @@ class ConstructorInvocation : StringSpec({
                         .build()
         ).build()
     }
+
 
     "2nd constructor with thizz without body"{
         createClass {
@@ -115,7 +114,25 @@ class ConstructorInvocation : StringSpec({
         ).superclass(String::class).build()
     }
 
-
+    "2nd constructor from primary constructor"{
+        val constructor = ConstructorSpec.primaryConstructorBuilder()
+                .addParameter("a".valOf<Int>("1"))
+                .build()
+                .toSecondary()
+        createClass {
+            clazz("Clazz"){
+                constructor(constructor)
+            }
+        } shouldBe TypeSpec.classBuilder("Clazz")
+                .addFunction(
+                        FunSpec.constructorBuilder()
+                                .addParameter(ParameterSpec
+                                        .builder("a", Int::class)
+                                        .defaultValue("1")
+                                        .build())
+                                .build())
+                .build()
+    }
 
     "1st constructor without body"{
         createClass {

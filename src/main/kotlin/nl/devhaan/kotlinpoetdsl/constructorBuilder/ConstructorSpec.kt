@@ -12,27 +12,33 @@ import nl.devhaan.kotlinpoetdsl.Variable
 class ConstructorSpec private constructor(
         val funSpec: FunSpec,
         val isPrimary: Boolean,
-        private val _properties: List<PropertySpec>,
-        val properties: List<PropertySpec>
+        private val allProperties: List<PropertySpec>,
+        val activeProperties: List<PropertySpec>
 ) {
+
+    init {
+        if (isPrimary) require(funSpec.delegateConstructor == null) {
+            "primary constructor cannot call ${funSpec.delegateConstructor}"
+        }
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is ConstructorSpec) return false
         return other.isPrimary == isPrimary &&
                 other.funSpec == funSpec &&
-                other._properties == _properties
+                other.allProperties == allProperties
     }
 
     override fun hashCode(): Int {
         var hash = 7
         hash = 31 * hash + if (isPrimary) 1 else 0
         hash = 31 * hash + funSpec.hashCode()
-        hash = 31 * hash + _properties.hashCode()
+        hash = 31 * hash + allProperties.hashCode()
         return hash
     }
 
-    override fun toString() = "ConstructorSpec($funSpec with properties: $properties)"
+    override fun toString() = "ConstructorSpec($funSpec with properties: $activeProperties)"
 
     companion object {
         fun primaryConstructorBuilder() = Builder(true)
@@ -44,6 +50,11 @@ class ConstructorSpec private constructor(
             private val funSpec: FunSpec.Builder = FunSpec.constructorBuilder(),
             val properties: MutableList<PropertySpec> = mutableListOf()
     ) {
+        init {
+            if (isPrimary) require(funSpec.build().delegateConstructor == null) {
+                "primary constructor cannot call another constructor"
+            }
+        }
 
         private inline fun withFun(script: FunSpec.Builder.() -> Unit) = apply { funSpec.script() }
         fun addParameter(variable: Variable) = apply {
@@ -56,8 +67,19 @@ class ConstructorSpec private constructor(
         }
 
         fun addCode(codeBlock: CodeBlock) = withFun { addCode(codeBlock) }
-        fun callThisConstructor(vararg args: String) = withFun { callThisConstructor(*args) }
-        fun callSuperConstructor(vararg args: String) = withFun { callSuperConstructor(*args) }
+        fun callThisConstructor(vararg args: String) = withFun {
+            require(!isPrimary) {
+                "primary constructor cannot call this"
+            }
+            callThisConstructor(*args)
+        }
+
+        fun callSuperConstructor(vararg args: String) = withFun {
+            require(!isPrimary) {
+                "primary constructor cannot call super"
+            }
+            callSuperConstructor(*args)
+        }
 
         fun build() = ConstructorSpec(
                 funSpec.build(),
@@ -68,16 +90,27 @@ class ConstructorSpec private constructor(
         fun addModifiers(vararg modifiers: KModifier) = withFun { addModifiers(*modifiers) }
     }
 
-    fun toPrimary() = Builder(
-            true,
+    fun toSecondary() = Builder(
+            false,
             funSpec.toBuilder(),
-            _properties.toMutableList()
+            allProperties.toMutableList()
     ).build()
+
+    fun toPrimary(): ConstructorSpec {
+        require(funSpec.delegateConstructor == null) {
+            "The constructor can't delegate if it is the primary constructor"
+        }
+        return Builder(
+                true,
+                funSpec.toBuilder(),
+                allProperties.toMutableList()
+        ).build()
+    }
 
     fun toBuilder() = Builder(
             isPrimary,
             funSpec.toBuilder(),
-            _properties.toMutableList()
+            allProperties.toMutableList()
     )
 }
 
@@ -88,6 +121,12 @@ fun FunSpec.toConstructor() =
 /** Warning: Only constructors are allowed */
 fun FunSpec.toPrimaryConstructor(vararg properties: PropertySpec) =
         ConstructorSpec.Builder(true, this.toFunctionConstructorBuilder(), properties.toMutableList()).build()
+
+fun FunSpec.toPrimaryConstructor(vararg variables: Variable) = ConstructorSpec.Builder(
+        true,
+        this.toFunctionConstructorBuilder(),
+        variables.map { it.toPropertySpec() }.toMutableList()
+)
 
 private fun FunSpec.toFunctionConstructorBuilder(): FunSpec.Builder {
     require(this.isConstructor) { "Only constructors can be converted to ConstructorSpec" }
