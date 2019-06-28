@@ -1,5 +1,6 @@
 package nl.devhaan.kotlinpoetdsl.codeblock
 
+import com.squareup.kotlinpoet.CodeBlock
 import nl.devhaan.kotlinpoetdsl.CodeBlockLevel
 import nl.devhaan.kotlinpoetdsl.Level
 import nl.devhaan.kotlinpoetdsl.helpers.BlockWrapper
@@ -7,8 +8,8 @@ import nl.devhaan.kotlinpoetdsl.helpers.BlockWrapper
 @CodeBlockLevel
 @Level
 class CodeBlockBuilder (
-        private val builder: BlockWrapper<*, *, *>
-    ): IRepeat by Repeat(builder),
+        val builder: BlockWrapper<*, *, *>
+    ): IRepeat by RepeatStart(builder),
         IiFInterface by IfClassStart(builder),
         ISwitch by SwitchStart(builder){
 
@@ -25,5 +26,9 @@ class CodeBlockBuilder (
     }
     fun statement(first:String, vararg parts:Any){
         builder.statement(first, *parts)
+    }
+
+    fun addCode(codeBlock: CodeBlock){
+        builder.addCode(codeBlock)
     }
 }

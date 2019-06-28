@@ -9,7 +9,9 @@ import io.kotlintest.specs.StringSpec
 import nl.devhaan.kotlinpoetdsl.functions.createFun
 import nl.devhaan.kotlinpoetdsl.functions.func
 import nl.devhaan.kotlinpoetdsl.helpers.UnFinishException
+import nl.devhaan.kotlinpoetdsl.helpers.createCodeBlock
 import nl.devhaan.kotlinpoetdsl.of
+import nl.devhaan.kotlinpoetdsl.println
 
 class IfTest : StringSpec({
     val nullableBool = ParameterSpec.builder("bool", String::class.asTypeName().copy(nullable = false)).build()
@@ -138,5 +140,32 @@ class IfTest : StringSpec({
                 }
             }
         }
+    }
+
+
+    "lazy if"{
+        createCodeBlock {
+            switch("1"){
+                "1" then If("1==1"){
+                    statement("println(1)")
+                }.end()
+
+                "2" then ifp("null") {
+                    statement("""println("won't print, it's not positive")""")
+                }.orElseIfn("null"){
+                    statement("""println("won't print, it's not negative")""")
+                }.orElseIfp("null") {
+                    statement("""println("well this is stupid code")""")
+                }.orElse {
+                    statement("""println("finally, smth to print")""")
+                }
+
+                "3" then ifn("null"){
+                    statement("""println("won't print, it's not positive")""")
+                }.orElseIf("true"){
+                    statement("""println(2)""")
+                }.end()
+            }
+        }.println()
     }
 })

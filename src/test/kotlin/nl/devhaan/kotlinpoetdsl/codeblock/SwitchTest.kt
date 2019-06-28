@@ -3,7 +3,6 @@ package nl.devhaan.kotlinpoetdsl.codeblock
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.buildCodeBlock
-import io.kotlintest.fail
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 import nl.devhaan.kotlinpoetdsl.S
