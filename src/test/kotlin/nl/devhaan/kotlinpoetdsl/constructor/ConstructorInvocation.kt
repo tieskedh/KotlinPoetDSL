@@ -114,7 +114,7 @@ class ConstructorInvocation : StringSpec({
         ).superclass(String::class).build()
     }
 
-    "secondary constructor from primary constructor"{
+    "2nd constructor from primary constructor"{
         val constructor = ConstructorSpec.primaryConstructorBuilder()
                 .addParameter("a".valOf<Int>("1"))
                 .build()
