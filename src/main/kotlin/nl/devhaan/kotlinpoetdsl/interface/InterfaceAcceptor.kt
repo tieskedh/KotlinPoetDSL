@@ -1,10 +1,12 @@
 package nl.devhaan.kotlinpoetdsl.`interface`
 
+import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asTypeName
 import nl.devhaan.kotlinpoetdsl.IAcceptor
 import nl.devhaan.kotlinpoetdsl.IAccessor
+import nl.devhaan.kotlinpoetdsl.ModifierEditorDSL
 import nl.devhaan.kotlinpoetdsl.PlainAccessor
 import nl.devhaan.kotlinpoetdsl.ProvideBuilderAcceptor.ImplementationData
 import nl.devhaan.kotlinpoetdsl.`interface`.InterfaceAcceptor.IncompleteInterfBuilder
@@ -15,6 +17,20 @@ import kotlin.reflect.KClass
 interface InterfaceAcceptor : IAcceptor {
     class IncompleteInterfBuilder(val acceptor: InterfaceAcceptor, val interfBuilder: InterfaceBuilder)
     fun accept(type: TypeSpec)
+
+    /**
+     * Adds Typespec keeping modifiers
+     */
+    fun TypeSpec.attachInterf() = this@InterfaceAcceptor.accept(this)
+
+    fun TypeSpec.attachInterf(editModifiers: ModifierEditorDSL.()->Set<KModifier>) {
+        val newModifiers = ModifierEditorDSL(this.modifiers).editModifiers()
+        this.buildUpon {
+            this@buildUpon.modifiers.clear()
+            this@buildUpon.modifiers.addAll(newModifiers)
+        }.attachInterf()
+    }
+
 }
 
 
@@ -65,11 +81,3 @@ infix fun InterfaceBuilder.implements(clazz: KClass<*>) = addImplement(clazz.asT
 
 fun InterfaceAcceptor.interf(name: String, init: InterfaceBuilder.() -> Unit) = interfBuilder().build(name, init)
 fun InterfaceAcceptor.interf(name: String) = incompleteBuilder().unFinished { startBuild(name) }
-
-fun InterfaceAcceptor.interf(type: TypeSpec) = accept(type.let {
-    if (this is IAccessor<*> && modifiers.isNotEmpty()) {
-        it.buildUpon {
-            addModifiers(*this@interf.modifiers)
-        }
-    } else it
-})

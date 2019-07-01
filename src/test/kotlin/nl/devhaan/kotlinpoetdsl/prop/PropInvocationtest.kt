@@ -6,15 +6,14 @@ import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.PropertySpec
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
+import nl.devhaan.kotlinpoetdsl.*
 import nl.devhaan.kotlinpoetdsl.files.file
 import nl.devhaan.kotlinpoetdsl.getters.getter
-import nl.devhaan.kotlinpoetdsl.inline
-import nl.devhaan.kotlinpoetdsl.private
+import nl.devhaan.kotlinpoetdsl.properties.buildUpon
+import nl.devhaan.kotlinpoetdsl.properties.createProp
 
 import nl.devhaan.kotlinpoetdsl.properties.prop
 import nl.devhaan.kotlinpoetdsl.setters.setter
-import nl.devhaan.kotlinpoetdsl.valOf
-import nl.devhaan.kotlinpoetdsl.varOf
 
 class PropInvocationtest : StringSpec({
     "var" {
@@ -130,6 +129,28 @@ class PropInvocationtest : StringSpec({
                 ).mutable().build()
         ).build()
     }
+    "prop attach direct"{
+        val prop = createProp {
+            private.prop("prop".valOf<Int>("3"))
+        }
 
+        file("", "HelloWorld"){
+            prop.attachProp()
+        } shouldBe FileSpec.builder("", "HelloWorld")
+                .addProperty(prop)
+                .build()
+    }
+
+    "prop attach DSL"{
+        val prop = createProp {
+            private.prop("prop".valOf<Int>("3"))
+        }
+
+        file("", "HelloWorld"){
+            prop.attachProp{+final}
+        } shouldBe FileSpec.builder("", "HelloWorld")
+                .addProperty(prop.buildUpon { addModifiers(KModifier.FINAL) })
+                .build()
+    }
 
 })

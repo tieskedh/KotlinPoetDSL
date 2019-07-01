@@ -7,6 +7,7 @@ interface AccessorContainer<out T : IAccessor<T>>{
     fun accessors(vararg modifier: KModifier) : T
 }
 
+fun IAccessor<*>?.orEmpty() = this ?: PlainAccessor()
 interface IAccessor<out T : IAccessor<T>>{
     val public      : T
     val private     : T
@@ -58,6 +59,7 @@ inline val <R, T : AccessorContainer<R>> T.operator   get() = accessors(KModifie
 fun Set<KModifier>.toAccessor()= PlainAccessor(toMutableSet())
 @JvmName("mutableToAccessor")
 fun MutableSet<KModifier>.toAccessor()= PlainAccessor(this)
+fun Array<KModifier>.toAccessor() = toMutableSet().toAccessor()
 
 class PlainAccessor(accessors: MutableSet<KModifier> = mutableSetOf()) : Accessor<PlainAccessor>(accessors)
 abstract class Accessor<out T : Accessor<T>> internal constructor(private val accessors: MutableSet<KModifier> = mutableSetOf()): IAccessor<T> {
@@ -90,4 +92,19 @@ abstract class Accessor<out T : Accessor<T>> internal constructor(private val ac
     }
 
     override val modifiers get() = accessors.toTypedArray()
+}
+
+
+class ModifierEditorDSL(var existing: Set<KModifier>){
+    val empty = setOf<KModifier>()
+
+    operator fun IAccessor<*>.unaryPlus() = existing + this
+
+    operator fun IAccessor<*>.invoke() = modifiers.toSet()
+
+    operator fun Set<KModifier>.minus(accessor: IAccessor<*>) =
+            this - accessor.modifiers
+
+    operator fun Set<KModifier>.plus(accessor: IAccessor<*>) =
+            this + accessor.modifiers
 }

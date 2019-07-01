@@ -2,10 +2,8 @@ package nl.devhaan.kotlinpoetdsl.constructorBuilder
 
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
-import nl.devhaan.kotlinpoetdsl.IAcceptor
-import nl.devhaan.kotlinpoetdsl.IAccessor
-import nl.devhaan.kotlinpoetdsl.PlainAccessor
-import nl.devhaan.kotlinpoetdsl.Variable
+import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const
+import nl.devhaan.kotlinpoetdsl.*
 import nl.devhaan.kotlinpoetdsl.codeblock.CodeBlockBuilder
 import nl.devhaan.kotlinpoetdsl.constructorBuilder.ConstructorAcceptor.IncompleteConstructorBuilder
 
@@ -17,6 +15,17 @@ interface ConstructorAcceptor : IAcceptor {
     fun Primary.constructor(vararg variable: Variable, init: CodeBlockBuilder.()->Unit = {})
             = constructorBuilder().buildPrimary(modifiers, variable, init)
 
+    fun FunSpec.attachConstructor() = accept(toConstructor())
+    fun FunSpec.attachConstructor(editModifiers: ModifierEditorDSL.() -> Set<KModifier>) = toConstructor().attachConstructor(editModifiers)
+
+    fun ConstructorSpec.attachConstructor() = accept(this)
+    fun ConstructorSpec.attachConstructor(editModifiers: ModifierEditorDSL.() -> Set<KModifier>){
+        buildUpon {
+            setModifiers(
+                    *ModifierEditorDSL(funSpec.modifiers).editModifiers().toTypedArray()
+            )
+        }.attachConstructor()
+    }
 }
 
 //----------------------------- only incomplete
@@ -56,13 +65,6 @@ fun ConstructorAcceptor.constructor(vararg variable: Variable, init: CodeBlockBu
 fun ConstructorAcceptor.constructor(vararg variable: Variable) = incompleteConstructorBuilder().unFinished {
     addVariables(*variable)
 }
-
-fun ConstructorAcceptor.constructor(funSpec: FunSpec) = accept(funSpec.toConstructor())
-fun ConstructorAcceptor.constructor(constructorSpec: ConstructorSpec) = accept(constructorSpec.let {
-    if (this is IAccessor<*>){
-        it.buildUpon { addModifiers(*this@constructor.modifiers) }
-    } else it
-})
 
 class Primary(val modifiers: Array<out KModifier>)
 

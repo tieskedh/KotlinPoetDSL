@@ -18,7 +18,6 @@ import nl.devhaan.kotlinpoetdsl.valOf
 class PropAcceptorTest : StringSpec({
     val zeroProp = PropertySpec.builder("prop", String::class).build()
     val oneProp = PropertySpec.builder("prop", String::class, KModifier.FINAL).build()
-    val twoProp = PropertySpec.builder("prop", String::class, KModifier.PUBLIC, KModifier.FINAL).build()
 
     "builder without modifier"{
         createProp {
@@ -40,27 +39,11 @@ class PropAcceptorTest : StringSpec({
                 .build()
     }
 
-    "file with initialized modifier"{
+    "file with modifier"{
         file("", "HelloWorld") {
-            prop(oneProp)
+            final.prop("prop" valOf String::class)
         } shouldBe FileSpec.builder("", "HelloWorld")
                 .addProperty(oneProp)
-                .build()
-    }
-
-    "file add modifier"{
-        file("", "HelloWorld") {
-            final.prop(zeroProp)
-        } shouldBe FileSpec.builder("", "HelloWorld")
-                .addProperty(oneProp)
-                .build()
-    }
-
-    "file merge modifier"{
-        file("", "HelloWorld") {
-            public.prop(oneProp)
-        } shouldBe FileSpec.builder("", "HelloWorld")
-                .addProperty(twoProp)
                 .build()
     }
 
@@ -74,34 +57,13 @@ class PropAcceptorTest : StringSpec({
                 .build()
     }
 
-    "class with initialized modifier"{
+    "class with modifier"{
         createClass {
             clazz("HelloWorld") {
-                prop(oneProp)
+                final.prop("prop" valOf String::class)
             }
         } shouldBe TypeSpec.classBuilder("HelloWorld")
                 .addProperty(oneProp)
                 .build()
     }
-
-    "class add modifier"{
-        createClass {
-            clazz("HelloWorld") {
-                final.prop(zeroProp)
-            }
-        } shouldBe TypeSpec.classBuilder("HelloWorld")
-                .addProperty(oneProp)
-                .build()
-    }
-
-    "class merge modifier"{
-        createClass {
-            clazz("HelloWorld") {
-                public.prop(oneProp)
-            }
-        } shouldBe TypeSpec.classBuilder("HelloWorld")
-                .addProperty(twoProp)
-                .build()
-    }
-
 })

@@ -13,7 +13,6 @@ import nl.devhaan.kotlinpoetdsl.classes.clazz
 import nl.devhaan.kotlinpoetdsl.classes.createClass
 import nl.devhaan.kotlinpoetdsl.files.file
 import nl.devhaan.kotlinpoetdsl.functions.func
-import nl.devhaan.kotlinpoetdsl.internal
 import nl.devhaan.kotlinpoetdsl.open
 
 
@@ -27,7 +26,6 @@ import nl.devhaan.kotlinpoetdsl.open
 class ClassAcceptorTest : StringSpec({
     val zeroClass = TypeSpec.classBuilder("Clazz").build()
     val oneClass = TypeSpec.classBuilder("Clazz").addModifiers(KModifier.OPEN).build()
-    val twoClass = TypeSpec.classBuilder("Clazz").addModifiers(KModifier.INTERNAL, KModifier.OPEN).build()
 
     "abstract builder with abstract method"{
         createClass{
@@ -60,27 +58,11 @@ class ClassAcceptorTest : StringSpec({
                 .build()
     }
 
-    "file with initialized Modifier"{
+    "file with modifier"{
         file("", "HelloWorld") {
-            clazz(oneClass)
+            open.clazz("Clazz"){}
         } shouldBe FileSpec.builder("", "HelloWorld")
                 .addType(oneClass)
-                .build()
-    }
-
-    "file add modifier"{
-        file("", "HelloWorld") {
-            open.clazz(zeroClass)
-        } shouldBe FileSpec.builder("", "HelloWorld")
-                .addType(oneClass)
-                .build()
-    }
-
-    "file merge modifier"{
-        file("", "HelloWorld") {
-            internal.clazz(oneClass)
-        } shouldBe FileSpec.builder("", "HelloWorld")
-                .addType(twoClass)
                 .build()
     }
 
@@ -94,35 +76,16 @@ class ClassAcceptorTest : StringSpec({
                 .build()
     }
 
-    "interface with initialized modifier"{
+    "interface with modifier"{
         createInterface {
             interf("HelloWorld"){
-                clazz(oneClass)
+                open.clazz("Clazz"){}
             }
         } shouldBe TypeSpec.interfaceBuilder("HelloWorld")
                 .addType(oneClass)
                 .build()
     }
 
-    "interface add modifier"{
-        createInterface {
-            interf("HelloWorld"){
-                open.clazz(zeroClass)
-            }
-        } shouldBe TypeSpec.interfaceBuilder("HelloWorld")
-                .addType(oneClass)
-                .build()
-    }
-
-    "interface merge modifier"{
-        createInterface {
-            interf("HelloWorld"){
-                internal.clazz(oneClass)
-            }
-        } shouldBe TypeSpec.interfaceBuilder("HelloWorld")
-                .addType(twoClass)
-                .build()
-    }
     "class without modifier"{
         createClass{
             clazz("HelloWorld") {
@@ -133,33 +96,13 @@ class ClassAcceptorTest : StringSpec({
                 .build()
     }
 
-    "class with initialized Modifier"{
-        createClass {
+    "class with modifier"{
+        createClass{
             clazz("HelloWorld") {
-                clazz(oneClass)
+                open.clazz("Clazz"){}
             }
         } shouldBe TypeSpec.classBuilder("HelloWorld")
                 .addType(oneClass)
-                .build()
-    }
-
-    "class add modifier"{
-        createClass {
-            clazz("HelloWorld") {
-                open.clazz(zeroClass)
-            }
-        } shouldBe TypeSpec.classBuilder("HelloWorld")
-                .addType(oneClass)
-                .build()
-    }
-
-    "class merge modifier"{
-        createClass {
-            clazz("HelloWorld") {
-                internal.clazz(oneClass)
-            }
-        } shouldBe TypeSpec.classBuilder("HelloWorld")
-                .addType(twoClass)
                 .build()
     }
 })

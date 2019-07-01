@@ -12,11 +12,11 @@ import nl.devhaan.kotlinpoetdsl.constructorBuilder.createConstructor
 import nl.devhaan.kotlinpoetdsl.constructorBuilder.constructor
 import nl.devhaan.kotlinpoetdsl.final
 import nl.devhaan.kotlinpoetdsl.private
+import nl.devhaan.kotlinpoetdsl.public
 
 class ConstructorAcceptor : StringSpec({
     val zeroConstr = ConstructorSpec.constructorBuilder(false).build()
     val oneConstr = ConstructorSpec.constructorBuilder(false).addModifiers(KModifier.PRIVATE).build()
-    val twoConstr = ConstructorSpec.constructorBuilder(false).addModifiers(KModifier.FINAL, KModifier.PRIVATE).build()
     "builder without modifier"{
         createConstructor {
             constructor{}
@@ -39,33 +39,13 @@ class ConstructorAcceptor : StringSpec({
                 .build()
     }
 
-    "class with initialized modifier"{
+    "class with modifier"{
         createClass {
             clazz("Clazz"){
-                constructor(oneConstr)
+                private.constructor()
             }
         } shouldBe TypeSpec.classBuilder("Clazz")
                 .addConstructor(oneConstr)
-                .build()
-    }
-
-    "class add modifier"{
-        createClass {
-            clazz("Clazz"){
-                private.constructor(zeroConstr)
-            }
-        } shouldBe TypeSpec.classBuilder("Clazz")
-                .addConstructor(oneConstr)
-                .build()
-    }
-
-    "class merge modifier"{
-        createClass {
-            clazz("Clazz"){
-                final.constructor(oneConstr)
-            }
-        } shouldBe TypeSpec.classBuilder("Clazz")
-                .addConstructor(twoConstr)
                 .build()
     }
 })

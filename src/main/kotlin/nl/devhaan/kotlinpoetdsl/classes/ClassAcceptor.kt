@@ -34,8 +34,20 @@ interface ClassAcceptor : IAcceptor {
         it.typeName = this.asTypeName()
     }
 
-}
+    /**
+     * Adds Typespec keeping modifiers
+     */
+    fun TypeSpec.attachClazz() = this@ClassAcceptor.accept(this)
 
+
+    fun TypeSpec.attachClazz(editModifiers: ModifierEditorDSL.()->Set<KModifier>) {
+        val newModifiers = ModifierEditorDSL(this.modifiers).editModifiers()
+        this.buildUpon {
+            this@buildUpon.modifiers.clear()
+            this@buildUpon.modifiers.addAll(newModifiers)
+        }.attachClazz()
+    }
+}
 
 
 //functions are private, such that they don't popup in the DSL
@@ -98,14 +110,6 @@ private  fun ClassAcceptor.classBuilder() = ClassBuilder(
 )
 private fun ClassAcceptor.incompleteClassBuilder() =
         IncompleteClassBuilder(this, classBuilder().also(this::registerBuilder))
-
-fun ClassAcceptor.clazz(typeSpec: TypeSpec) = accept(typeSpec.let {
-    if (this is IAccessor<*>) {
-        it.buildUpon {
-            addModifiers(*this@clazz.modifiers)
-        }
-    } else it
-})
 
 
 fun ClassAcceptor.clazz(name: String, vararg variables: Variable, init: ClassBuilder.() -> Unit)

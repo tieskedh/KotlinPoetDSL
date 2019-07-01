@@ -4,13 +4,10 @@ import com.squareup.kotlinpoet.*
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.StringSpec
-import nl.devhaan.kotlinpoetdsl.S
+import nl.devhaan.kotlinpoetdsl.*
 import nl.devhaan.kotlinpoetdsl.classes.*
 import nl.devhaan.kotlinpoetdsl.files.file
 import nl.devhaan.kotlinpoetdsl.functions.func
-import nl.devhaan.kotlinpoetdsl.of
-import nl.devhaan.kotlinpoetdsl.valOf
-import nl.devhaan.kotlinpoetdsl.varOf
 import java.lang.IllegalArgumentException
 
 /**
@@ -265,5 +262,29 @@ class ClassInvocationTest : StringSpec({
                 }
             }
         }.message shouldBe "primary constructor is already set"
+    }
+
+    "class attachFunc direct"{
+        val clazz  = TypeSpec.classBuilder("Clazz")
+                .addModifiers(KModifier.PUBLIC)
+                .build()
+
+        file("", "TestFile"){
+            clazz.attachClazz()
+        } shouldBe FileSpec.builder("", "TestFile")
+                .addType(clazz)
+                .build()
+    }
+
+    "class attachFunc DSL"{
+        val clazz  = TypeSpec.classBuilder("Clazz")
+                .addModifiers(KModifier.PUBLIC)
+                .build()
+
+        file("", "TestFile"){
+            clazz.attachClazz{ existing + open }
+        } shouldBe FileSpec.builder("", "TestFile")
+                .addType(clazz.buildUpon { addModifiers(KModifier.OPEN) })
+                .build()
     }
 })
