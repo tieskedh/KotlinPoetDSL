@@ -66,6 +66,7 @@ class ConstructorSpec private constructor(
             variable.forEach { addParameter(it) }
         }
 
+        fun addStatement(format: String, vararg parts: Any) = withFun { addStatement(format, *parts) }
         fun addCode(codeBlock: CodeBlock) = withFun { addCode(codeBlock) }
         fun callThisConstructor(vararg args: String) = withFun {
             require(!isPrimary) {
@@ -87,6 +88,12 @@ class ConstructorSpec private constructor(
                 properties.takeIf { isPrimary }.orEmpty()
         )
 
+        fun setModifiers(vararg modifiers: KModifier) = withFun {
+            this@withFun.modifiers.let {
+                it.clear()
+                it.addAll(modifiers)
+            }
+        }
         fun addModifiers(vararg modifiers: KModifier) = withFun { addModifiers(*modifiers) }
     }
 

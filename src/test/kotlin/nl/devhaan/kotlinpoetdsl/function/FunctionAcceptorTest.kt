@@ -12,6 +12,7 @@ import nl.devhaan.kotlinpoetdsl.files.file
 import nl.devhaan.kotlinpoetdsl.functions.createFun
 import nl.devhaan.kotlinpoetdsl.functions.func
 import nl.devhaan.kotlinpoetdsl.open
+import nl.devhaan.kotlinpoetdsl.private
 import nl.devhaan.kotlinpoetdsl.protected
 
 /**
@@ -29,12 +30,7 @@ class FunctionAcceptorTest : StringSpec({
 
     val oneFun = FunSpec.builder("func")
             .addStatement("println(%S)", "hi")
-            .addModifiers(KModifier.OPEN)
-            .build()
-
-    val twoFun = FunSpec.builder("func")
-            .addStatement("println(%S)", "hi")
-            .addModifiers(KModifier.PROTECTED, KModifier.OPEN)
+            .addModifiers(KModifier.PRIVATE)
             .build()
 
     "builder without modifier"{
@@ -47,7 +43,7 @@ class FunctionAcceptorTest : StringSpec({
 
     "builder with modifier"{
         createFun {
-            open.func("func") {
+            private.func("func") {
                 statement("println(%S)", "hi")
             }
         } shouldBe oneFun
@@ -64,30 +60,15 @@ class FunctionAcceptorTest : StringSpec({
                 .build()
     }
 
-    "file with initialized Modifier"{
+    "file with Modifier"{
         file("", "HelloWorld") {
-            func(oneFun)
+            private.func("func") {
+                statement("println(%S)", "hi")
+            }
         } shouldBe FileSpec.builder("", "HelloWorld")
                 .addFunction(oneFun)
                 .build()
     }
-
-    "file add modifier"{
-        file("", "HelloWorld") {
-            open.func(zeroFun)
-        } shouldBe FileSpec.builder("", "HelloWorld")
-                .addFunction(oneFun)
-                .build()
-    }
-
-    "file merge modifier"{
-        file("", "HelloWorld") {
-            protected.func(oneFun)
-        } shouldBe FileSpec.builder("", "HelloWorld")
-                .addFunction(twoFun)
-                .build()
-    }
-
 
     "class without modifier"{
         createClass {
@@ -101,33 +82,15 @@ class FunctionAcceptorTest : StringSpec({
                 .build()
     }
 
-    "class with initialized Modifier"{
+    "class with Modifier"{
         createClass {
             clazz("HelloWorld") {
-                func(oneFun)
+                private.func("func") {
+                    statement("println(%S)", "hi")
+                }
             }
         } shouldBe TypeSpec.classBuilder("HelloWorld")
                 .addFunction(oneFun)
-                .build()
-    }
-
-    "class add modifier"{
-        createClass {
-            clazz("HelloWorld") {
-                open.func(zeroFun)
-            }
-        } shouldBe TypeSpec.classBuilder("HelloWorld")
-                .addFunction(oneFun)
-                .build()
-    }
-
-    "class merge modifier"{
-        createClass {
-            clazz("HelloWorld") {
-                protected.func(oneFun)
-            }
-        } shouldBe TypeSpec.classBuilder("HelloWorld")
-                .addFunction(twoFun)
                 .build()
     }
 })

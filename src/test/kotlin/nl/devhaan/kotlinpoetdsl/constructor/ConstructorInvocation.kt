@@ -9,6 +9,9 @@ import nl.devhaan.kotlinpoetdsl.classes.clazz
 import nl.devhaan.kotlinpoetdsl.classes.extends
 import nl.devhaan.kotlinpoetdsl.constructorBuilder.*
 import nl.devhaan.kotlinpoetdsl.files.file
+import nl.devhaan.kotlinpoetdsl.functions.buildUpon
+import org.reflections.util.ConfigurationBuilder.build
+import java.lang.reflect.Type
 import java.sql.Types
 
 class ConstructorInvocation : StringSpec({
@@ -121,7 +124,7 @@ class ConstructorInvocation : StringSpec({
                 .toSecondary()
         createClass {
             clazz("Clazz"){
-                constructor(constructor)
+                constructor.attachConstructor()
             }
         } shouldBe TypeSpec.classBuilder("Clazz")
                 .addFunction(
@@ -236,5 +239,67 @@ class ConstructorInvocation : StringSpec({
                     .build()
         }
     }
+
+    "constructor - funSpec direct attachFunc" {
+        val consFun = FunSpec.constructorBuilder().addModifiers(KModifier.PROTECTED)
+                .addParameter("test".valOf<Int>().toParamSpec())
+                .addStatement("println(2)")
+                .build()
+
+        createClass {
+            clazz("Clazz"){
+                consFun.attachConstructor()
+            }
+        } shouldBe TypeSpec.classBuilder("Clazz")
+                .addFunction(consFun)
+                .build()
+    }
+
+    "constructor - funspec attachFunc DSL" {
+        val consFun = FunSpec.constructorBuilder().addModifiers(KModifier.PROTECTED)
+                .addParameter("test".valOf<Int>().toParamSpec())
+                .addStatement("println(2)")
+                .build()
+
+        createClass {
+            clazz("Clazz"){
+                consFun.attachConstructor { +protected }
+            }
+        } shouldBe TypeSpec.classBuilder("Clazz")
+                .addFunction(
+                        consFun.buildUpon { addModifiers(KModifier.PROTECTED) }
+                ).build()
+    }
+
+    "constructor - ConstructorSpec direct attachFunc"{
+        val consSpec = ConstructorSpec.constructorBuilder()
+                .addParameter("test".valOf<Int>())
+                .addStatement("println(2)")
+                .build()
+
+        createClass {
+            clazz("Clazz"){
+                consSpec.attachConstructor()
+            }
+        } shouldBe TypeSpec.classBuilder("Clazz")
+                .addConstructor(consSpec)
+                .build()
+    }
+
+    "constructor - ConstructorSpec attachFunc DSL" {
+        val consSpec = ConstructorSpec.constructorBuilder()
+                .addParameter("test".valOf<Int>())
+                .addStatement("println(2)")
+                .build()
+        createClass {
+            clazz("Clazz"){
+                consSpec.attachConstructor{ + protected}
+            }
+        } shouldBe TypeSpec.classBuilder("Clazz")
+                .addConstructor(
+                        consSpec.buildUpon { addModifiers(KModifier.PROTECTED) }
+                ).build()
+    }
+
 })
 

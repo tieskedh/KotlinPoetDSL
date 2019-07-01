@@ -5,8 +5,10 @@ import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 import nl.devhaan.kotlinpoetdsl.`interface`.implements
 import nl.devhaan.kotlinpoetdsl.`interface`.interf
+import nl.devhaan.kotlinpoetdsl.classes.buildUpon
 import nl.devhaan.kotlinpoetdsl.files.file
 import nl.devhaan.kotlinpoetdsl.functions.func
+import nl.devhaan.kotlinpoetdsl.open
 
 class InterfaceInvocationTest : StringSpec({
     "plain interface"{
@@ -94,5 +96,29 @@ class InterfaceInvocationTest : StringSpec({
                         FunSpec.builder("func").build()
                 ).build()
         ).build()
+    }
+
+    "interface attachFunc direct"{
+        val interf  = TypeSpec.interfaceBuilder("Interf")
+                .addModifiers(KModifier.PUBLIC)
+                .build()
+
+        file("", "TestFile"){
+            interf.attachClazz()
+        } shouldBe FileSpec.builder("", "TestFile")
+                .addType(interf)
+                .build()
+    }
+
+    "class attachFunc DSL"{
+        val interf  = TypeSpec.interfaceBuilder("Interf")
+                .addModifiers(KModifier.PUBLIC)
+                .build()
+
+        file("", "TestFile"){
+            interf.attachClazz{ existing + open }
+        } shouldBe FileSpec.builder("", "TestFile")
+                .addType(interf.buildUpon { addModifiers(KModifier.OPEN) })
+                .build()
     }
 })

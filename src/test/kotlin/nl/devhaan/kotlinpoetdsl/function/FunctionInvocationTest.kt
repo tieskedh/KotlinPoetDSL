@@ -9,9 +9,8 @@ import io.kotlintest.specs.StringSpec
 import nl.devhaan.kotlinpoetdsl.abstract
 import nl.devhaan.kotlinpoetdsl.classes.createClass
 import nl.devhaan.kotlinpoetdsl.classes.clazz
-import nl.devhaan.kotlinpoetdsl.functions.extension
-import nl.devhaan.kotlinpoetdsl.functions.func
-import nl.devhaan.kotlinpoetdsl.functions.returns
+import nl.devhaan.kotlinpoetdsl.functions.*
+import nl.devhaan.kotlinpoetdsl.inline
 import nl.devhaan.kotlinpoetdsl.of
 import nl.devhaan.kotlinpoetdsl.private
 
@@ -208,5 +207,36 @@ class FunctionInvocationTest : StringSpec({
                         .addModifiers(KModifier.PRIVATE)
                         .build()
         ).build()
+    }
+
+    "function attachFunc direct"{
+        val funSpec = createFun {
+            private.extension(Int::class).func("addOne") returns Int::class{
+                statement("return this+1")
+            }
+        }
+
+        createClass {
+            clazz("TestClazz"){
+                funSpec.attachFunc()
+            }
+        } shouldBe TypeSpec.classBuilder("TestClazz")
+                .addFunction(funSpec)
+                .build()
+    }
+    "function attachFunc DSL"{
+        val funSpec = createFun {
+            private.extension(Int::class).func("addOne") returns Int::class{
+                statement("return this+1")
+            }
+        }
+
+        createClass {
+            clazz("TestClazz"){
+                funSpec.attachFunc{+inline}
+            }
+        } shouldBe TypeSpec.classBuilder("TestClazz")
+                .addFunction(funSpec.buildUpon { addModifiers(KModifier.INLINE) })
+                .build()
     }
 })

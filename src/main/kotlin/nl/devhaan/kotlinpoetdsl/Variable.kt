@@ -109,6 +109,5 @@ data class Variable(
         else -> toPropertySpec().toString()
     }.removeSuffix("\n")
 }
-
 fun PropertySpec.toVariable() = Variable(this)
 fun ParameterSpec.toVariable(propertyData: PropertyData? = null) = Variable(this, propertyData)

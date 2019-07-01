@@ -33,6 +33,15 @@ interface FunctionAcceptor : IAcceptor {
             funcBuilder().buildExtensionFunction(this.typeName, name, variables, modifiers, buildScript)
 
     fun accept(func: FunSpec)
+
+    fun FunSpec.attachFunc() = accept(this)
+    fun FunSpec.attachFunc(editModifier: ModifierEditorDSL.()->Set<KModifier>){
+        val newModifiers = ModifierEditorDSL(this.modifiers).editModifier()
+        buildUpon {
+            modifiers.clear()
+            modifiers.addAll(newModifiers)
+        }.attachFunc()
+    }
 }
 
 private fun FunctionAcceptor.incompleteFuncBuilder() = IncompleteFunctionBuilder(this, funcBuilder().also(this::registerBuilder))
@@ -84,9 +93,3 @@ fun FunctionAcceptor.extension(typeName: TypeName) = Extension(
 )
 fun FunctionAcceptor.extension(clazz: KClass<*>) = extension(clazz.asTypeName())
 inline fun <reified T> FunctionAcceptor.extension() = extension(T::class.asTypeName())
-
-fun FunctionAcceptor.func(funSpec: FunSpec) = accept(funSpec.let {
-    if (this is IAccessor<*>) {
-        it.buildUpon { addModifiers(*this@func.modifiers) }
-    } else it
-})
