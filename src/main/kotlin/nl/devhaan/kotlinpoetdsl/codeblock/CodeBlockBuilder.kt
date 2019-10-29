@@ -15,8 +15,7 @@ class CodeBlockBuilder (
 
     fun String.statement(vararg parts: Any) = builder.statement(this, *parts)
 
-
-
+    fun LazyComponent.attach() = this.wrapper(builder)
     fun String.addMarginedCode(vararg args: Any, marginPrefix : String= "|") = trimMargin(marginPrefix).addCode(*args)
     fun String.addTrimmedCode(vararg args: Any) = trimIndent().addCode(*args)
     fun String.addCode(vararg args: Any) = builder.addCode(this, *args)

@@ -4,6 +4,7 @@ import com.squareup.kotlinpoet.*
 import nl.devhaan.kotlinpoetdsl.*
 import nl.devhaan.kotlinpoetdsl.ProvideBuilderAcceptor.ImplementationData
 import nl.devhaan.kotlinpoetdsl.codeblock.CodeBlockBuilder
+import nl.devhaan.kotlinpoetdsl.codeblock.LazyComponent
 import nl.devhaan.kotlinpoetdsl.functions.FunctionAcceptor.IncompleteFunctionBuilder
 import kotlin.reflect.KClass
 
@@ -51,7 +52,6 @@ private fun FunctionAcceptor.funcBuilder() = FuncBuilder(
 )
 
 //functions are private, such that they don't popup in the DSL
-
 private inline fun IncompleteFunctionBuilder.unfinished(builder: (FuncBuilder)-> Unit) = apply {
     builder(funcBuilder)
 }
@@ -83,6 +83,8 @@ infix fun <T : Any> IncompleteFunctionBuilder.returns(name: KClass<T>) = finishe
 infix fun IncompleteFunctionBuilder.returns(implementationData: ImplementationData<CodeBlockBuilder>) = finished{
     it.buildReturn(implementationData.typeName, implementationData.buildScript)
 }
+
+infix fun IncompleteFunctionBuilder.withBody(lazyComponent: LazyComponent) = finished { it.build(lazyComponent) }
 
 //------------------------------------------ only complete
 

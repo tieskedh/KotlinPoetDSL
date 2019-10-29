@@ -5,6 +5,7 @@ import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.TypeName
 import nl.devhaan.kotlinpoetdsl.*
 import nl.devhaan.kotlinpoetdsl.codeblock.CodeBlockBuilder
+import nl.devhaan.kotlinpoetdsl.codeblock.LazyComponent
 import nl.devhaan.kotlinpoetdsl.helpers.FuncBlockWrapper
 
 class FuncBuilder(
@@ -32,7 +33,7 @@ class FuncBuilder(
     fun buildReturn(typeName: TypeName, buildScript: CodeBlockBuilder.() -> Unit) =
             builder.returns(typeName).addCode(buildScript).build().also(callBack)
 
-
+    fun build(lazyComponent: LazyComponent) = builder.addCode{lazyComponent.wrapper(this.builder)}.build().also(callBack)
     fun buildReturn(name: String, vararg variables: Variable, buildScript: CodeBlockBuilder.() -> Unit) = build(name, buildScript) {
         addParameters(variables)
     }

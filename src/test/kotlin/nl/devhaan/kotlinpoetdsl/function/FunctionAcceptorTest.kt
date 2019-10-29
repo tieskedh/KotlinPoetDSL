@@ -35,7 +35,7 @@ class FunctionAcceptorTest : StringSpec({
 
     "builder without modifier"{
         createFun {
-            func("func") {
+            func("func"){
                 statement("println(%S)", "hi")
             }
         } shouldBe zeroFun
