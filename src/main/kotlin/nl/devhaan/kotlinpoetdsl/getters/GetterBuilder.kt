@@ -4,7 +4,7 @@ import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import nl.devhaan.kotlinpoetdsl.IAccessor
 import nl.devhaan.kotlinpoetdsl.PlainAccessor
-import nl.devhaan.kotlinpoetdsl.codeblock.CodeBlockBuilder
+import nl.devhaan.kotlinpoetdsl.codeblock.CodeBlockBuildScript
 import nl.devhaan.kotlinpoetdsl.helpers.FuncBlockWrapper
 
 class GetterBuilder(
@@ -19,7 +19,7 @@ class GetterBuilder(
         statement(format, *args).build()
     }
 
-    fun build(buildScript: CodeBlockBuilder.() -> Unit) = _build {
+    fun build(buildScript: CodeBlockBuildScript) = _build {
         addCode(buildScript).build()
     }
 

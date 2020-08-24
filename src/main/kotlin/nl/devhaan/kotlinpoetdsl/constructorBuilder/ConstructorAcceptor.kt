@@ -2,9 +2,8 @@ package nl.devhaan.kotlinpoetdsl.constructorBuilder
 
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
-import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const
 import nl.devhaan.kotlinpoetdsl.*
-import nl.devhaan.kotlinpoetdsl.codeblock.CodeBlockBuilder
+import nl.devhaan.kotlinpoetdsl.codeblock.CodeBlockBuildScript
 import nl.devhaan.kotlinpoetdsl.constructorBuilder.ConstructorAcceptor.IncompleteConstructorBuilder
 
 interface ConstructorAcceptor : IAcceptor {
@@ -12,7 +11,7 @@ interface ConstructorAcceptor : IAcceptor {
 
     fun accept(constructorSpec: ConstructorSpec)
 
-    fun Primary.constructor(vararg variable: Variable, init: CodeBlockBuilder.()->Unit = {})
+    fun Primary.constructor(vararg variable: Variable, init: CodeBlockBuildScript = {})
             = constructorBuilder().buildPrimary(modifiers, variable, init)
 
     fun FunSpec.attachConstructor() = accept(toConstructor())
@@ -31,13 +30,13 @@ interface ConstructorAcceptor : IAcceptor {
 //----------------------------- only incomplete
 fun IncompleteConstructorBuilder.thiz(vararg params: String) = unFinished { setThiz(*params) }
 
-fun IncompleteConstructorBuilder.thiz(vararg params: String, script: CodeBlockBuilder.() -> Unit) = finish {
+fun IncompleteConstructorBuilder.thiz(vararg params: String, script: CodeBlockBuildScript) = finish {
     setThiz(*params)
     build(script)
 }
 
 fun IncompleteConstructorBuilder.zuper(vararg params: String) = unFinished { setSuper(*params) }
-fun IncompleteConstructorBuilder.zuper(vararg params: String, script: CodeBlockBuilder.() -> Unit) = finish {
+fun IncompleteConstructorBuilder.zuper(vararg params: String, script: CodeBlockBuildScript) = finish {
     setSuper(*params)
     build(script)
 }
@@ -60,7 +59,7 @@ private inline fun IncompleteConstructorBuilder.finish(buildScript: ConstructorB
 }
 
 
-fun ConstructorAcceptor.constructor(vararg variable: Variable, init: CodeBlockBuilder.() -> Unit) = constructorBuilder().build(variable, init)
+fun ConstructorAcceptor.constructor(vararg variable: Variable, init: CodeBlockBuildScript) = constructorBuilder().build(variable, init)
 
 fun ConstructorAcceptor.constructor(vararg variable: Variable) = incompleteConstructorBuilder().unFinished {
     addVariables(*variable)

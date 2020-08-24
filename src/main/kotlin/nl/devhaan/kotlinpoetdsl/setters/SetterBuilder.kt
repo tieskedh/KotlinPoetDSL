@@ -5,7 +5,7 @@ import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.asTypeName
 import nl.devhaan.kotlinpoetdsl.IAccessor
 import nl.devhaan.kotlinpoetdsl.PlainAccessor
-import nl.devhaan.kotlinpoetdsl.codeblock.CodeBlockBuilder
+import nl.devhaan.kotlinpoetdsl.codeblock.CodeBlockBuildScript
 import nl.devhaan.kotlinpoetdsl.helpers.BlockWrapper
 import nl.devhaan.kotlinpoetdsl.helpers.wrapper
 
@@ -16,7 +16,7 @@ class SetterBuilder(
 
     operator fun invoke(codeBlock: CodeBlock) = build { addCode(codeBlock) }
 
-    operator fun invoke(buildScript: CodeBlockBuilder.() -> Unit) = build {
+    operator fun invoke(buildScript: CodeBlockBuildScript) = build {
         addCode(buildScript)
     }
 

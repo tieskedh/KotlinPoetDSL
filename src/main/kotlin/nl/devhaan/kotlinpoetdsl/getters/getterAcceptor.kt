@@ -4,7 +4,7 @@ import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import nl.devhaan.kotlinpoetdsl.IAccessor
 import nl.devhaan.kotlinpoetdsl.PlainAccessor
-import nl.devhaan.kotlinpoetdsl.codeblock.CodeBlockBuilder
+import nl.devhaan.kotlinpoetdsl.codeblock.CodeBlockBuildScript
 
 interface GetterAcceptor {
     fun acceptGetter(func: FunSpec)
@@ -19,4 +19,4 @@ fun GetterAcceptor.getter(format: String, vararg values: Any) = getterBuilder().
 
 fun GetterAcceptor.getter(codeBlock: CodeBlock) = getterBuilder().build(codeBlock)
 
-fun GetterAcceptor.getter(buildScript: CodeBlockBuilder.() -> Unit) = getterBuilder().build(buildScript)
+fun GetterAcceptor.getter(buildScript: CodeBlockBuildScript) = getterBuilder().build(buildScript)

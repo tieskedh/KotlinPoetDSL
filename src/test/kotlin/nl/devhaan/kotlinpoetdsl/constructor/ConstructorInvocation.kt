@@ -1,8 +1,8 @@
 package nl.devhaan.kotlinpoetdsl.constructor
 
 import com.squareup.kotlinpoet.*
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.StringSpec
+import io.kotest.matchers.shouldBe
+import io.kotest.core.spec.style.StringSpec
 import nl.devhaan.kotlinpoetdsl.*
 import nl.devhaan.kotlinpoetdsl.classes.createClass
 import nl.devhaan.kotlinpoetdsl.classes.clazz
@@ -10,9 +10,6 @@ import nl.devhaan.kotlinpoetdsl.classes.extends
 import nl.devhaan.kotlinpoetdsl.constructorBuilder.*
 import nl.devhaan.kotlinpoetdsl.files.file
 import nl.devhaan.kotlinpoetdsl.functions.buildUpon
-import org.reflections.util.ConfigurationBuilder.build
-import java.lang.reflect.Type
-import java.sql.Types
 
 class ConstructorInvocation : StringSpec({
     "2nd constructor without body with parameter"{

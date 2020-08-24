@@ -3,8 +3,8 @@ package nl.devhaan.kotlinpoetdsl.codeblock
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.buildCodeBlock
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.StringSpec
+import io.kotest.matchers.shouldBe
+import io.kotest.core.spec.style.StringSpec
 import nl.devhaan.kotlinpoetdsl.S
 import nl.devhaan.kotlinpoetdsl.endControlFlow
 import nl.devhaan.kotlinpoetdsl.files.file
@@ -31,11 +31,11 @@ class SwitchTest : StringSpec({
             }
         }.toString() shouldBe
                 """|fun switch() {
-                   |    when(val a = Random.nextInt(10)) {
-                   |        a < 5 -> println("little")
-                   |        a == 5 -> println("center")
-                   |        a > 5 -> println("big")
-                   |    }
+                   |  when(val a = Random.nextInt(10)) {
+                   |    a < 5 -> println("little")
+                   |    a == 5 -> println("center")
+                   |    a > 5 -> println("big")
+                   |  }
                    |}
                    |""".trimMargin()
     }
@@ -68,14 +68,14 @@ class SwitchTest : StringSpec({
             }
         }.toString() shouldBe
                 """|fun switch() {
-                   |    when(val a = Random.nextInt(10)) {
-                   |        a < 5 -> println("little")
-                   |        a == 5 -> {
-                   |            println("center")
-                   |            println("center")
-                   |        }
-                   |        a > 5 -> println("big")
+                   |  when(val a = Random.nextInt(10)) {
+                   |    a < 5 -> println("little")
+                   |    a == 5 -> {
+                   |      println("center")
+                   |      println("center")
                    |    }
+                   |    a > 5 -> println("big")
+                   |  }
                    |}
                    |""".trimMargin()
     }
@@ -141,20 +141,20 @@ class SwitchTest : StringSpec({
             }
         }.toString() shouldBe
                 """|fun kotlin.Int.switch(b: kotlin.Int, shouldBe: kotlin.String): kotlin.Boolean {
-                   |    when(shouldBe) {
-                   |        "bigger" -> when {
-                   |            this <= b -> false
-                   |            else -> true
-                   |        }
-                   |        "smaller" -> when {
-                   |            this >= b -> false
-                   |            else -> true
-                   |        }
-                   |        else -> when {
-                   |            this >= b -> false
-                   |            else -> true
-                   |        }
+                   |  when(shouldBe) {
+                   |    "bigger" -> when {
+                   |      this <= b -> false
+                   |      else -> true
                    |    }
+                   |    "smaller" -> when {
+                   |      this >= b -> false
+                   |      else -> true
+                   |    }
+                   |    else -> when {
+                   |      this >= b -> false
+                   |      else -> true
+                   |    }
+                   |  }
                    |}
                    |""".trimMargin()
     }

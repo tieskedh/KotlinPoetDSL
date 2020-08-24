@@ -3,7 +3,7 @@ package nl.devhaan.kotlinpoetdsl.classes
 import com.squareup.kotlinpoet.*
 import nl.devhaan.kotlinpoetdsl.*
 import nl.devhaan.kotlinpoetdsl.`interface`.InterfaceAcceptor
-import nl.devhaan.kotlinpoetdsl.codeblock.CodeBlockBuilder
+import nl.devhaan.kotlinpoetdsl.codeblock.CodeBlockBuildScript
 import nl.devhaan.kotlinpoetdsl.constructorBuilder.*
 import nl.devhaan.kotlinpoetdsl.functions.FunctionAcceptor
 import nl.devhaan.kotlinpoetdsl.properties.PropAcceptor
@@ -101,7 +101,7 @@ class ClassBuilder(
     }
 
 
-    fun primaryConstructor(vararg variables: Variable, blockWrapper: CodeBlockBuilder.() -> Unit = {}) {
+    fun primaryConstructor(vararg variables: Variable, blockWrapper: CodeBlockBuildScript = {}) {
         primary.constructor(*variables, init = blockWrapper)
     }
 

@@ -1,8 +1,8 @@
 package nl.devhaan.kotlinpoetdsl.prop
 
-import io.kotlintest.shouldBe
-import io.kotlintest.shouldThrow
-import io.kotlintest.specs.StringSpec
+import io.kotest.matchers.shouldBe
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.spec.style.StringSpec
 import nl.devhaan.kotlinpoetdsl.files.file
 import nl.devhaan.kotlinpoetdsl.getters.getter
 import nl.devhaan.kotlinpoetdsl.inline

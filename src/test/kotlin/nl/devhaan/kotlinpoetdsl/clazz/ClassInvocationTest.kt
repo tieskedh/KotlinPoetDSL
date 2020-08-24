@@ -1,14 +1,16 @@
 package nl.devhaan.kotlinpoetdsl.clazz
 
 import com.squareup.kotlinpoet.*
-import io.kotlintest.shouldBe
-import io.kotlintest.shouldThrow
-import io.kotlintest.specs.StringSpec
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.shouldBe
+
 import nl.devhaan.kotlinpoetdsl.*
 import nl.devhaan.kotlinpoetdsl.classes.*
 import nl.devhaan.kotlinpoetdsl.files.file
 import nl.devhaan.kotlinpoetdsl.functions.func
 import java.lang.IllegalArgumentException
+
 
 /**
  * This class checks if all the function-invocations work correctly.
