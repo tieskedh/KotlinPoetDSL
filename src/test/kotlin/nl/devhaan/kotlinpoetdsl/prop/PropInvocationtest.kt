@@ -74,7 +74,10 @@ class PropInvocationtest : StringSpec({
         file("", "HelloWorld") {
             private.prop("prop".valOf<Int>("1"))
         } shouldBe FileSpec.builder("", "HelloWorld").addProperty(
-                PropertySpec.builder("prop", Int::class).initializer("1").addModifiers(KModifier.PRIVATE).build()
+                PropertySpec.builder("prop", Int::class)
+                        .initializer("1")
+                        .addModifiers(KModifier.PRIVATE)
+                        .build()
         ).build()
     }
 
