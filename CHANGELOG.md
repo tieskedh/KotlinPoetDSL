@@ -9,6 +9,7 @@ V0.2.0
 - added String.addCode, String.addMarginedCode and String.addIndentedCode()
 - switch has now pre- and postfix
 - switch-cases now accept more arguments
+- Adds topLevel Getter and  Setter
 
 # improvements
 - switch now emits brack
