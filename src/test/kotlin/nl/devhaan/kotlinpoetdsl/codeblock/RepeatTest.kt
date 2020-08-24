@@ -2,8 +2,8 @@ package nl.devhaan.kotlinpoetdsl.codeblock
 
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.buildCodeBlock
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.StringSpec
+import io.kotest.matchers.shouldBe
+import io.kotest.core.spec.style.StringSpec
 import nl.devhaan.kotlinpoetdsl.endControlFlow
 import nl.devhaan.kotlinpoetdsl.helpers.createCodeBlock
 import nl.devhaan.kotlinpoetdsl.println
@@ -124,19 +124,19 @@ class RepeatTest : StringSpec({
         }.toString() shouldBe
                 """|var i = 1
                    |when(i) {
-                   |    0 -> for (i in 0 until 10) {
-                   |        println(i)
-                   |    }
-                   |    1 -> while (i < 20) {
-                   |        println(i)
-                   |        i++
-                   |    }
-                   |    2 -> do {
-                   |        println(2)
-                   |    } while (true)
-                   |    else -> repeat(3) {
-                   |        println(3)
-                   |    }
+                   |  0 -> for (i in 0 until 10) {
+                   |    println(i)
+                   |  }
+                   |  1 -> while (i < 20) {
+                   |    println(i)
+                   |    i++
+                   |  }
+                   |  2 -> do {
+                   |    println(2)
+                   |  } while (true)
+                   |  else -> repeat(3) {
+                   |    println(3)
+                   |  }
                    |}
                    |""".trimMargin()
     }

@@ -4,15 +4,14 @@ import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.TypeName
 import nl.devhaan.kotlinpoetdsl.*
-import nl.devhaan.kotlinpoetdsl.codeblock.CodeBlockBuilder
 import nl.devhaan.kotlinpoetdsl.codeblock.LazyComponent
+import nl.devhaan.kotlinpoetdsl.codeblock.function.FunctionBlockBuildScript
 import nl.devhaan.kotlinpoetdsl.helpers.FuncBlockWrapper
 
 class FuncBuilder(
         private val accessor: IAccessor<*> = PlainAccessor(),
         private val callBack: (FunSpec) -> Unit
 ) : ProvideBuilderAcceptor, IBuilder {
-
 
     override fun finish() {
         build()
@@ -22,26 +21,44 @@ class FuncBuilder(
 
     private lateinit var builder: FuncBlockWrapper
 
-    fun initBuilder(name: String) = FuncBlockWrapper(FunSpec.builder(name).addModifiers(*accessor.modifiers)).also {
-        builder = it
-    }
+    fun initBuilder(
+            name: String
+    ) = FuncBlockWrapper(FunSpec.builder(name)
+            .addModifiers(*accessor.modifiers))
+            .also { builder = it }
 
     fun initFunc(name: String, vararg variables: Variable) = apply {
         initBuilder(name).addParameters(variables)
     }
 
-    fun buildReturn(typeName: TypeName, buildScript: CodeBlockBuilder.() -> Unit) =
-            builder.returns(typeName).addCode(buildScript).build().also(callBack)
+    fun buildReturn(
+            typeName: TypeName,
+            buildScript: FunctionBlockBuildScript
+    ) = builder.returns(typeName)
+            .addFuncCode(buildScript)
+            .build()
+            .also(callBack)
 
-    fun build(lazyComponent: LazyComponent) = builder.addCode{lazyComponent.wrapper(this.builder)}.build().also(callBack)
-    fun buildReturn(name: String, vararg variables: Variable, buildScript: CodeBlockBuilder.() -> Unit) = build(name, buildScript) {
+    fun build(lazyComponent: LazyComponent) = builder.addCode{
+        lazyComponent.wrapper(this.builder)
+    }.build().also(callBack)
+
+
+    fun buildReturn(
+            name: String,
+            vararg variables: Variable,
+            buildScript: FunctionBlockBuildScript
+    ) = build(name, buildScript) {
         addParameters(variables)
     }
 
-    private fun build(name: String, ReceivedBuildScript: CodeBlockBuilder.() -> Unit, internalBuildScript: FuncBlockWrapper.() -> Unit = {}) =
-            initBuilder(name)
+    private fun build(
+            name: String,
+            receivedBuildScript: FunctionBlockBuildScript,
+            internalBuildScript: FuncBlockWrapper.() -> Unit = {}
+    ) = initBuilder(name)
                     .also(internalBuildScript)
-                    .addCode(ReceivedBuildScript)
+                    .addFuncCode(receivedBuildScript)
                     .build()
                     .also(callBack)
 
@@ -63,7 +80,7 @@ class FuncBuilder(
             name: String,
             variables: Array<out Variable> = emptyArray(),
             modifiers: Array<out KModifier> = emptyArray(),
-            buildScript: CodeBlockBuilder.() -> Unit
+            buildScript: FunctionBlockBuildScript
     ) = build(name, buildScript) {
         addParameters(variables)
         receiver(receiver)

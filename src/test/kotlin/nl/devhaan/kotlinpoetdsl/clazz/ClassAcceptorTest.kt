@@ -4,8 +4,8 @@ import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.TypeSpec
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.StringSpec
+import io.kotest.matchers.shouldBe
+import io.kotest.core.spec.style.StringSpec
 import nl.devhaan.kotlinpoetdsl.`interface`.createInterface
 import nl.devhaan.kotlinpoetdsl.`interface`.interf
 import nl.devhaan.kotlinpoetdsl.abstract

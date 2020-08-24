@@ -1,8 +1,8 @@
 package nl.devhaan.kotlinpoetdsl.variable
 
 import com.squareup.kotlinpoet.*
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.StringSpec
+import io.kotest.matchers.shouldBe
+import io.kotest.core.spec.style.StringSpec
 import nl.devhaan.kotlinpoetdsl.*
 import nl.devhaan.kotlinpoetdsl.classes.clazz
 import nl.devhaan.kotlinpoetdsl.classes.createClass

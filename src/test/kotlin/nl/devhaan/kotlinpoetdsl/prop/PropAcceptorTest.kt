@@ -4,15 +4,14 @@ import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.StringSpec
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.shouldBe
 import nl.devhaan.kotlinpoetdsl.classes.createClass
 import nl.devhaan.kotlinpoetdsl.classes.clazz
 import nl.devhaan.kotlinpoetdsl.files.file
 import nl.devhaan.kotlinpoetdsl.final
 import nl.devhaan.kotlinpoetdsl.properties.createProp
 import nl.devhaan.kotlinpoetdsl.properties.prop
-import nl.devhaan.kotlinpoetdsl.public
 import nl.devhaan.kotlinpoetdsl.valOf
 
 class PropAcceptorTest : StringSpec({

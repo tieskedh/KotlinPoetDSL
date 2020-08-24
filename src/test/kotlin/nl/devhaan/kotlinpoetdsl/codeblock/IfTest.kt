@@ -3,9 +3,9 @@ package nl.devhaan.kotlinpoetdsl.codeblock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.asTypeName
-import io.kotlintest.shouldBe
-import io.kotlintest.shouldThrow
-import io.kotlintest.specs.StringSpec
+import io.kotest.matchers.shouldBe
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.spec.style.StringSpec
 import nl.devhaan.kotlinpoetdsl.functions.createFun
 import nl.devhaan.kotlinpoetdsl.functions.func
 import nl.devhaan.kotlinpoetdsl.helpers.UnFinishException
@@ -168,23 +168,23 @@ class IfTest : StringSpec({
             }
         }.toString() shouldBe
                 """|when(1) {
-                   |    1 -> if (1==1) {
-                   |        println(1)
-                   |    }
-                   |    2 -> if ((null) == true) {
-                   |        println("won't print, it's not positive")
-                   |    } else if ((null) == false) {
-                   |        println("won't print, it's not negative")
-                   |    } else if ((null) == true) {
-                   |        println("well this is stupid code")
-                   |    } else {
-                   |        println("finally, smth to print")
-                   |    }
-                   |    3 -> if ((null) == false) {
-                   |        println("won't print, it's not positive")
-                   |    } else if (true) {
-                   |        println(2)
-                   |    }
+                   |  1 -> if (1==1) {
+                   |    println(1)
+                   |  }
+                   |  2 -> if ((null) == true) {
+                   |    println("won't print, it's not positive")
+                   |  } else if ((null) == false) {
+                   |    println("won't print, it's not negative")
+                   |  } else if ((null) == true) {
+                   |    println("well this is stupid code")
+                   |  } else {
+                   |    println("finally, smth to print")
+                   |  }
+                   |  3 -> if ((null) == false) {
+                   |    println("won't print, it's not positive")
+                   |  } else if (true) {
+                   |    println(2)
+                   |  }
                    |}
                    |""".trimMargin()
     }

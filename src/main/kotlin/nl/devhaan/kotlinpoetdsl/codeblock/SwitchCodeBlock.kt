@@ -21,7 +21,12 @@ private fun _switch(
     builder.endControlFlow("%L", postFix)
 }
 
-
+/*
+ * In order to add a switch statement, it needs the blockWrapper.
+ * Because the CodeBlock has the BlockWrapper, the functions can be added as extension-function to CodeBlock.
+ * To depend only on the BlockWrapper itself, we simulate a MixIn from scala.
+ * We do this with the combination of ISwitch and SwitchStart.
+ */
 interface ISwitch {
     fun switch(
             format: String = "",
@@ -99,7 +104,7 @@ class SwitchDSL(private val builder: BlockWrapper<*, *, *>) : LazyComponentAccep
     private fun CodeBlock.singleLined() = !toString().dropLast(1).run{
         contains('\n') || contains(';')
     }
-    infix fun String.then(statements: CodeBlockBuilder.() -> Unit) =
+    infix fun String.then(statements: CodeBlockBuildScript) =
             case(this, body = createCodeBlock(statements))
 
     infix fun String.then(codeBlock: CodeBlock) = case(this, body = codeBlock)
@@ -123,7 +128,7 @@ class SwitchDSL(private val builder: BlockWrapper<*, *, *>) : LazyComponentAccep
     }
 
 
-    fun case(format: String, vararg parts: Any, statements: CodeBlockBuilder.() -> Unit) =
+    fun case(format: String, vararg parts: Any, statements: CodeBlockBuildScript) =
             case(format, *parts, body = createCodeBlock(statements))
 
 
@@ -134,6 +139,6 @@ class SwitchDSL(private val builder: BlockWrapper<*, *, *>) : LazyComponentAccep
             needBrackets = lazyComponent.singleStatement
     )
 
-    fun Else(statements: CodeBlockBuilder.() -> Unit) = case("else", statements = statements)
+    fun Else(statements: CodeBlockBuildScript) = case("else", statements = statements)
     fun Else(string: String, vararg parts: Any) = Else { string.statement(*parts) }
 }

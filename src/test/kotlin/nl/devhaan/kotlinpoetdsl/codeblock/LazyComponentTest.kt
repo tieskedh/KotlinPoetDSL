@@ -2,8 +2,8 @@ package nl.devhaan.kotlinpoetdsl.codeblock
 
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.buildCodeBlock
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.StringSpec
+import io.kotest.matchers.shouldBe
+import io.kotest.core.spec.style.StringSpec
 import nl.devhaan.kotlinpoetdsl.functions.createFun
 import nl.devhaan.kotlinpoetdsl.functions.func
 import nl.devhaan.kotlinpoetdsl.functions.returns

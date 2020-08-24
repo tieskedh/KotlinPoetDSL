@@ -4,7 +4,7 @@ import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import nl.devhaan.kotlinpoetdsl.IAccessor
 import nl.devhaan.kotlinpoetdsl.PlainAccessor
-import nl.devhaan.kotlinpoetdsl.codeblock.CodeBlockBuilder
+import nl.devhaan.kotlinpoetdsl.codeblock.CodeBlockBuildScript
 
 interface SetterAcceptor{
     fun acceptSetter(func: FunSpec)
@@ -19,4 +19,4 @@ fun SetterAcceptor.setter(format: String, vararg values: Any?) = setterBuilder()
         CodeBlock.of(format, *values)
 )
 fun SetterAcceptor.setter(codeBlock: CodeBlock) = setterBuilder()(codeBlock)
-fun SetterAcceptor.setter(buildScript: CodeBlockBuilder.()->Unit) = setterBuilder() (buildScript)
+fun SetterAcceptor.setter(buildScript: CodeBlockBuildScript) = setterBuilder() (buildScript)

@@ -1,9 +1,11 @@
 package nl.devhaan.kotlinpoetdsl.variable
 
 import com.squareup.kotlinpoet.*
-import io.kotlintest.*
-import io.kotlintest.inspectors.forAll
-import io.kotlintest.specs.StringSpec
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.Matcher
+import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldHave
 import nl.devhaan.kotlinpoetdsl.*
 import kotlin.random.Random
 
@@ -134,9 +136,11 @@ class VariableCreationTest : StringSpec({
 })
 
 
-infix fun <T> List<T>.allShouldHave(matcher: Matcher<T>) = forAll { it shouldHave matcher }
+infix fun <T> List<T>.allShouldHave(matcher: Matcher<T>) = forEach { it shouldHave matcher }
 fun stringValue(stringValue: String) = object : Matcher<Any> {
-    override fun test(value: Any) = Result(value.toString() == stringValue,
+    override fun test(value: Any): MatcherResult = MatcherResult(
+            value.toString() == stringValue,
             """String "$value" should be "$stringValue".""",
-            "String $value should not be $stringValue")
+            "String $value should not be $stringValue"
+    )
 }

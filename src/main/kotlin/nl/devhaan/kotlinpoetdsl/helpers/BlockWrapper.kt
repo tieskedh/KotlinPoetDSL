@@ -6,8 +6,10 @@ import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.TypeName
 import nl.devhaan.kotlinpoetdsl.Variable
 import nl.devhaan.kotlinpoetdsl.addParameters
+import nl.devhaan.kotlinpoetdsl.codeblock.CodeBlockBuildScript
 import nl.devhaan.kotlinpoetdsl.codeblock.CodeBlockBuilder
 import nl.devhaan.kotlinpoetdsl.endControlFlow
+import nl.devhaan.kotlinpoetdsl.codeblock.function.FunctionBlockBuilder
 
 class UnFinishException(message: String) : Exception(message)
 interface IFinishExceptionHandler {
@@ -41,20 +43,20 @@ interface BlockWrapper<out RETURN, out SELF : BlockWrapper<RETURN, SELF, BUILDER
     fun addCode(codeBlock: CodeBlock): SELF
     fun addCode(format: String, vararg varargs: Any): SELF
     fun build(): RETURN
-    fun addCode(buildScript: CodeBlockBuilder.() -> Unit): SELF
+    fun addCode(buildScript: CodeBlockBuildScript): SELF
 }
 
 fun FunSpec.Builder.wrapper() : BlockWrapper<FunSpec, FuncBlockWrapper, FunSpec.Builder> = FuncBlockWrapper(this)
 
 fun CodeBlock.Builder.wrapper() : BlockWrapper<CodeBlock, CodeBlockWrapper, CodeBlock.Builder> = CodeBlockWrapper(this)
-fun createCodeBlock(builder: CodeBlockBuilder.() -> Unit): CodeBlock = CodeBlock.builder().wrapper().addCode(builder).build()
+fun createCodeBlock(builder: CodeBlockBuildScript): CodeBlock = CodeBlock.builder().wrapper().addCode(builder).build()
 
 class CodeBlockWrapper(
         private val builder: CodeBlock.Builder = CodeBlock.builder()
 ) : BlockWrapper<CodeBlock, CodeBlockWrapper, CodeBlock.Builder> {
     override val finishHandler = FinishExceptionHandler()
 
-    override fun addCode(buildScript: CodeBlockBuilder.() -> Unit) = apply {
+    override fun addCode(buildScript: CodeBlockBuildScript) = apply {
         CodeBlockBuilder(this).also(buildScript)
     }
 
@@ -84,15 +86,20 @@ class CodeBlockWrapper(
 class FuncBlockWrapper internal constructor(
         private val builder: FunSpec.Builder
 ) : BlockWrapper<FunSpec, FuncBlockWrapper, FunSpec.Builder> {
-    override val finishHandler = FinishExceptionHandler()
     fun returns(clazz: TypeName) = withBuilder { returns(clazz) }
+    fun addFuncCode(buildScript : FunctionBlockBuilder.()->Unit) = apply {
+        FunctionBlockBuilder(this).also(buildScript)
+    }
+    val params get() = builder.parameters
 
+    override val finishHandler = FinishExceptionHandler()
 
-    override fun addCode(buildScript: CodeBlockBuilder.() -> Unit) = apply {
+    override fun addCode(buildScript: CodeBlockBuildScript) = apply {
         CodeBlockBuilder(this).also(buildScript)
     }
 
     override fun withBuilder(buildScript: FunSpec.Builder.() -> Unit) = apply { builder.buildScript() }
+
 
     override fun addCode(codeBlock: CodeBlock) = withBuilder { addCode(codeBlock) }
     override fun addCode(format: String, vararg varargs: Any) = withBuilder { addCode(format, *varargs) }

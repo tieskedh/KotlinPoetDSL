@@ -2,8 +2,8 @@ package nl.devhaan.kotlinpoetdsl.constructor
 
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.TypeSpec
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.StringSpec
+import io.kotest.matchers.shouldBe
+import io.kotest.core.spec.style.StringSpec
 import nl.devhaan.kotlinpoetdsl.addConstructor
 import nl.devhaan.kotlinpoetdsl.classes.createClass
 import nl.devhaan.kotlinpoetdsl.classes.clazz

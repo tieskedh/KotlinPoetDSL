@@ -4,22 +4,18 @@ import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asTypeName
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.StringSpec
-import nl.devhaan.kotlinpoetdsl.abstract
+import io.kotest.matchers.shouldBe
+import io.kotest.core.spec.style.StringSpec
+import nl.devhaan.kotlinpoetdsl.*
 import nl.devhaan.kotlinpoetdsl.classes.createClass
 import nl.devhaan.kotlinpoetdsl.classes.clazz
 import nl.devhaan.kotlinpoetdsl.functions.*
-import nl.devhaan.kotlinpoetdsl.inline
-import nl.devhaan.kotlinpoetdsl.of
-import nl.devhaan.kotlinpoetdsl.private
 
 /**
  * This class checks if all the function-invocations work correctly.
  * This is done against one FuncAcceptor (as the implementation is already checked)
  */
 class FunctionInvocationTest : StringSpec({
-
     "plain function"{
         createClass {
             clazz("TestClass") {

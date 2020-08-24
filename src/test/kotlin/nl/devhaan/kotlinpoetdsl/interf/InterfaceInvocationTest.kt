@@ -1,8 +1,8 @@
 package nl.devhaan.kotlinpoetdsl.interf
 
 import com.squareup.kotlinpoet.*
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.StringSpec
+import io.kotest.matchers.shouldBe
+import io.kotest.core.spec.style.StringSpec
 import nl.devhaan.kotlinpoetdsl.`interface`.implements
 import nl.devhaan.kotlinpoetdsl.`interface`.interf
 import nl.devhaan.kotlinpoetdsl.classes.buildUpon

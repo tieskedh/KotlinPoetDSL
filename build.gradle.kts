@@ -3,7 +3,7 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent.*
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
-    val kotlin_version: String by extra("1.3.40")
+    val kotlin_version: String by extra("1.4.0")
 
     repositories {
         maven { setUrl("http://dl.bintray.com/kotlin/kotlin-eap") }
@@ -43,9 +43,9 @@ repositories {
     mavenCentral()
 }
 dependencies {
-    compile(kotlin("stdlib-jdk8", kotlin_version))
-    compile("com.squareup:kotlinpoet:1.0.0-RC3")
-    testCompile("io.kotlintest:kotlintest-runner-junit5:3.1.9")
+    implementation(kotlin("stdlib-jdk8", kotlin_version))
+    implementation("com.squareup:kotlinpoet:1.6.0")
+    testImplementation("io.kotest:kotest-runner-junit5:4.2.0")
 }
 
 tasks.withType<KotlinCompile> {
