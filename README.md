@@ -1,4 +1,5 @@
 [![](https://jitpack.io/v/nl.devhaan/KotlinPoetDSL.svg)](https://jitpack.io/#nl.devhaan/KotlinPoetDSL)
+[![codecov](https://codecov.io/gh/tieskedh/KotlinPoetDSL/branch/master/graph/badge.svg)](https://codecov.io/gh/tieskedh/KotlinPoetDSL)
 
 
 # KotlinPoetDSL
