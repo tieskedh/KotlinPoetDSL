@@ -6,6 +6,7 @@ import io.kotest.core.spec.style.StringSpec
 import nl.devhaan.kotlinpoetdsl.files.file
 import nl.devhaan.kotlinpoetdsl.getters.getter
 import nl.devhaan.kotlinpoetdsl.inline
+import nl.devhaan.kotlinpoetdsl.of
 import nl.devhaan.kotlinpoetdsl.properties.createProp
 import nl.devhaan.kotlinpoetdsl.properties.prop
 import nl.devhaan.kotlinpoetdsl.setters.setter
@@ -24,17 +25,39 @@ import nl.devhaan.kotlinpoetdsl.varOf
  * Because of this, KotlinPoetDsl needs to throw some errors himself.
  */
 class PropErrorTest : StringSpec({
-    "inlined var-prop with initializer"{
+    "inlined var-prop without getter and setter"{
         shouldThrow<IllegalArgumentException> {
             createProp {
                 inline.prop("prop".varOf<String>("\"hello\""))
             }
         }.message shouldBe "No inline getter and setter provided for inline var-property prop."
     }
+    "inlined var-prop without getter"{
+        shouldThrow<IllegalArgumentException> {
+            createProp {
+                inline.prop("prop" varOf String::class){
+                    inline.setter{
+                        statement("println(1)")
+                    }
+                }
+            }
+        }.message shouldBe "No inline getter provided for inline var-property prop."
+    }
+    "inlined var-prop without setter"{
+        shouldThrow<IllegalArgumentException> {
+            createProp {
+                inline.prop("prop" varOf String::class){
+                    inline.getter{
+                        statement("println(1)")
+                    }
+                }
+            }
+        }.message shouldBe "No inline setter provided for inline var-property prop."
+    }
 
 
     /* This is only needed due to the implementation-flow of properties */
-    "inlined val-prop with setter"{
+    "val-prop with setter"{
         shouldThrow<IllegalArgumentException> {
             createProp {
                 inline.prop("prop" valOf Int::class) {
@@ -44,17 +67,7 @@ class PropErrorTest : StringSpec({
         }.message shouldBe "Val prop cannot have setter."
     }
 
-    "inlined val-prop with not-inlined getter"{
-        shouldThrow<IllegalArgumentException> {
-            createProp {
-                inline.prop("prop" valOf Int::class) {
-                    getter { statement("return 1") }
-                }
-            }
-        }.message shouldBe "Getter for inline property prop must be inlined."
-    }
-
-    "inlined val-prop with inlined getter and initializer"{
+    "inlined initialized prop with inlined getter"{
         shouldThrow<IllegalArgumentException> {
             createProp {
                 inline.prop("prop".valOf<Int>("1")) {
@@ -66,7 +79,7 @@ class PropErrorTest : StringSpec({
         }.message shouldBe "Inlined property prop cannot have initializer and getter."
     }
 
-    "inlined val-prop with inlined setter and initializer"{
+    "inlined initialized prop with inlined setter"{
         shouldThrow<IllegalArgumentException> {
             createProp {
                 inline.prop("prop".valOf<Int>("1")) {
@@ -76,5 +89,34 @@ class PropErrorTest : StringSpec({
                 }
             }
         }.message shouldBe "Inlined property prop cannot have initializer and setter."
+    }
+
+    "inline uninitialized prop without getters and setters"{
+        shouldThrow<IllegalArgumentException> {
+            createProp {
+                inline.prop("prop" of Int::class)
+            }
+        }.message shouldBe "Inlined property must have getters or setters or be initialized."
+    }
+
+    "setter not inlined"{
+        shouldThrow<IllegalArgumentException> {
+            createProp {
+                inline.prop("prop" valOf Int::class){
+                    getter {
+                        statement("return 1")
+                    }
+                }
+            }
+        }.message shouldBe "Getter for inline property 'prop' must be inlined."
+    }
+    "getter not-inlined getter"{
+        shouldThrow<IllegalArgumentException> {
+            createProp {
+                inline.prop("prop" valOf Int::class) {
+                    getter { statement("return 1") }
+                }
+            }
+        }.message shouldBe "Getter for inline property 'prop' must be inlined."
     }
 })

@@ -79,7 +79,7 @@ object PropCreator {
 
 
     private fun Variable.requireGetterIsInlined() = require(hasInlinedGetter()) {
-        "Getter for inline property $name must be inlined."
+        "Getter for inline property '$name' must be inlined."
     }
 
     private fun Variable.hasInlinedGetter() = propertyData?.getter?.isInlined() == true
