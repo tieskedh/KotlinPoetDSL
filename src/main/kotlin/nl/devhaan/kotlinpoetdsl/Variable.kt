@@ -74,27 +74,17 @@ data class Variable(
     }
 
     private var _propertySpec by LazySettable {
-        PropertySpec.builder(name, typeName, *(modifiers - KModifier.VARARG).toTypedArray()).also { builder ->
-            builder.addAnnotations(annotiations)
-            builder.addKdoc(kdoc)
-
-            val isDelegated= propertyData?.delegate ?: false
-            initializer?.let { if (isDelegated) builder.delegate(it) else builder.initializer(it) }
-
-            propertyData?.apply {
-                receiverType?.let(builder::receiver)
-                getter?.let(builder::getter)
-                setter?.let(builder::setter)
-                builder.addTypeVariables(typeVariables)
-                builder.mutable(mutable)
-            }
-        }.build()
+        PropCreator.fromVariable(this)
     }
 
     fun toPropertySpec() = _propertySpec
 
     private var _paramSpec by LazySettable {
-        ParameterSpec.builder(name, typeName, *modifiers.toTypedArray()).also { builder ->
+        ParameterSpec.builder(
+                name,
+                typeName,
+                *(modifiers - KModifier.INLINE).toTypedArray()
+        ).also { builder ->
             initializer?.let(builder::defaultValue)
             builder.addAnnotations(annotiations)
             builder.addKdoc(kdoc)

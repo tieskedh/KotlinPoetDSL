@@ -6,6 +6,7 @@ import io.kotest.core.spec.style.StringSpec
 import nl.devhaan.kotlinpoetdsl.files.file
 import nl.devhaan.kotlinpoetdsl.getters.getter
 import nl.devhaan.kotlinpoetdsl.inline
+import nl.devhaan.kotlinpoetdsl.properties.createProp
 import nl.devhaan.kotlinpoetdsl.properties.prop
 import nl.devhaan.kotlinpoetdsl.setters.setter
 import nl.devhaan.kotlinpoetdsl.valOf
@@ -25,7 +26,7 @@ import nl.devhaan.kotlinpoetdsl.varOf
 class PropErrorTest : StringSpec({
     "inlined var-prop with initializer"{
         shouldThrow<IllegalArgumentException> {
-            file("", "HelloWorld") {
+            createProp {
                 inline.prop("prop".varOf<String>("\"hello\""))
             }
         }.message shouldBe "No inline getter and setter provided for inline var-property prop."
@@ -35,7 +36,7 @@ class PropErrorTest : StringSpec({
     /* This is only needed due to the implementation-flow of properties */
     "inlined val-prop with setter"{
         shouldThrow<IllegalArgumentException> {
-            file("", "HelloWorld") {
+            createProp {
                 inline.prop("prop" valOf Int::class) {
                     setter { statement("return 1") }
                 }
@@ -45,7 +46,7 @@ class PropErrorTest : StringSpec({
 
     "inlined val-prop with not-inlined getter"{
         shouldThrow<IllegalArgumentException> {
-            file("", "HelloWorld") {
+            createProp {
                 inline.prop("prop" valOf Int::class) {
                     getter { statement("return 1") }
                 }
@@ -55,15 +56,25 @@ class PropErrorTest : StringSpec({
 
     "inlined val-prop with inlined getter and initializer"{
         shouldThrow<IllegalArgumentException> {
-            file("", "HelloWorld") {
+            createProp {
                 inline.prop("prop".valOf<Int>("1")) {
                     inline.getter {
                         statement("return 1")
                     }
                 }
             }
-        }.message shouldBe "Inlined property prop cannot have initializer and setter."
+        }.message shouldBe "Inlined property prop cannot have initializer and getter."
     }
 
-
+    "inlined val-prop with inlined setter and initializer"{
+        shouldThrow<IllegalArgumentException> {
+            createProp {
+                inline.prop("prop".valOf<Int>("1")) {
+                    inline.setter {
+                        statement("return 1")
+                    }
+                }
+            }
+        }.message shouldBe "Inlined property prop cannot have initializer and setter."
+    }
 })

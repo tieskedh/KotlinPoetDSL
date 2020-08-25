@@ -1,6 +1,6 @@
 V0.2.0
 
-# braking changes
+# breaking changes
 - replaces "build" in functions now start with "create": KotlinPoet started using build
 - lazyComponent now needs a parameter which says if the component can be invoked as single statement (no ; is needed)
 
@@ -13,3 +13,4 @@ V0.2.0
 
 # improvements
 - switch now emits brack
+- Variable now supports inline

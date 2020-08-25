@@ -128,6 +128,13 @@ class VariableCreationTest : StringSpec({
                 "a".varargVar(clazz, CodeBlock.of("arrayOf(%S)", "Hi"))
         ) allShouldHave stringValue("vararg var a: kotlin.String = arrayOf(\"Hi\")")
     }
+    "inline variable"{
+        Variable(
+                "a",
+                typeNameFor<String>(),
+                setOf(KModifier.INLINE)
+        ).toParamSpec()
+    }
 
     "reified nullable"{
         ("bool".of<String?>()).toParamSpec() shouldBe
